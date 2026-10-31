@@ -1,0 +1,42 @@
+# Controlled tag vocabulary. Every entry tag must be registered here; every term must be used.
+# Facets: topic (what area?), task (what job?), technology (what specific tool or stack?),
+# keyword (search-only specialist term). Aliases are equivalent wording for lookup;
+# they never rename stored IDs. Type, platforms, requirements and provenance stay in their own entry fields.
+schemaVersion: 1
+terms:
+  # Topics
+  - id: cli
+    label: Command line
+    facet: topic
+    aliases: [terminal, shell]
+    definition: Programs and techniques used from a terminal rather than an editor or web interface.
+  # Tasks
+  - id: cleanup
+    label: Cleanup
+    facet: task
+    aliases: [housekeeping, tidy]
+    definition: Removing stale or unused files, branches, caches or other leftovers safely.
+  - id: debugging
+    label: Debugging
+    facet: task
+    definition: Finding and diagnosing the cause of incorrect behavior.
+  - id: search
+    label: Search
+    facet: task
+    aliases: [grep, find]
+    definition: Locating text, files or symbols across a codebase or filesystem.
+  # Technologies
+  - id: git
+    label: Git
+    facet: technology
+    definition: The Git version control system, its commands and repository conventions.
+  # Keywords
+  - id: branches
+    label: Branches
+    facet: keyword
+    definition: Creating, comparing, merging or deleting version control branches.
+  - id: regression
+    label: Regression
+    facet: keyword
+    aliases: [regressions]
+    definition: Behavior that worked in an earlier version and broke later.

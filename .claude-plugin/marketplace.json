@@ -1,0 +1,14 @@
+{
+  "name": "dev-catalog",
+  "description": "The Dev Catalog: curated, rated developer scripts, tools, and workflows.",
+  "owner": {
+    "name": "Dev Catalog contributors"
+  },
+  "plugins": [
+    {
+      "name": "dev-catalog",
+      "source": "./",
+      "description": "Discovery skill for the Dev Catalog: find, compare, and install rated developer scripts, tools, and workflows."
+    }
+  ]
+}

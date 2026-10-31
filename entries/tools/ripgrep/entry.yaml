@@ -1,0 +1,35 @@
+schemaVersion: 1
+id: ripgrep
+type: tool
+title: ripgrep (rg) recursive search
+summary: A fast recursive search CLI that respects .gitignore, skips hidden and binary files by default, and supports Rust and PCRE2 regexes, file-type filters, multiline search, and searching compressed files. A drop-in for most grep -r uses.
+useWhen: You search codebases from the terminal and grep -r is slow or noisy with build output, vendored dependencies, or ignored files.
+tags: [ search, cli ]
+platforms: [ macos, linux, windows ]
+rating:
+  rubric: dev-v1
+  dimensions:
+    value: 3
+    dependability: 4
+    ease: 4
+    safety: 4
+    adoption: 4
+    portability: 4
+    upkeep: 3
+  evidence: reviewed
+  reviewed: 2026-10-31
+  notes: Mature, widely packaged, and read-only by nature. Defaults that hide ignored and hidden files surprise people looking for something in node_modules or .env - use -uu to search everything. Maintained mainly by one author, which slightly lowers upkeep.
+source:
+  kind: linked
+  url: https://github.com/BurntSushi/ripgrep
+  revision: e89fff89ac9af12e8d4ce9d5fd07beb408ca730f
+  version: 15.2.0
+  retrieved: 2026-10-31
+  license: Unlicense OR MIT
+  author: Andrew Gallant (BurntSushi)
+install:
+  macos: brew install ripgrep
+  linux: Use the distribution package (apt install ripgrep, dnf install ripgrep, pacman -S ripgrep), or a release binary from GitHub.
+  windows: winget install BurntSushi.ripgrep.MSVC, or scoop install ripgrep.
+  notes: Prebuilt binaries for every platform are attached to each GitHub release. cargo install ripgrep builds from source.
+overlap: grep -r and git grep cover the same job; git grep is already installed and fast inside a repository. ugrep and The Silver Searcher (ag) are alternatives. Many editors bundle ripgrep for project search.

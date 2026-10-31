@@ -1,0 +1,19 @@
+# Dev Catalog
+
+> A curated, rated catalog of useful developer scripts, tools, and workflows. Every entry records where it came from, its license, the platforms it runs on, what it requires, and a curator rating.
+
+Full metadata for every entry is in [catalog/index.json](https://raw.githubusercontent.com/alex-red/dev-catalog/main/catalog/index.json). Install steps by entry type are in the [install guide](https://raw.githubusercontent.com/alex-red/dev-catalog/main/skills/dev-catalog/references/install.md). Repository: https://github.com/alex-red/dev-catalog
+
+Rubric (dev-v1): seven 0–4 grades weighted by practical value 25%, dependability 20%, ease of use 15%, safety and control 15%, adoption cost 10%, portability 10%, upkeep 5%; weighted total / 40 gives a score out of 10. Higher is better on every axis. Missing grades produce no score. See the [rating guide](https://raw.githubusercontent.com/alex-red/dev-catalog/main/docs/ratings.md). Within each section, complete ratings come first, then incomplete ones, then entries with blockers. Evidence: reviewed, used, tested. Select for fit first, and never let a high score clear a blocker. Read a script before running it.
+
+## Scripts
+
+- [Prune merged local Git branches](https://raw.githubusercontent.com/alex-red/dev-catalog/main/entries/scripts/git-prune-merged/SCRIPT.md): A dry-run-first Bash script that lists local branches already merged into the default branch and deletes them on --delete. It finds the default branch from origin/HEAD and never touches the base, the current branch, or branches checked out in a worktree. Use when: Local branches have piled up after merged pull requests and you want to clear the ones that are safely merged without guessing. — id `git-prune-merged`, 8.6/10, evidence tested, platforms macos/linux, requires git, bash, tags git, branches, cleanup, original, [metadata](https://raw.githubusercontent.com/alex-red/dev-catalog/main/entries/scripts/git-prune-merged/entry.yaml)
+
+## Workflows
+
+- [Find a regression with git bisect run](https://raw.githubusercontent.com/alex-red/dev-catalog/main/entries/workflows/git-bisect-regression/WORKFLOW.md): A step-by-step method for finding the commit that introduced a regression, using an automated check script with git bisect run. Covers exit-code semantics, skipping unbuildable commits, flaky checks, merge-heavy history, and keeping a record. Use when: Something worked in an older version and fails now, and reading recent diffs has not shown the cause. — id `git-bisect-regression`, 9.1/10, evidence reviewed, platforms any, requires git, tags git, debugging, regression, original, informed by https://git-scm.com/docs/git-bisect, [metadata](https://raw.githubusercontent.com/alex-red/dev-catalog/main/entries/workflows/git-bisect-regression/entry.yaml)
+
+## Tools
+
+- [ripgrep (rg) recursive search](https://github.com/BurntSushi/ripgrep/tree/e89fff89ac9af12e8d4ce9d5fd07beb408ca730f): A fast recursive search CLI that respects .gitignore, skips hidden and binary files by default, and supports Rust and PCRE2 regexes, file-type filters, multiline search, and searching compressed files. A drop-in for most grep -r uses. Use when: You search codebases from the terminal and grep -r is slow or noisy with build output, vendored dependencies, or ignored files. — id `ripgrep`, 9.3/10, evidence reviewed, platforms macos/linux/windows, tags search, cli, linked from https://github.com/BurntSushi/ripgrep/tree/e89fff89ac9af12e8d4ce9d5fd07beb408ca730f, [metadata](https://raw.githubusercontent.com/alex-red/dev-catalog/main/entries/tools/ripgrep/entry.yaml)

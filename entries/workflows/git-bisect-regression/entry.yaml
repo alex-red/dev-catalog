@@ -1,0 +1,30 @@
+schemaVersion: 1
+id: git-bisect-regression
+type: workflow
+title: Find a regression with git bisect run
+summary: A step-by-step method for finding the commit that introduced a regression, using an automated check script with git bisect run. Covers exit-code semantics, skipping unbuildable commits, flaky checks, merge-heavy history, and keeping a record.
+useWhen: Something worked in an older version and fails now, and reading recent diffs has not shown the cause.
+tags: [ git, debugging, regression ]
+platforms: [ any ]
+requires: [ git ]
+rating:
+  rubric: dev-v1
+  dimensions:
+    value: 4
+    dependability: 3
+    ease: 3
+    safety: 4
+    adoption: 4
+    portability: 4
+    upkeep: 4
+  evidence: reviewed
+  reviewed: 2026-10-31
+  notes: Built-in Git feature, so nothing to install. The workflow's value is in the parts people get wrong - testing both ends first, exit 125 for skips, and keeping the check script outside the tree. Dependability depends entirely on how deterministic the user's check is.
+source:
+  kind: original
+  license: MIT
+  author: Dev Catalog contributors
+inspiredBy:
+  - title: git-bisect documentation
+    url: https://git-scm.com/docs/git-bisect
+overlap: The git-bisect manual covers the same commands without the procedure. Hosted CI bisect services and test-impact tools can narrow regressions without local runs.

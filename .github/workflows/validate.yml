@@ -1,0 +1,29 @@
+name: Validate catalog
+
+on:
+  push:
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version-file: .bun-version
+      - run: bun install --frozen-lockfile
+      - run: bun run check
+
+  shellcheck:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - name: Run shellcheck on every shell script under entries/
+        run: |
+          git ls-files entries | while IFS= read -r file; do
+            head -n 1 "$file" | grep -qE '^#!.*[/ ](ba)?sh$' && printf '%s\n' "$file"
+          done | xargs --no-run-if-empty shellcheck

@@ -1,0 +1,28 @@
+schemaVersion: 1
+id: git-prune-merged
+type: script
+title: Prune merged local Git branches
+summary: A dry-run-first Bash script that lists local branches already merged into the default branch and deletes them on --delete. It finds the default branch from origin/HEAD and never touches the base, the current branch, or branches checked out in a worktree.
+useWhen: Local branches have piled up after merged pull requests and you want to clear the ones that are safely merged without guessing.
+tags: [ git, branches, cleanup ]
+platforms: [ macos, linux ]
+requires: [ git, bash ]
+rating:
+  rubric: dev-v1
+  dimensions:
+    value: 3
+    dependability: 3
+    ease: 4
+    safety: 4
+    adoption: 4
+    portability: 3
+    upkeep: 4
+  evidence: tested
+  reviewed: 2026-10-31
+  notes: Dry run by default and limited to local branches. Misses squash- and rebase-merged branches, which is the common case on GitHub repositories that squash, so the value is lower there. Tested on macOS with Bash 3.2 and Git; not checked on Windows Git Bash.
+source:
+  kind: original
+  license: MIT
+  author: Dev Catalog contributors
+overlap: git branch --merged lists the same candidates without the exclusions or a delete step. git-delete-merged-branches (Python) and gh-poi (detects squash merges through the GitHub API) go further at a higher install cost.
+evidence: [ tests/git-prune-merged.test.ts ]

@@ -1,0 +1,80 @@
+#!/usr/bin/env bash
+# List, and with --delete remove, local branches already merged into the default branch.
+set -euo pipefail
+
+usage() {
+  cat <<'USAGE'
+Usage: git-prune-merged [--delete] [--base BRANCH]
+
+Lists local branches whose tips are reachable from BRANCH (default: origin/HEAD,
+else main, master, or trunk). Nothing is deleted unless --delete is given.
+The base branch, the current branch, and branches checked out in any worktree
+are never touched.
+USAGE
+}
+
+delete=false
+base=""
+while [ $# -gt 0 ]; do
+  case "$1" in
+    --delete) delete=true ;;
+    --base)
+      [ $# -ge 2 ] || { usage >&2; exit 2; }
+      base="$2"
+      shift
+      ;;
+    -h | --help) usage; exit 0 ;;
+    *) usage >&2; exit 2 ;;
+  esac
+  shift
+done
+
+git rev-parse --git-dir >/dev/null
+
+if [ -z "$base" ]; then
+  base=$(git symbolic-ref --quiet --short refs/remotes/origin/HEAD 2>/dev/null || true)
+  base=${base#origin/}
+fi
+if [ -z "$base" ]; then
+  for candidate in main master trunk; do
+    if git show-ref --verify --quiet "refs/heads/$candidate"; then
+      base=$candidate
+      break
+    fi
+  done
+fi
+[ -n "$base" ] || { echo "git-prune-merged: cannot find the default branch; pass --base" >&2; exit 1; }
+
+# Prefer the local branch; fall back to the remote-tracking one when it is not checked out locally.
+if git show-ref --verify --quiet "refs/heads/$base"; then
+  base_ref="refs/heads/$base"
+elif git show-ref --verify --quiet "refs/remotes/origin/$base"; then
+  base_ref="refs/remotes/origin/$base"
+else
+  echo "git-prune-merged: no branch named $base" >&2
+  exit 1
+fi
+
+checked_out=$(git worktree list --porcelain | sed -n 's#^branch refs/heads/##p')
+
+branches=()
+while IFS= read -r branch; do
+  [ "$branch" = "$base" ] && continue
+  printf '%s\n' "$checked_out" | grep -qxF -- "$branch" && continue
+  branches+=("$branch")
+done < <(git for-each-ref --format='%(refname:short)' --merged "$base_ref" refs/heads/)
+
+if [ ${#branches[@]} -eq 0 ]; then
+  echo "No local branches are merged into $base."
+  exit 0
+fi
+
+for branch in "${branches[@]}"; do
+  if $delete; then
+    # -D, because -d checks against HEAD or the upstream rather than $base; the merge was verified above.
+    git branch -D -- "$branch"
+  else
+    echo "would delete $branch"
+  fi
+done
+$delete || echo "Dry run: ${#branches[@]} branch(es) merged into $base. Re-run with --delete to remove them."

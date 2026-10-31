@@ -1,0 +1,13 @@
+{
+  "globs": [
+    "**/*.md"
+  ],
+  // Vendored entries stay byte-identical to their pinned upstream; add their directories here.
+  "ignores": [
+    "node_modules/**"
+  ],
+  "config": {
+    "MD013": false,
+    "MD060": false
+  }
+}

@@ -1,0 +1,20 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Collection",
+  "description": "A named set of entries that work well together, stored as collections/<id>.yaml.",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "schemaVersion": { "const": 1 },
+    "id": { "type": "string", "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$", "maxLength": 64 },
+    "title": { "type": "string", "minLength": 1, "maxLength": 80, "pattern": "\\S" },
+    "description": { "type": "string", "minLength": 1, "pattern": "\\S" },
+    "entries": {
+      "type": "array",
+      "items": { "type": "string", "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$" },
+      "uniqueItems": true,
+      "minItems": 1
+    }
+  },
+  "required": ["schemaVersion", "id", "title", "description", "entries"]
+}

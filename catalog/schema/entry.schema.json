@@ -1,0 +1,530 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Catalog entry",
+  "description": "Metadata for one catalog entry, stored as entries/<type>s/<id>/entry.yaml.",
+  "type": "object",
+  "additionalProperties": false,
+  "definitions": {
+    "slug": {
+      "type": "string",
+      "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$",
+      "maxLength": 64
+    },
+    "text": {
+      "type": "string",
+      "minLength": 1,
+      "pattern": "\\S"
+    },
+    "tag": {
+      "type": "string",
+      "pattern": "^[a-z0-9]+(?:[-_][a-z0-9]+)*$",
+      "maxLength": 64
+    },
+    "https": {
+      "type": "string",
+      "pattern": "^https://\\S+$"
+    },
+    "sha": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{40}$"
+    },
+    "date": {
+      "type": "string",
+      "pattern": "^\\d{4}-\\d{2}-\\d{2}$"
+    },
+    "grade": {
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 4
+    },
+    "paths": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/text"
+      },
+      "uniqueItems": true
+    },
+    "link": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "title": {
+          "$ref": "#/definitions/text"
+        },
+        "url": {
+          "$ref": "#/definitions/https"
+        }
+      },
+      "required": [
+        "title",
+        "url"
+      ]
+    },
+    "rating": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "rubric": {
+          "const": "dev-v1"
+        },
+        "dimensions": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "value": {
+              "$ref": "#/definitions/grade"
+            },
+            "dependability": {
+              "$ref": "#/definitions/grade"
+            },
+            "ease": {
+              "$ref": "#/definitions/grade"
+            },
+            "safety": {
+              "$ref": "#/definitions/grade"
+            },
+            "adoption": {
+              "$ref": "#/definitions/grade"
+            },
+            "portability": {
+              "$ref": "#/definitions/grade"
+            },
+            "upkeep": {
+              "$ref": "#/definitions/grade"
+            }
+          }
+        },
+        "evidence": {
+          "description": "reviewed: read and judged; used: used in real work; tested: automated checks recorded.",
+          "enum": [
+            "reviewed",
+            "used",
+            "tested"
+          ]
+        },
+        "reviewed": {
+          "$ref": "#/definitions/date"
+        },
+        "notes": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 600,
+          "pattern": "\\S"
+        },
+        "review": {
+          "type": "string",
+          "pattern": "^docs/reviews/[a-z0-9-]+\\.md$"
+        },
+        "unknowns": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {
+            "$ref": "#/definitions/text"
+          }
+        },
+        "blockers": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "scope": {
+                "$ref": "#/definitions/text"
+              },
+              "reason": {
+                "$ref": "#/definitions/text"
+              }
+            },
+            "required": [
+              "scope",
+              "reason"
+            ]
+          }
+        }
+      },
+      "required": [
+        "rubric",
+        "dimensions",
+        "evidence",
+        "reviewed",
+        "notes"
+      ],
+      "allOf": [
+        {
+          "if": {
+            "type": "object",
+            "properties": {
+              "dimensions": {
+                "type": "object",
+                "maxProperties": 6
+              }
+            }
+          },
+          "then": {
+            "type": "object",
+            "properties": {
+              "unknowns": {}
+            },
+            "required": [
+              "unknowns"
+            ]
+          }
+        }
+      ]
+    }
+  },
+  "properties": {
+    "schemaVersion": {
+      "const": 1
+    },
+    "id": {
+      "$ref": "#/definitions/slug"
+    },
+    "type": {
+      "enum": [
+        "script",
+        "tool",
+        "workflow"
+      ]
+    },
+    "title": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 80,
+      "pattern": "\\S"
+    },
+    "summary": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 400,
+      "pattern": "\\S"
+    },
+    "useWhen": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 300,
+      "pattern": "\\S"
+    },
+    "tags": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/tag"
+      },
+      "uniqueItems": true,
+      "minItems": 1,
+      "maxItems": 8
+    },
+    "platforms": {
+      "description": "any = works wherever its requirements are met; otherwise the operating systems it was written and checked for.",
+      "type": "array",
+      "items": {
+        "enum": [
+          "any",
+          "macos",
+          "linux",
+          "windows"
+        ]
+      },
+      "uniqueItems": true,
+      "minItems": 1
+    },
+    "requires": {
+      "description": "Programs that must already be installed, such as git, gh, jq, or bash 4+.",
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/text"
+      },
+      "uniqueItems": true
+    },
+    "experimental": {
+      "const": true,
+      "description": "Interesting but unproven: listed apart from established entries and recommended only on request."
+    },
+    "rating": {
+      "$ref": "#/definitions/rating"
+    },
+    "source": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "kind": {
+          "description": "original: written here; adapted: written here from cited inspiration; vendored: pinned upstream copy; linked: upstream only.",
+          "enum": [
+            "original",
+            "adapted",
+            "vendored",
+            "linked"
+          ]
+        },
+        "url": {
+          "$ref": "#/definitions/https"
+        },
+        "path": {
+          "$ref": "#/definitions/text"
+        },
+        "revision": {
+          "$ref": "#/definitions/sha"
+        },
+        "version": {
+          "$ref": "#/definitions/text",
+          "description": "Release or tag that revision corresponds to, when there is one."
+        },
+        "retrieved": {
+          "$ref": "#/definitions/date",
+          "description": "Date the upstream content was copied (vendored) or read (linked) at the pinned revision."
+        },
+        "license": {
+          "$ref": "#/definitions/text"
+        },
+        "author": {
+          "$ref": "#/definitions/text"
+        },
+        "notes": {
+          "$ref": "#/definitions/text"
+        }
+      },
+      "required": [
+        "kind",
+        "license"
+      ],
+      "allOf": [
+        {
+          "if": {
+            "type": "object",
+            "properties": {
+              "kind": {
+                "const": "vendored"
+              }
+            },
+            "required": [
+              "kind"
+            ]
+          },
+          "then": {
+            "type": "object",
+            "required": [
+              "url",
+              "revision",
+              "author",
+              "retrieved"
+            ],
+            "properties": {
+              "url": {},
+              "revision": {},
+              "author": {},
+              "retrieved": {}
+            }
+          }
+        },
+        {
+          "if": {
+            "type": "object",
+            "properties": {
+              "kind": {
+                "const": "linked"
+              }
+            },
+            "required": [
+              "kind"
+            ]
+          },
+          "then": {
+            "type": "object",
+            "required": [
+              "url",
+              "author",
+              "retrieved"
+            ],
+            "properties": {
+              "url": {},
+              "author": {},
+              "retrieved": {}
+            }
+          }
+        }
+      ]
+    },
+    "inspiredBy": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/link"
+      },
+      "minItems": 1
+    },
+    "install": {
+      "type": "object",
+      "additionalProperties": false,
+      "description": "How to install or run it. Required for linked entries; overrides the type's default steps otherwise.",
+      "properties": {
+        "any": {
+          "$ref": "#/definitions/text"
+        },
+        "macos": {
+          "$ref": "#/definitions/text"
+        },
+        "linux": {
+          "$ref": "#/definitions/text"
+        },
+        "windows": {
+          "$ref": "#/definitions/text"
+        },
+        "notes": {
+          "$ref": "#/definitions/text"
+        }
+      },
+      "minProperties": 1
+    },
+    "overlap": {
+      "$ref": "#/definitions/text",
+      "description": "What built-in commands, common tools, or other entries already cover."
+    },
+    "related": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/slug"
+      },
+      "uniqueItems": true
+    },
+    "evidence": {
+      "$ref": "#/definitions/paths"
+    }
+  },
+  "required": [
+    "schemaVersion",
+    "id",
+    "type",
+    "title",
+    "summary",
+    "useWhen",
+    "tags",
+    "platforms",
+    "rating",
+    "source"
+  ],
+  "allOf": [
+    {
+      "if": {
+        "type": "object",
+        "properties": {
+          "source": {
+            "type": "object",
+            "properties": {
+              "kind": {
+                "const": "adapted"
+              }
+            },
+            "required": [
+              "kind"
+            ]
+          }
+        },
+        "required": [
+          "source"
+        ]
+      },
+      "then": {
+        "type": "object",
+        "required": [
+          "inspiredBy"
+        ],
+        "properties": {
+          "inspiredBy": {}
+        }
+      }
+    },
+    {
+      "if": {
+        "type": "object",
+        "properties": {
+          "source": {
+            "type": "object",
+            "properties": {
+              "kind": {
+                "const": "linked"
+              }
+            },
+            "required": [
+              "kind"
+            ]
+          }
+        },
+        "required": [
+          "source"
+        ]
+      },
+      "then": {
+        "type": "object",
+        "required": [
+          "install"
+        ],
+        "properties": {
+          "install": {}
+        }
+      }
+    },
+    {
+      "if": {
+        "type": "object",
+        "properties": {
+          "rating": {
+            "type": "object",
+            "properties": {
+              "evidence": {
+                "enum": [
+                  "used",
+                  "tested"
+                ]
+              }
+            },
+            "required": [
+              "evidence"
+            ]
+          }
+        },
+        "required": [
+          "rating"
+        ]
+      },
+      "then": {
+        "type": "object",
+        "required": [
+          "evidence"
+        ],
+        "properties": {
+          "evidence": {
+            "type": "array",
+            "minItems": 1
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "type": "object",
+        "properties": {
+          "type": {
+            "const": "tool"
+          }
+        },
+        "required": [
+          "type"
+        ]
+      },
+      "then": {
+        "type": "object",
+        "properties": {
+          "source": {
+            "type": "object",
+            "properties": {
+              "kind": {
+                "const": "linked"
+              }
+            }
+          }
+        }
+      }
+    }
+  ]
+}

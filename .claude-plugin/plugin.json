@@ -1,0 +1,16 @@
+{
+  "name": "dev-catalog",
+  "version": "0.0.1",
+  "description": "Discovery skill for the Dev Catalog: find, compare, and install rated developer scripts, tools, and workflows.",
+  "author": {
+    "name": "Dev Catalog contributors"
+  },
+  "license": "MIT",
+  "keywords": [
+    "catalog",
+    "scripts",
+    "cli",
+    "workflows",
+    "discovery"
+  ]
+}

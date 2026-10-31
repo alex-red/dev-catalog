@@ -1,0 +1,163 @@
+{
+  "schemaVersion": 1,
+  "repository": "https://github.com/alex-red/dev-catalog",
+  "rawBase": "https://raw.githubusercontent.com/alex-red/dev-catalog/main/",
+  "entries": [
+    {
+      "schemaVersion": 1,
+      "id": "git-prune-merged",
+      "type": "script",
+      "title": "Prune merged local Git branches",
+      "summary": "A dry-run-first Bash script that lists local branches already merged into the default branch and deletes them on --delete. It finds the default branch from origin/HEAD and never touches the base, the current branch, or branches checked out in a worktree.",
+      "useWhen": "Local branches have piled up after merged pull requests and you want to clear the ones that are safely merged without guessing.",
+      "tags": [
+        "git",
+        "branches",
+        "cleanup"
+      ],
+      "platforms": [
+        "macos",
+        "linux"
+      ],
+      "requires": [
+        "git",
+        "bash"
+      ],
+      "rating": {
+        "rubric": "dev-v1",
+        "dimensions": {
+          "value": 3,
+          "dependability": 3,
+          "ease": 4,
+          "safety": 4,
+          "adoption": 4,
+          "portability": 3,
+          "upkeep": 4
+        },
+        "evidence": "tested",
+        "reviewed": "2026-10-31",
+        "notes": "Dry run by default and limited to local branches. Misses squash- and rebase-merged branches, which is the common case on GitHub repositories that squash, so the value is lower there. Tested on macOS with Bash 3.2 and Git; not checked on Windows Git Bash."
+      },
+      "source": {
+        "kind": "original",
+        "license": "MIT",
+        "author": "Dev Catalog contributors"
+      },
+      "overlap": "git branch --merged lists the same candidates without the exclusions or a delete step. git-delete-merged-branches (Python) and gh-poi (detects squash merges through the GitHub API) go further at a higher install cost.",
+      "evidence": [
+        "tests/git-prune-merged.test.ts"
+      ],
+      "score": 8.6,
+      "path": "entries/scripts/git-prune-merged",
+      "files": [
+        "entries/scripts/git-prune-merged/SCRIPT.md",
+        "entries/scripts/git-prune-merged/git-prune-merged"
+      ]
+    },
+    {
+      "schemaVersion": 1,
+      "id": "git-bisect-regression",
+      "type": "workflow",
+      "title": "Find a regression with git bisect run",
+      "summary": "A step-by-step method for finding the commit that introduced a regression, using an automated check script with git bisect run. Covers exit-code semantics, skipping unbuildable commits, flaky checks, merge-heavy history, and keeping a record.",
+      "useWhen": "Something worked in an older version and fails now, and reading recent diffs has not shown the cause.",
+      "tags": [
+        "git",
+        "debugging",
+        "regression"
+      ],
+      "platforms": [
+        "any"
+      ],
+      "requires": [
+        "git"
+      ],
+      "rating": {
+        "rubric": "dev-v1",
+        "dimensions": {
+          "value": 4,
+          "dependability": 3,
+          "ease": 3,
+          "safety": 4,
+          "adoption": 4,
+          "portability": 4,
+          "upkeep": 4
+        },
+        "evidence": "reviewed",
+        "reviewed": "2026-10-31",
+        "notes": "Built-in Git feature, so nothing to install. The workflow's value is in the parts people get wrong - testing both ends first, exit 125 for skips, and keeping the check script outside the tree. Dependability depends entirely on how deterministic the user's check is."
+      },
+      "source": {
+        "kind": "original",
+        "license": "MIT",
+        "author": "Dev Catalog contributors"
+      },
+      "inspiredBy": [
+        {
+          "title": "git-bisect documentation",
+          "url": "https://git-scm.com/docs/git-bisect"
+        }
+      ],
+      "overlap": "The git-bisect manual covers the same commands without the procedure. Hosted CI bisect services and test-impact tools can narrow regressions without local runs.",
+      "score": 9.1,
+      "sourceUrl": "https://git-scm.com/docs/git-bisect",
+      "path": "entries/workflows/git-bisect-regression",
+      "files": [
+        "entries/workflows/git-bisect-regression/WORKFLOW.md"
+      ]
+    },
+    {
+      "schemaVersion": 1,
+      "id": "ripgrep",
+      "type": "tool",
+      "title": "ripgrep (rg) recursive search",
+      "summary": "A fast recursive search CLI that respects .gitignore, skips hidden and binary files by default, and supports Rust and PCRE2 regexes, file-type filters, multiline search, and searching compressed files. A drop-in for most grep -r uses.",
+      "useWhen": "You search codebases from the terminal and grep -r is slow or noisy with build output, vendored dependencies, or ignored files.",
+      "tags": [
+        "search",
+        "cli"
+      ],
+      "platforms": [
+        "macos",
+        "linux",
+        "windows"
+      ],
+      "rating": {
+        "rubric": "dev-v1",
+        "dimensions": {
+          "value": 3,
+          "dependability": 4,
+          "ease": 4,
+          "safety": 4,
+          "adoption": 4,
+          "portability": 4,
+          "upkeep": 3
+        },
+        "evidence": "reviewed",
+        "reviewed": "2026-10-31",
+        "notes": "Mature, widely packaged, and read-only by nature. Defaults that hide ignored and hidden files surprise people looking for something in node_modules or .env - use -uu to search everything. Maintained mainly by one author, which slightly lowers upkeep."
+      },
+      "source": {
+        "kind": "linked",
+        "url": "https://github.com/BurntSushi/ripgrep",
+        "revision": "e89fff89ac9af12e8d4ce9d5fd07beb408ca730f",
+        "version": "15.2.0",
+        "retrieved": "2026-10-31",
+        "license": "Unlicense OR MIT",
+        "author": "Andrew Gallant (BurntSushi)"
+      },
+      "install": {
+        "macos": "brew install ripgrep",
+        "linux": "Use the distribution package (apt install ripgrep, dnf install ripgrep, pacman -S ripgrep), or a release binary from GitHub.",
+        "windows": "winget install BurntSushi.ripgrep.MSVC, or scoop install ripgrep.",
+        "notes": "Prebuilt binaries for every platform are attached to each GitHub release. cargo install ripgrep builds from source."
+      },
+      "overlap": "grep -r and git grep cover the same job; git grep is already installed and fast inside a repository. ugrep and The Silver Searcher (ag) are alternatives. Many editors bundle ripgrep for project search.",
+      "score": 9.3,
+      "sourceUrl": "https://github.com/BurntSushi/ripgrep/tree/e89fff89ac9af12e8d4ce9d5fd07beb408ca730f",
+      "path": "entries/tools/ripgrep",
+      "files": []
+    }
+  ],
+  "collections": []
+}

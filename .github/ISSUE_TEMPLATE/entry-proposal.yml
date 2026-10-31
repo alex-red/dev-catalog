@@ -1,0 +1,38 @@
+name: Propose an entry
+description: Suggest a script, tool, or workflow for the catalog.
+labels: [entry-proposal]
+body:
+  - type: dropdown
+    id: type
+    attributes:
+      label: Type
+      options: [script, tool, workflow]
+    validations:
+      required: true
+  - type: input
+    id: source
+    attributes:
+      label: Source URL
+      description: Where it lives. Leave blank for a script or workflow you would write here.
+  - type: input
+    id: license
+    attributes:
+      label: License
+      description: Check the actual license file, not the README.
+  - type: textarea
+    id: why
+    attributes:
+      label: Why it belongs
+      description: The real job it does, and what it adds beyond built-in commands and common tools.
+    validations:
+      required: true
+  - type: input
+    id: platforms
+    attributes:
+      label: Platforms and requirements
+      description: Which operating systems it works on, and what must already be installed.
+  - type: textarea
+    id: overlap
+    attributes:
+      label: Overlap
+      description: Existing entries, built-in commands, or popular tools that cover similar ground.

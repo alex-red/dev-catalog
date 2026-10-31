@@ -1,0 +1,35 @@
+{
+  "name": "dev-catalog",
+  "version": "0.0.1",
+  "private": true,
+  "description": "A curated, rated catalog of useful developer scripts, tools, and workflows.",
+  "type": "module",
+  "license": "MIT",
+  "author": "Alex Red",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/alex-red/dev-catalog"
+  },
+  "engines": {
+    "bun": ">=1.0.0"
+  },
+  "packageManager": "bun@1.4.3",
+  "scripts": {
+    "validate": "bun scripts/validate.ts",
+    "catalog:build": "bun scripts/catalog.ts --write",
+    "catalog:check": "bun scripts/catalog.ts --check",
+    "lint": "markdownlint-cli2",
+    "typecheck": "tsc --noEmit",
+    "test": "bun test",
+    "plugin:validate": "claude plugin validate . --strict",
+    "check": "bun run typecheck && bun run lint && bun run validate && bun run catalog:check && bun test"
+  },
+  "devDependencies": {
+    "@types/node": "24.19.2",
+    "ajv": "8.20.0",
+    "markdownlint-cli2": "0.23.3",
+    "mdast-util-from-markdown": "2.1.0",
+    "typescript": "7.0.2",
+    "yaml": "2.9.1"
+  }
+}
