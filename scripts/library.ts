@@ -387,13 +387,45 @@ export function renderLlmsText(catalog: Catalog): string {
   return `${lines.join('\n')}\n`;
 }
 
-const generated = (catalog: Catalog) => [
+const tableStart = '<!-- catalog:entries:start -->';
+const tableEnd = '<!-- catalog:entries:end -->';
+
+// The README's browsable entry list, one table per type, generated between the markers above.
+export function renderEntryTable(catalog: Catalog): string {
+  const cell = (text: string) => text.replace(/\|/gu, '\\|').replace(/\s+/gu, ' ');
+  const byScore = (a: Entry, b: Entry) => compareRatings(a, b) || a.id.localeCompare(b.id);
+  const link = (entry: Entry) => {
+    const primary = primaryFiles[entry.type];
+    return entry.source.kind === 'linked' || !primary ? entry.source.url ?? entry.sourceUrl! : `${entry.path}/${primary}`;
+  };
+  const sections: string[] = [];
+  for (const type of entryTypes) {
+    const group = catalog.entries.filter((entry) => entry.type === type).sort(byScore);
+    if (!group.length) continue;
+    const rows = group.map((entry) => {
+      const title = `[${cell(entry.title)}](${link(entry)})${entry.experimental ? ' (experimental)' : ''}`;
+      return `| ${title} | ${cell(entry.useWhen)} | ${entry.platforms.join(', ')} | ${scoreLabel(entry)} |`;
+    });
+    sections.push(`### ${sectionTitles[type]}\n\n| Entry | Use it when | Platforms | Score |\n| --- | --- | --- | --- |\n${rows.join('\n')}`);
+  }
+  return sections.join('\n\n');
+}
+
+export function renderReadme(readme: string, catalog: Catalog): string {
+  const start = readme.indexOf(tableStart);
+  const end = readme.indexOf(tableEnd);
+  if (start < 0 || end < start) throw new Error(`README.md: expected ${tableStart} and ${tableEnd} markers`);
+  return `${readme.slice(0, start + tableStart.length)}\n\n${renderEntryTable(catalog)}\n\n${readme.slice(end)}`;
+}
+
+const generated = (catalog: Catalog, root: string) => [
   ['catalog/index.json', renderCatalog(catalog)],
   ['llms.txt', renderLlmsText(catalog)],
+  ['README.md', renderReadme(readFileSync(repoFile(root, 'README.md'), 'utf8'), catalog)],
 ] as const;
 
 export function checkCatalog(root = repositoryRoot): void {
-  for (const [path, content] of generated(loadCatalog(root))) {
+  for (const [path, content] of generated(loadCatalog(root), root)) {
     let current;
     try {
       current = readFileSync(repoFile(root, path), 'utf8');
@@ -405,7 +437,7 @@ export function checkCatalog(root = repositoryRoot): void {
 }
 
 export function writeCatalog(root = repositoryRoot): void {
-  for (const [path, content] of generated(loadCatalog(root))) {
+  for (const [path, content] of generated(loadCatalog(root), root)) {
     writeFileSync(safePath(root, join(root, path), true), content);
   }
 }

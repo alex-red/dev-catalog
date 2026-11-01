@@ -18,8 +18,10 @@
     "validate": "bun scripts/validate.ts",
     "catalog:build": "bun scripts/catalog.ts --write",
     "catalog:check": "bun scripts/catalog.ts --check",
+    "dev": "bun scripts/dev.ts",
+    "site:build": "vite build",
     "lint": "markdownlint-cli2",
-    "typecheck": "tsc --noEmit",
+    "typecheck": "tsc --noEmit && tsc --noEmit -p site",
     "test": "bun test",
     "plugin:validate": "claude plugin validate . --strict",
     "check": "bun run typecheck && bun run lint && bun run validate && bun run catalog:check && bun test"
@@ -30,6 +32,7 @@
     "markdownlint-cli2": "0.23.3",
     "mdast-util-from-markdown": "2.1.0",
     "typescript": "7.0.2",
+    "vite": "8.3.4",
     "yaml": "2.9.1"
   }
 }

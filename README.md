@@ -3,74 +3,88 @@
 [![Validate](https://github.com/alex-red/dev-catalog/actions/workflows/validate.yml/badge.svg)](https://github.com/alex-red/dev-catalog/actions/workflows/validate.yml)
 [![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 
-A curated, rated catalog of useful developer scripts, tools, and workflows. Every entry records what it is for, the platforms it runs on, what it needs installed, where it came from, and an honest curator rating.
+A small, curated catalog of developer scripts, tools, and workflows that are worth keeping around. Each entry says when to reach for it, which platforms it runs on, what it needs, where it came from, and how it rates against what you already have.
 
-**Status: experimental.** The catalog is new and small. See [the plan](PLAN.md).
+Browse it at [alex-red.github.io/dev-catalog](https://alex-red.github.io/dev-catalog/), or run `bun run dev` for a local copy that reloads as entries change.
 
-## Use it from an agent
+**Status: experimental.** The catalog is just getting started. See [the plan](PLAN.md) for what comes next.
 
-Point a coding agent at the catalog and say what you want:
+## What's in it
+
+- **Scripts** are small programs you copy onto your `PATH`. Anything that changes state does a dry run unless you pass a flag.
+- **Workflows** are step-by-step methods built from tools you already have.
+- **Tools** are third-party programs, linked to their upstream project with install commands for each platform.
+
+<!-- catalog:entries:start -->
+
+### Scripts
+
+| Entry | Use it when | Platforms | Score |
+| --- | --- | --- | --- |
+| [Prune merged local Git branches](entries/scripts/git-prune-merged/SCRIPT.md) | Local branches have piled up after merged pull requests and you want to clear the ones that are safely merged without guessing. | macos, linux | 8.6/10 |
+
+### Workflows
+
+| Entry | Use it when | Platforms | Score |
+| --- | --- | --- | --- |
+| [Find a regression with git bisect run](entries/workflows/git-bisect-regression/WORKFLOW.md) | Something worked in an older version and fails now, and reading recent diffs has not shown the cause. | any | 9.1/10 |
+
+### Tools
+
+| Entry | Use it when | Platforms | Score |
+| --- | --- | --- | --- |
+| [ripgrep (rg) recursive search](https://github.com/BurntSushi/ripgrep) | You search codebases from the terminal and grep -r is slow or noisy with build output, vendored dependencies, or ignored files. | macos, linux, windows | 9.3/10 |
+
+<!-- catalog:entries:end -->
+
+Scores are out of 10, from a curator's review against the built-in or usual alternative. They are judgments, not benchmarks; see [how entries are rated](docs/ratings.md).
+
+## Get a script
+
+Read the script first; each one has a `SCRIPT.md` with usage and limitations. Then download it onto your `PATH`:
+
+```sh
+curl -fsSL https://raw.githubusercontent.com/alex-red/dev-catalog/main/entries/scripts/git-prune-merged/git-prune-merged \
+  -o ~/.local/bin/git-prune-merged
+chmod +x ~/.local/bin/git-prune-merged
+```
+
+Or clone the repository and install from it:
+
+```sh
+git clone https://github.com/alex-red/dev-catalog.git
+install -m 0755 dev-catalog/entries/scripts/git-prune-merged/git-prune-merged ~/.local/bin/
+```
+
+Tools list their install commands in their `entry.yaml`. Workflows need nothing installed.
+
+## Ask an agent
+
+A coding agent can search the catalog for you:
 
 > Find something in the Dev Catalog to clean up my merged Git branches.
->
-> What does the Dev Catalog have for tracking down a regression?
 
-Any agent can read the ranked index directly:
-
-```text
-https://raw.githubusercontent.com/alex-red/dev-catalog/main/llms.txt
-```
-
-For a guided flow, install the `dev-catalog` skill. It checks your platform and what you already have, recommends a few entries with their scores and sources, and installs only what you approve.
+Agents can read the ranked index at `https://raw.githubusercontent.com/alex-red/dev-catalog/main/llms.txt`. For a guided flow, install the `dev-catalog` skill, which checks your platform and what you already have, recommends a few entries, and installs only what you approve:
 
 ```sh
-# Claude Code
 claude plugin marketplace add alex-red/dev-catalog
 claude plugin install dev-catalog@dev-catalog
-
-# Codex
-codex plugin marketplace add alex-red/dev-catalog
-codex plugin add dev-catalog@dev-catalog
 ```
 
-Or copy `skills/dev-catalog/` into `.claude/skills/` or `.agents/skills/`.
+Or copy `skills/dev-catalog/` into `.claude/skills/` or `.agents/skills/` for other agents.
 
-## Use it by hand
+## Contribute
 
-Browse [`entries/`](entries/), or read [llms.txt](llms.txt) for the ranked list. To install a script, copy it onto your `PATH`:
-
-```sh
-install -m 0755 entries/scripts/git-prune-merged/git-prune-merged ~/.local/bin/
-```
-
-## What an entry contains
-
-Each entry lives in `entries/<type>s/<id>/` with an `entry.yaml` and, unless it is linked, the files to use:
-
-| Type | What it is | Contents |
-| --- | --- | --- |
-| `script` | A small program you copy onto your `PATH` | `SCRIPT.md` plus the script files |
-| `workflow` | A procedure built from existing tools | `WORKFLOW.md` |
-| `tool` | A third-party program you install | Always linked: `entry.yaml` only, with install steps per platform |
-
-Every entry has:
-
-- **Rating:** the [dev-v1 rubric](docs/ratings.md) grades practical value, dependability, ease of use, safety and control, adoption cost, portability, and upkeep from 0 to 4, giving a weighted score out of 10. A missing grade means no score, and blockers outrank scores.
-- **Evidence:** `reviewed` (read and judged), `used` (used in real work), or `tested` (automated checks in this repository).
-- **Source:** `original`, `adapted` (with `inspiredBy` links), `vendored` (a pinned, unmodified upstream copy with its license), or `linked` (upstream only, pinned to a revision).
-- **Platforms, requirements, tags, `useWhen`, `overlap`, and `related` entries**, for matching and comparison.
-
-Optional collections (`collections/<id>.yaml`) group entries that work well together.
-
-## Develop
+Suggest an entry with an [entry proposal](https://github.com/alex-red/dev-catalog/issues/new?template=entry-proposal.yml), or add one directly by following [CONTRIBUTING.md](CONTRIBUTING.md). To work on the catalog:
 
 ```sh
 bun install
 bun run check           # typecheck, lint, schema validation, generated-file freshness, tests
-bun run catalog:build   # regenerate catalog/index.json and llms.txt after changing entries
-bun run plugin:validate # needs the Claude Code CLI
+bun run catalog:build   # regenerate the entry table above, catalog/index.json, and llms.txt
 ```
 
-Read [CONTRIBUTING.md](CONTRIBUTING.md) before adding an entry, and [decisions](docs/decisions.md) for why the catalog is shaped this way.
+[Decisions](docs/decisions.md) explains why the catalog is shaped the way it is.
 
-Original and adapted content is MIT licensed. Vendored entries keep their upstream licenses, shipped alongside them.
+## License
+
+Original content is MIT licensed. Vendored entries keep their upstream licenses, shipped alongside them, and linked tools are licensed by their own projects.

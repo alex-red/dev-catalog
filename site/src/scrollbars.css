@@ -1,0 +1,94 @@
+/* Native scrolling, with a shared workbench treatment for every scroll surface. */
+:root {
+  --scrollbar-thumb: #637287;
+  --scrollbar-thumb-hover: #91a4bc;
+  --scrollbar-thumb-active: var(--accent);
+  --scrollbar-track: #19212c;
+  --scrollbar-size: 14px;
+}
+
+@media (prefers-color-scheme: light) {
+  :root {
+    --scrollbar-thumb: #748297;
+    --scrollbar-thumb-hover: #53647c;
+    --scrollbar-track: #e9eef5;
+  }
+}
+
+/* Reserve the vertical rail before filtering or loading changes content height. */
+:where(.tree-pane, .viewer-pane, .combo-list, .command-results, .bulk-body, .bulk-code, .llm-copy-text) {
+  scrollbar-gutter: stable;
+  overscroll-behavior-y: contain;
+}
+
+:where(.file-tabs-list, .code-snippet-text) {
+  overscroll-behavior-x: contain;
+  padding-block: 3px;
+}
+
+.code-snippet-text:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+  border-radius: 2px;
+}
+
+/* Leave touch-only and forced-color environments with their native controls. */
+@media (any-pointer: fine) and (forced-colors: none) {
+  /* Standards-based treatment for engines without the detailed scrollbar API. */
+  :root {
+    scrollbar-color: var(--scrollbar-thumb) var(--scrollbar-track);
+  }
+
+  :where(.tree-pane, .viewer-pane, .combo-list, .command-results, .bulk-body, .bulk-code, .llm-copy-text):focus-within {
+    scrollbar-color: var(--scrollbar-thumb-hover) var(--scrollbar-track);
+  }
+
+  @supports selector(::-webkit-scrollbar) {
+    /* Non-auto standard colors override the detailed styling in Chromium. */
+    * {
+      scrollbar-color: auto;
+      scrollbar-width: auto;
+    }
+
+    :where(.tree-pane, .viewer-pane, .combo-list, .command-results, .bulk-body, .bulk-code, .llm-copy-text):focus-within {
+      scrollbar-color: auto;
+    }
+
+    *::-webkit-scrollbar {
+      width: var(--scrollbar-size);
+      height: var(--scrollbar-size);
+      background: transparent;
+    }
+
+    *::-webkit-scrollbar-track {
+      background: transparent;
+      border-radius: 999px;
+      margin-block: 5px;
+    }
+
+    *::-webkit-scrollbar-track:horizontal { margin: 0 5px; }
+    *::-webkit-scrollbar-track:hover { background: var(--scrollbar-track); }
+
+    *::-webkit-scrollbar-thumb {
+      min-height: 44px;
+      min-width: 44px;
+      border: 4px solid transparent;
+      border-radius: 999px;
+      background: var(--scrollbar-thumb);
+      background-clip: padding-box;
+    }
+
+    /* Widen the visible grip inside a fixed rail: content never shifts on hover. */
+    *::-webkit-scrollbar-thumb:hover {
+      border-width: 2px;
+      background-color: var(--scrollbar-thumb-hover);
+    }
+
+    *::-webkit-scrollbar-thumb:active {
+      border-width: 2px;
+      background-color: var(--scrollbar-thumb-active);
+    }
+
+    *::-webkit-scrollbar-corner { background: transparent; }
+  }
+}

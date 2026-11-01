@@ -8,7 +8,7 @@ import { stringify } from 'yaml';
 import { compareRatings, type Rating } from '../catalog/ratings.ts';
 import { checkCatalog, entryScore, loadCatalog, readYaml, repositoryRoot, writeCatalog } from '../scripts/library.ts';
 
-const sandboxPaths = ['entries', 'skills', 'collections', 'catalog', 'docs', 'tests', 'package.json', 'llms.txt'];
+const sandboxPaths = ['entries', 'skills', 'collections', 'catalog', 'docs', 'tests', 'package.json', 'llms.txt', 'README.md'];
 
 function sandbox(context: TestContext): string {
   const root = mkdtempSync(join(tmpdir(), 'dev-catalog-test-'));
@@ -114,4 +114,10 @@ test('stale generated files are reported', (context) => {
   checkCatalog(root);
   editEntry(root, 'entries/tools/ripgrep', (entry) => { entry.summary = 'Changed.'; });
   assert.throws(() => checkCatalog(root), /stale/);
+});
+
+test('the README needs its entry table markers', (context) => {
+  const root = sandbox(context);
+  writeFileSync(join(root, 'README.md'), '# Dev Catalog\n');
+  assert.throws(() => checkCatalog(root), /catalog:entries:start/);
 });

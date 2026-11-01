@@ -25,3 +25,7 @@ Any script that changes state defaults to showing what it would do, and makes th
 ## 6. The plugin ships only a discovery skill
 
 As in Agentic Catalog, the plugin installs one skill that reads the published index and installs what the user approves. It ships no hooks, executables, or MCP servers.
+
+## 7. A browsable site shared with Agentic Catalog
+
+The site under `site/` is a port of Agentic Catalog's Vite site, so both catalogs look and work the same. It reads `catalog/index.json` and the entry files directly, with no separate data build. Host filters become platform filters, install tabs are per platform, and the bulk installer is left out because dev entries install one at a time with approval.
