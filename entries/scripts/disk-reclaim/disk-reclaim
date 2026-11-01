@@ -1,0 +1,704 @@
+#!/usr/bin/env bash
+# disk-reclaim — find reclaimable disk space on macOS and Linux, then clean up what you pick
+#
+# usage: disk-reclaim [options]
+#   -r, --root DIR     project root to scan for build artifacts (repeatable;
+#                      default: whichever of ~/code ~/src ~/projects ~/dev ~/Developer ~/work ~/repos exist)
+#   -m, --min-mb N     hide items smaller than N MB (default 100)
+#   -d, --days N       inactivity threshold in days for projects/files (default 60)
+#   -k, --keep-hours N cache cleaners keep anything created/changed in the last N hours
+#                      (default 24; 0 clears caches completely)
+#   -j, --jobs N       parallel du workers (default: CPU count)
+#   -T, --no-temp      skip /tmp, /var/tmp and $TMPDIR (their scan is slow when they are large)
+#   -s, --select SPEC  pick items without prompting, e.g. "safe", "1-5,9", "all,^3"
+#   -n, --dry-run      show the commands that would run, change nothing
+#   -l, --list         scan and list only
+#   -y, --yes          skip the confirmation prompt
+#
+# Risk levels:
+#   safe     caches and dead copies — regenerate on their own, nothing to redo
+#   rebuild  deps and build output — reinstall/rebuild next time you use that project
+#   review   may hold things you care about — look before picking
+#
+# Sizes marked ≤ are upper bounds (the tool may free less); caches are sized by what
+# would actually be deleted (files older than --keep-hours). Cloned (APFS, btrfs) and
+# hard-linked files share blocks, so the real freed space (measured with df at the end)
+# can be lower than listed.
+#
+# Extra paths: add "risk<TAB>path[<TAB>note]" lines to ~/.config/disk-reclaim/paths
+set -u
+
+OS=$(uname -s)
+case "$OS" in
+  Darwin|Linux) ;;
+  *) echo "unsupported system: $OS (macOS and Linux only)" >&2; exit 2 ;;
+esac
+
+MIN_MB=100
+DAYS=60
+KEEP_HOURS=24
+JOBS=$(getconf _NPROCESSORS_ONLN 2>/dev/null || echo 8)
+SELECT="" DRY=0 LIST=0 YES=0 TEMP=1
+ROOTS=()
+
+while [ $# -gt 0 ]; do
+  case "$1" in
+    -r|--root)    [ -d "$2" ] || { echo "no such dir: $2" >&2; exit 2; }; ROOTS+=("$(cd "$2" && pwd)"); shift ;;
+    -m|--min-mb)  MIN_MB=$2; shift ;;
+    -d|--days)    DAYS=$2; shift ;;
+    -k|--keep-hours) KEEP_HOURS=$2; shift ;;
+    -j|--jobs)    JOBS=$2; shift ;;
+    -s|--select)  SELECT=$2; shift ;;
+    -T|--no-temp) TEMP=0 ;;
+    -n|--dry-run) DRY=1 ;;
+    -l|--list)    LIST=1 ;;
+    -y|--yes)     YES=1 ;;
+    -h|--help)    sed -n '2,/^set -u/p' "$0" | sed '$d; s/^# \{0,1\}//'; exit 0 ;;
+    *) echo "unknown option: $1 (see --help)" >&2; exit 2 ;;
+  esac
+  shift
+done
+
+if [ ${#ROOTS[@]} -eq 0 ]; then
+  for d in "$HOME"/code "$HOME"/src "$HOME"/projects "$HOME"/dev "$HOME"/Developer "$HOME"/work "$HOME"/repos; do
+    [ -d "$d" ] && ROOTS+=("$d")
+  done
+fi
+
+if [ -t 1 ]; then
+  B=$'\e[1m' D=$'\e[2m' RED=$'\e[31m' GRN=$'\e[32m' YEL=$'\e[33m' CYN=$'\e[36m' N=$'\e[0m'
+else
+  B='' D='' RED='' GRN='' YEL='' CYN='' N=''
+fi
+
+TMP=$(mktemp -d "${TMPDIR:-/tmp}/disk-reclaim.XXXXXX") || exit 1
+trap 'rm -rf "$TMP"' EXIT
+US=$'\x1f'
+NOW=$(date +%s)
+
+# Platform differences: where caches and temp dirs live, and BSD vs GNU stat.
+# STAT_BLOCKS prints 512-byte blocks per file on both; it is word-split on purpose.
+if [ "$OS" = Darwin ]; then
+  L=$HOME/Library
+  C=$L/Caches
+  XC=$HOME/.cache
+  SYS_TMP=/private/tmp VAR_TMP=/private/var/tmp
+  TRASH=$HOME/.Trash
+  ANDROID_SDK=${ANDROID_HOME:-${ANDROID_SDK_ROOT:-$L/Android/sdk}}
+  CHROME="$L/Application Support/Google/Chrome"
+  STAT_BLOCKS='stat -f %b'
+  newest_mtime() { stat -f %m "$@" 2>/dev/null | sort -n | tail -n1; }
+else
+  L='' C=''
+  XC=${XDG_CACHE_HOME:-$HOME/.cache}
+  SYS_TMP=/tmp VAR_TMP=/var/tmp
+  TRASH=${XDG_DATA_HOME:-$HOME/.local/share}/Trash
+  ANDROID_SDK=${ANDROID_HOME:-${ANDROID_SDK_ROOT:-$HOME/Android/Sdk}}
+  CHROME=${XDG_CONFIG_HOME:-$HOME/.config}/google-chrome
+  STAT_BLOCKS='stat -c %b'
+  newest_mtime() { stat -c %Y "$@" 2>/dev/null | sort -n | tail -n1; }
+fi
+
+###############################################################################
+# helpers
+###############################################################################
+
+has()   { command -v "$1" >/dev/null 2>&1; }
+q()     { printf '%q' "$1"; }
+tilde() { case "$1" in "$HOME"/*) printf '~%s' "${1#"$HOME"}" ;; *) printf '%s' "$1" ;; esac; }
+
+# add RISK CATEGORY LABEL SIZESPEC ACTION [NOTE]
+# SIZESPEC is a path to du, or "=KB" for a precomputed size. A NOTE starting with ≤ marks an upper bound.
+add() {
+  case "$4" in =*) ;; *) [ -e "$4" ] || return 0 ;; esac
+  printf '%s\n' "$1$US$2$US$3$US$4$US$5$US${6:-}" >> "$ITEMS"
+}
+
+# Refuses anything outside $HOME, with ../ segments, or directly in $HOME (e.g. ~/Library, ~/code)
+guard() {
+  local rel
+  case "$1" in "$HOME"/*) ;; *) echo "refusing (outside \$HOME): $1" >&2; return 1 ;; esac
+  rel=${1#"$HOME"/}
+  case "/$rel/" in */../*|*/./*) echo "refusing (relative segment): $1" >&2; return 1 ;; esac
+  case "$rel" in */?*) ;; *) echo "refusing (too shallow): $1" >&2; return 1 ;; esac
+}
+
+# Make read-only directories under $1 writable (files untouched; find doesn't follow symlinks)
+unlock_dirs() { find "$1" -type d ! -perm -u+w -exec chmod u+w {} + 2>/dev/null; }
+
+safe_rm() {
+  local p
+  for p in "$@"; do
+    [ -e "$p" ] || [ -L "$p" ] || continue
+    guard "$p" || return 1
+    rm -rf -- "$p" 2>/dev/null && continue
+    # Some caches (dotslash, Go modules, Bazel) make extracted dirs read-only on purpose.
+    # Unlocking this item's dirs is enough to delete its files; retry once.
+    unlock_dirs "$p"
+    rm -rf -- "$p" || return 1
+  done
+}
+
+# Cache cleaners below keep anything created/changed in the last KEEP_HOURS. Age is by
+# ctime, not mtime: package caches unpack files with their original (often 1985) mtimes,
+# while ctime records when the file actually landed on this disk.
+recent() { [ -n "$(find "$1" -cmin -$((KEEP_HOURS * 60)) -print -quit 2>/dev/null)" ]; }
+
+# Per entry: remove each top-level entry of DIR unless anything inside it is recent
+prune_in() {
+  local f
+  [ -d "$1" ] || return 0
+  for f in "$1"/* "$1"/.[!.]* "$1"/..?*; do
+    [ -e "$f" ] || [ -L "$f" ] || continue
+    [ "$KEEP_HOURS" -gt 0 ] && recent "$f" && continue
+    safe_rm "$f" || return 1
+  done
+}
+
+# Per file: for content-addressed caches whose files stand alone
+prune_files() {
+  [ -d "$1" ] || return 0
+  # DIR itself is kept, so a known cache root directly in $HOME is fine here
+  case "$1" in "$HOME/.pnpm-store") ;; *) guard "$1" || return 1 ;; esac
+  _prune_files "$1" 2>/dev/null && return 0
+  unlock_dirs "$1"   # kept files stay read-only (pnpm relies on that)
+  _prune_files "$1"
+}
+_prune_files() {
+  if [ "$KEEP_HOURS" -gt 0 ]; then
+    find "$1" -type f -cmin +$((KEEP_HOURS * 60)) -delete
+  else
+    find "$1" -type f -delete
+  fi && find "$1" -mindepth 1 -type d -empty -delete
+}
+
+# All-or-nothing caches: run CMD only if nothing in DIR is recent (exit 3 = skipped)
+if_idle() {
+  if [ "$KEEP_HOURS" -gt 0 ] && recent "$1"; then
+    echo "skipped: $(tilde "$1") has entries from the last ${KEEP_HOURS}h"; return 3
+  fi
+  eval "$2"
+}
+
+# Empty a directory but keep it (for non-cache dirs like Trash, where age doesn't matter)
+safe_rm_in() {
+  local f
+  [ -d "$1" ] || return 0
+  for f in "$1"/* "$1"/.[!.]* "$1"/..?*; do
+    [ -e "$f" ] || [ -L "$f" ] || continue
+    safe_rm "$f" || return 1
+  done
+}
+
+# Per-user temp dir on macOS ($TMPDIR, /var/folders/…/T). Outside $HOME, so it gets its own
+# guarded remover. Linux has none; its per-user leftovers sit in /tmp, handled below.
+USER_TMP=""
+if [ "$OS" = Darwin ]; then
+  USER_TMP=$(getconf DARWIN_USER_TEMP_DIR 2>/dev/null); USER_TMP=${USER_TMP%/}
+  case "$USER_TMP" in /var/folders/*|/private/var/folders/*) ;; *) USER_TMP="" ;; esac
+fi
+
+tmp_rm() {
+  local p
+  for p in "$@"; do
+    [ -e "$p" ] || [ -L "$p" ] || continue
+    case "$p" in "$USER_TMP"/?*) ;; *) echo "refusing (outside user temp): $p" >&2; return 1 ;; esac
+    case "/$p/" in */../*) echo "refusing (relative segment): $p" >&2; return 1 ;; esac
+    rm -rf -- "$p" || return 1
+  done
+}
+
+# Instruments/xctrace leave instruments*.ktrace buffers behind when a session is killed
+clear_ktrace() {
+  local f
+  for f in "$USER_TMP"/instruments*.ktrace; do
+    [ -e "$f" ] || continue
+    lsof -- "$f" >/dev/null 2>&1 && continue   # still open: a recording is in progress
+    tmp_rm "$f" || return 1
+  done
+}
+
+# Temp dirs: /tmp (→ /private/tmp on macOS), /var/tmp (survives reboots) and $TMPDIR, where
+# go-build*, Go test dirs, bunx installs and Node's compile cache pile up. Other users, daemons
+# and running apps live here too, so only top-level entries you own outright qualify — no
+# sockets, no session dirs, nothing touched recently. The 1h floor protects live sessions
+# even with --keep-hours 0.
+MY_UID=$(id -u)
+SYS_TMP_MIN=$(( (KEEP_HOURS > 0 ? KEEP_HOURS : 1) * 60 ))
+
+# Print (NUL-separated) the top-level entries of DIR that are safe to remove
+sys_tmp_entries() {
+  local f
+  for f in "$1"/* "$1"/.[!.]* "$1"/..?*; do
+    [ -e "$f" ] && [ ! -L "$f" ] && [ ! -S "$f" ] && [ -O "$f" ] || continue
+    case "${f##*/}" in
+      com.apple.*|tmux-*|launchd-*|.X*-unix|.ICE-unix|.font-unix|.Test-unix) continue ;;
+      systemd-private-*|snap-private-tmp|disk-reclaim.*) continue ;;
+    esac
+    # In $TMPDIR: skip app scratch space and items listed separately
+    if [ "$1" = "$USER_TMP" ]; then
+      case "${f##*/}" in TemporaryItems|pytest-of-*|instruments*.ktrace) continue ;; esac
+    fi
+    [ -z "$(find "$f" \( ! -user "$MY_UID" -o -cmin -"$SYS_TMP_MIN" -o -type s \) -print -quit 2>/dev/null)" ] || continue
+    printf '%s\0' "$f"
+  done
+}
+
+sys_tmp_rm() {
+  local base=""
+  case "$1" in
+    "$SYS_TMP"/?*) base=$SYS_TMP ;;
+    "$VAR_TMP"/?*) base=$VAR_TMP ;;
+    *) [ -n "$USER_TMP" ] && case "$1" in "$USER_TMP"/?*) base=$USER_TMP ;; esac ;;
+  esac
+  [ -n "$base" ] || { echo "refusing (outside temp dirs): $1" >&2; return 1; }
+  case "${1#"$base"/}" in */*|.|..) echo "refusing (not top-level): $1" >&2; return 1 ;; esac
+  [ -O "$1" ] && [ ! -L "$1" ] || { echo "refusing (not yours): $1" >&2; return 1; }
+  rm -rf -- "$1"
+}
+
+clear_sys_tmp() {
+  local f
+  sys_tmp_entries "$1" | while IFS= read -r -d '' f; do sys_tmp_rm "$f" || exit 1; done
+}
+
+clear_pytest() {
+  if pgrep -f 'pytest' >/dev/null; then echo "skipped: pytest is running"; return 3; fi
+  tmp_rm "$USER_TMP"/pytest-of-*
+}
+
+git_root() {
+  local d=$1
+  while [ -n "$d" ] && [ "$d" != "$HOME" ]; do
+    [ -e "$d/.git" ] && { printf '%s' "$d"; return; }
+    d=${d%/*}
+  done
+}
+
+# Days since the last sign of work in a project: manifests, lockfiles, git index
+idle_days() {
+  local p=$1 g t
+  g=$(git_root "$p")
+  t=$(newest_mtime "$p" "$p"/package.json "$p"/bun.lock "$p"/bun.lockb "$p"/package-lock.json \
+      "$p"/pnpm-lock.yaml "$p"/yarn.lock "$p"/Cargo.toml "$p"/Cargo.lock "$p"/Podfile.lock \
+      "$p"/pyproject.toml "$p"/uv.lock ${g:+"$g/.git/index" "$g/.git/HEAD"})
+  echo $(( (NOW - ${t:-0}) / 86400 ))
+}
+
+###############################################################################
+# scanners — each appends candidates to $ITEMS; sizing happens later, in parallel
+###############################################################################
+
+scan_global() {
+  local a d n v vd def kb active cfg risk path note
+  local -a cdirs=()
+
+  # --- language / package-manager caches
+  # go-build entries are independent files (go trims it by age itself)
+  d=${GOCACHE:-}
+  [ -z "$d" ] && has go && d=$(go env GOCACHE 2>/dev/null)
+  [ -n "$d" ] || if [ "$OS" = Darwin ]; then d=$C/go-build; else d=$XC/go-build; fi
+  add safe go "Go build cache" "$d" "prune_files $(q "$d")"
+
+  # Extracted modules can't be partially deleted, so it's all or nothing
+  d=${GOMODCACHE:-${GOPATH:-$HOME/go}/pkg/mod}
+  if has go; then a='go clean -modcache'; else a="safe_rm_in $(q "$d")"; fi
+  add safe go "Go module cache" "$d" "if_idle $(q "$d") $(q "$a")" "re-downloads on next build"
+
+  d=$HOME/.bun/install/cache
+  add safe js "bun install cache" "$d" "prune_in $(q "$d")" "installs are clones or hard links of this cache"
+
+  d=$HOME/.npm/_cacache
+  a="prune_files $(q "$d")"; has npm && a+=" && npm cache verify"
+  add safe js "npm cache" "$d" "$a"
+  add safe js "npx cache" "$HOME/.npm/_npx" "prune_in $(q "$HOME/.npm/_npx")"
+
+  for d in ${L:+"$L/pnpm/store"} "${XDG_DATA_HOME:-$HOME/.local/share}/pnpm/store" "$HOME/.pnpm-store"; do
+    add safe js "pnpm store $(tilde "$d")" "$d" "prune_files $(q "$d")" "files hard-linked into node_modules stay on disk"
+  done
+  add safe js "yarn berry cache" "$HOME/.yarn/berry/cache" "prune_in $(q "$HOME/.yarn/berry/cache")"
+
+  add safe jvm "Gradle caches" "$HOME/.gradle/caches" "prune_in $(q "$HOME/.gradle/caches")" "stop daemons first: gradle --stop"
+  add safe jvm "Gradle wrapper distributions" "$HOME/.gradle/wrapper/dists" "prune_in $(q "$HOME/.gradle/wrapper/dists")"
+  add safe jvm "Maven repository" "$HOME/.m2/repository" "prune_files $(q "$HOME/.m2/repository")"
+
+  add safe rust "cargo registry/cache" "$HOME/.cargo/registry/cache" "prune_files $(q "$HOME/.cargo/registry/cache")"
+  d=$HOME/.cargo/registry/src  # one dir per registry index, crates inside
+  add safe rust "cargo registry/src" "$d" "for r in $(q "$d")/*/; do prune_in \"\${r%/}\" || exit 1; done"
+  add safe rust "cargo git/checkouts" "$HOME/.cargo/git/checkouts" "prune_in $(q "$HOME/.cargo/git/checkouts")"
+  if has rustup && [ -d "$HOME/.rustup/toolchains" ]; then
+    def=$(rustup default 2>/dev/null | awk '{print $1}')
+    for d in "$HOME/.rustup/toolchains"/*/; do
+      d=${d%/}; n=${d##*/}
+      [ "$n" = "$def" ] && continue
+      add review rust "Rust toolchain $n (not default)" "$d" "rustup toolchain uninstall $(q "$n")"
+    done
+  fi
+
+  # --- superseded Node versions: keep the newest patch of each major, and the active one
+  active=$(node -v 2>/dev/null)
+  for vd in "$HOME/.nvm/versions/node" "$HOME/.local/share/nvm" "$HOME/.local/share/fnm/node-versions"; do
+    [ -d "$vd" ] || continue
+    for v in "$vd"/v[0-9]*; do [ -d "$v" ] && printf '%s\n' "${v##*/v}"; done | sort -t. -k1,1n -k2,2n -k3,3n |
+      awk -F. '{ v[NR]=$0; m[NR]=$1 } END { for (i=1; i<NR; i++) if (m[i]==m[i+1]) print "v" v[i] }' |
+      while read -r v; do
+        [ "$v" = "$active" ] && continue
+        add review node "Node $v in $(tilde "$vd") (newer ${v%%.*}.x installed)" "$vd/$v" "safe_rm $(q "$vd/$v")"
+      done
+  done
+
+  # --- Xcode / simulators (macOS) / Android
+  if [ "$OS" = Darwin ]; then
+    add safe xcode "Xcode DerivedData" "$L/Developer/Xcode/DerivedData" "prune_in $(q "$L/Developer/Xcode/DerivedData")"
+    add review xcode "Xcode Archives" "$L/Developer/Xcode/Archives" "safe_rm_in $(q "$L/Developer/Xcode/Archives")" \
+      "needed to symbolicate or re-export shipped builds"
+    for d in "$L/Developer/Xcode/"*DeviceSupport; do
+      add rebuild xcode "Xcode ${d##*/}" "$d" "safe_rm_in $(q "$d")" "re-created when a device connects"
+    done
+    add safe xcode "Simulator caches" "$L/Developer/CoreSimulator/Caches" "prune_in $(q "$L/Developer/CoreSimulator/Caches")"
+    has xcrun && add review xcode "Simulators for removed runtimes" "$L/Developer/CoreSimulator/Devices" \
+      'xcrun simctl delete unavailable' "≤ whole Devices dir; 'xcrun simctl erase all' frees more"
+  fi
+
+  for d in "$HOME/.android/avd/"*.avd; do
+    [ -d "$d" ] || continue
+    n=${d##*/}
+    add review android "Android emulator ${n%.avd}" "$d" "safe_rm $(q "$d") $(q "${d%.avd}.ini")" \
+      "recreate in Android Studio → Device Manager"
+  done
+  for d in "$ANDROID_SDK/system-images"/*/*/*/; do
+    [ -d "$d" ] || continue
+    d=${d%/}
+    add review android "Android image ${d#"$ANDROID_SDK/system-images/"}" "$d" "safe_rm $(q "$d")" \
+      "emulators using it stop working"
+  done
+
+  # --- Docker / OrbStack: sizes come from the daemon, so they match what prune removes
+  if has docker && docker info >/dev/null 2>&1; then
+    local dfo cont imgs bc vols dang tagged flt="" ub="" vnames vcount
+    dfo=$(docker system df --format '{{.Type}}|{{.Reclaimable}}' 2>/dev/null)
+    dsize() { awk '{ v = $1; u = v; sub(/^[0-9.]+/, "", u); sub(/[A-Za-z]+$/, "", v)
+                     m = (u == "B") ? 1/1024 : (u == "kB") ? 1000/1024 : (u == "MB") ? 1e6/1024 : (u == "GB") ? 1e9/1024 : (u == "TB") ? 1e12/1024 : 0
+                     s += v * m } END { printf "%d", s }'; }
+    dfrec() { printf '%s\n' "$dfo" | awk -F'|' -v t="$1" '$1 == t { split($2, a, " "); print a[1] }' | dsize; }
+    cont=$(dfrec Containers); imgs=$(dfrec Images); bc=$(dfrec "Build Cache"); vols=$(dfrec "Local Volumes")
+    dang=$(docker image ls -f dangling=true --format '{{.Size}}' 2>/dev/null | dsize)
+    tagged=$(( imgs > dang ? imgs - dang : 0 ))
+    if [ "$KEEP_HOURS" -gt 0 ]; then flt=" --filter until=${KEEP_HOURS}h"; ub="≤ "; fi
+
+    add safe docker "Docker: stopped containers" "=$cont" "docker container prune -f$flt" "${ub:+≤ }"
+    add safe docker "Docker: dangling (untagged) images" "=$dang" "docker image prune -f$flt" "${ub:+≤ shared layers may be counted twice}"
+    add safe docker "Docker: build cache" "=$bc" "docker builder prune -f$flt" "${ub:+≤ }"
+    add review docker "Docker: unused tagged images" "=$tagged" "docker image prune -af$flt" \
+      "≤ re-pulled or rebuilt on next use"
+    vcount=$(docker volume ls -qf dangling=true 2>/dev/null | wc -l | tr -d ' ')
+    vnames=$(docker volume ls -qf dangling=true 2>/dev/null | cut -c1-24 | head -n 4 | paste -sd, - | sed 's/,/, /g')
+    [ "$vcount" -gt 4 ] && vnames+=", …"
+    add review docker "Docker: $vcount unused volumes" "=$vols" "docker volume prune -af" \
+      "DELETES DATA: ${vnames:-none}"
+  fi
+
+  has brew && add safe brew "Homebrew downloads & old versions" "$(brew --cache 2>/dev/null)" "brew cleanup --prune=$( [ "$KEEP_HOURS" -gt 0 ] && echo $(( (KEEP_HOURS + 23) / 24 )) || echo all )"
+
+  # --- generic app caches (~/Library/Caches on macOS; ~/.cache on both)
+  if [ "$OS" = Darwin ]; then
+    for d in "$C"/*/; do
+      d=${d%/}; n=${d##*/}
+      case "$n" in com.apple.*|go-build|Homebrew) continue ;; esac
+      add safe cache "App cache: $n" "$d" "prune_in $(q "$d")" "quit the app first"
+    done
+  fi
+  for d in "$XC"/*/; do
+    d=${d%/}; n=${d##*/}
+    case "$n" in
+      go-build|Homebrew) continue ;;  # listed above with their own cleaners
+      huggingface|lm-studio|torch|whisper|ollama)
+        add review cache "$(tilde "$d") (downloaded models)" "$d" "prune_in $(q "$d")" "slow to re-download" ;;
+      *) add safe cache "$(tilde "$d")" "$d" "prune_in $(q "$d")" "quit the app first" ;;
+    esac
+  done
+  [ "$OS" = Darwin ] && add safe system "User logs" "$L/Logs" "prune_files $(q "$L/Logs")"
+
+  # --- per-user temp dir: profiler traces and test leftovers that nothing cleans up
+  if [ "$TEMP" -eq 1 ] && [ -n "$USER_TMP" ] && [ -d "$USER_TMP" ]; then
+    kb=$(find "$USER_TMP" -maxdepth 1 -name 'instruments*.ktrace' -exec du -sk {} + 2>/dev/null |
+         awk '{ s += $1 } END { print s + 0 }')
+    [ "${kb:-0}" -gt 0 ] && add safe system "Leftover Instruments/xctrace traces (\$TMPDIR)" "=$kb" "clear_ktrace" \
+      "≤ skips any trace still open"
+    for d in "$USER_TMP"/pytest-of-*; do
+      [ -d "$d" ] && add safe python "pytest temp dirs (\$TMPDIR/${d##*/})" "$d" "clear_pytest" "pytest recreates it"
+    done
+    kb=$(sys_tmp_entries "$USER_TMP" | xargs -0 -r du -sk 2>/dev/null | awk '{ s += $1 } END { print s + 0 }')
+    [ "${kb:-0}" -gt 0 ] && add safe system "Your old files in \$TMPDIR" "=$kb" "clear_sys_tmp $(q "$USER_TMP")" \
+      "only entries you own, untouched ${SYS_TMP_MIN}m+"
+  fi
+
+  # --- shared /tmp and /var/tmp: sized with the same rules clear_sys_tmp deletes by
+  if [ "$TEMP" -eq 1 ]; then
+    kb=$(sys_tmp_entries "$SYS_TMP" | xargs -0 -r du -sk 2>/dev/null | awk '{ s += $1 } END { print s + 0 }')
+    [ "${kb:-0}" -gt 0 ] && add safe system "Your old files in /tmp" "=$kb" "clear_sys_tmp $SYS_TMP" \
+      "only entries you own, untouched ${SYS_TMP_MIN}m+"
+    kb=$(sys_tmp_entries "$VAR_TMP" | xargs -0 -r du -sk 2>/dev/null | awk '{ s += $1 } END { print s + 0 }')
+    [ "${kb:-0}" -gt 0 ] && add review system "Your old files in /var/tmp" "=$kb" "clear_sys_tmp $VAR_TMP" \
+      "survives reboots; some tools keep state here"
+  fi
+
+  # --- things that may hold data
+  if [ "$OS" = Darwin ]; then
+    add review system "Trash" "$TRASH" "safe_rm_in $(q "$TRASH")" "permanent"
+    add review system "iPhone/iPad backups" "$L/Application Support/MobileSync/Backup" \
+      "safe_rm_in $(q "$L/Application Support/MobileSync/Backup")" "or Finder → device → Manage Backups"
+  else
+    # freedesktop.org trash: the files and the .trashinfo records that describe them
+    add review system "Trash" "$TRASH" "safe_rm_in $(q "$TRASH/files") && safe_rm_in $(q "$TRASH/info")" "permanent"
+  fi
+  d="$CHROME/OptGuideOnDeviceModel"
+  add review app "Chrome on-device AI model" "$d" "safe_rm_in $(q "$d")" "re-downloads unless On-device AI is off in Chrome settings"
+
+  for d in "$HOME/.codex/sessions" "$HOME/.codex/archived_sessions"; do [ -d "$d" ] && cdirs+=("$d"); done
+  if [ ${#cdirs[@]} -gt 0 ]; then
+    # shellcheck disable=SC2086 # STAT_BLOCKS is a command and its flags
+    kb=$(find "${cdirs[@]}" -type f -mtime +"$DAYS" -print0 2>/dev/null | xargs -0 -r $STAT_BLOCKS 2>/dev/null |
+         awk '{ s += $1 } END { print int(s / 2) }')
+    a="find"; for d in "${cdirs[@]}"; do a+=" $(q "$d")"; done
+    add review ai "Codex sessions older than ${DAYS}d" "=${kb:-0}" "$a -type f -mtime +$DAYS -delete"
+  fi
+
+  find "$HOME/Downloads" -type f -size +"${MIN_MB}"M -mtime +"$DAYS" -print0 2>/dev/null |
+    while IFS= read -r -d '' d; do
+      add review downloads "Download: ${d##*/}" "$d" "safe_rm $(q "$d")" "untouched ${DAYS}+ days"
+    done
+
+  cfg=${XDG_CONFIG_HOME:-$HOME/.config}/disk-reclaim/paths
+  if [ -f "$cfg" ]; then
+    # shellcheck disable=SC2094 # add appends to $ITEMS; $cfg only appears in the note text
+    while IFS=$'\t' read -r risk path note; do
+      case "$risk" in safe|rebuild|review) ;; *) continue ;; esac
+      path=${path/#\~/$HOME}
+      add "$risk" custom "$(tilde "$path")" "$path" "safe_rm $(q "$path")" "${note:-from $(tilde "$cfg")}"
+    done < "$cfg"
+  fi
+}
+
+classify_node_modules() {
+  local nm=$1 proj=$2 idle o label
+  label=$(tilde "$proj")
+  idle=$(idle_days "$proj")
+  if [ "$idle" -ge "$DAYS" ]; then
+    add rebuild js "$label — node_modules (${idle}d idle)" "$nm" "safe_rm $(q "$nm")" "reinstall when you return to it"
+    return
+  fi
+  # Active project: only offer dead copies left behind by a bun linker switch
+  for o in "$nm"/.old_modules-*; do
+    [ -d "$o" ] && add safe js "$label — leftover node_modules/${o##*/}" "$o" "safe_rm $(q "$o")" "dead copy from a bun linker switch"
+  done
+  if [ -d "$nm/.bun" ] && [ -z "$(find "$nm" -maxdepth 2 -type l -lname '*.bun/*' 2>/dev/null | head -n1)" ]; then
+    add safe js "$label — orphaned node_modules/.bun" "$nm/.bun" "safe_rm $(q "$nm/.bun")" "hoisted install; isolated store is unused"
+  fi
+}
+
+scan_projects() {
+  [ ${#ROOTS[@]} -gt 0 ] || return 0
+  local p proj name repo wt st br idle found=$TMP/found fd=fd
+  # fd is much faster; fall back to find if it's missing or fails. Debian and Ubuntu name it fdfind.
+  has fd || fd=fdfind
+  if ! { has "$fd" && "$fd" -HI0 -t d --prune --full-path -E .git \
+      '(/(node_modules|target|Pods|\.next|\.nuxt|\.output|\.turbo|\.svelte-kit|\.parcel-cache|\.angular|\.venv|venv)|/\.claude/worktrees)$' \
+      "${ROOTS[@]}" > "$found" 2>/dev/null; }; then
+    find "${ROOTS[@]}" \( -name .git -prune \) -o \( -type d \( -name node_modules -o -name target -o -name Pods \
+      -o -name .next -o -name .nuxt -o -name .output -o -name .turbo -o -name .svelte-kit -o -name .parcel-cache \
+      -o -name .angular -o -name .venv -o -name venv -o -path '*/.claude/worktrees' \) -prune -print0 \) \
+      > "$found" 2>/dev/null
+  fi
+  while IFS= read -r -d '' p; do
+    p=${p%/}; proj=${p%/*}; name=${p##*/}
+    case "$name" in
+      node_modules)
+        classify_node_modules "$p" "$proj" ;;
+      target)
+        [ -f "$p/CACHEDIR.TAG" ] &&
+          add rebuild rust "$(tilde "$proj") — cargo target/ ($(idle_days "$proj")d idle)" "$p" "safe_rm $(q "$p")" ;;
+      Pods)
+        [ -f "$proj/Podfile" ] &&
+          add rebuild ios "$(tilde "$proj") — Pods/ ($(idle_days "$proj")d idle)" "$p" "safe_rm $(q "$p")" "pod install to restore" ;;
+      .venv|venv)
+        if [ -f "$p/pyvenv.cfg" ]; then
+          idle=$(idle_days "$proj")
+          [ "$idle" -ge "$DAYS" ] && add rebuild python "$(tilde "$proj") — $name/ (${idle}d idle)" "$p" "safe_rm $(q "$p")"
+        fi ;;
+      worktrees)
+        repo=${p%/.claude/worktrees}
+        for wt in "$p"/*/; do
+          wt=${wt%/}
+          [ -e "$wt/.git" ] || continue
+          st=$(git -C "$wt" status --porcelain 2>/dev/null | head -n1)
+          br=$(git -C "$wt" branch --show-current 2>/dev/null)
+          if [ -n "$st" ]; then st="uncommitted changes — git will refuse"; else st="clean; branch ${br:-detached} is kept"; fi
+          add review git "$(tilde "$wt") — Claude worktree ($(idle_days "$wt")d idle)" "$wt" \
+            "git -C $(q "$repo") worktree remove $(q "$wt")" "$st"
+        done ;;
+      *)
+        [ -f "$proj/package.json" ] &&
+          add rebuild build "$(tilde "$proj") — $name/" "$p" "safe_rm $(q "$p")" "regenerated by the next build" ;;
+    esac
+  done < "$found"
+}
+
+###############################################################################
+# scan + size
+###############################################################################
+
+human() { awk '{ k=$1; if (k >= 1048576) printf "%.1fG\n", k/1048576; else printf "%.0fM\n", k/1024 }'; }
+# -P keeps each filesystem on one line, so the columns are the same on macOS and Linux
+free_kb() { df -Pk "$HOME" | awk 'NR==2 { print $4 }'; }
+
+START=$(date +%s)
+printf '%sScanning…%s %sroots: %s%s\n' "$B" "$N" "$D" "$(for r in ${ROOTS[@]+"${ROOTS[@]}"}; do printf '%s ' "$(tilde "$r")"; done)" "$N" >&2
+
+( ITEMS=$TMP/items.global;   scan_global )   &
+( ITEMS=$TMP/items.projects; scan_projects ) &
+wait
+cat "$TMP"/items.* > "$TMP/items" 2>/dev/null || : > "$TMP/items"
+
+# Size every candidate path once, in parallel. Age-pruned caches count only files older
+# than KEEP_HOURS — one find pass, about as fast as du, so the list shows what would go.
+awk -F"$US" -v keep="$KEEP_HOURS" -v tmp="$TMP" '$4 !~ /^=/ {
+    print $4 > (keep > 0 && $5 ~ /^(prune_|for r in)/ ? tmp "/paths.age" : tmp "/paths.du")
+  }' "$TMP/items"
+touch "$TMP/paths.age" "$TMP/paths.du"
+sort -u "$TMP/paths.du" | tr '\n' '\0' | xargs -0 -n1 -P "$JOBS" du -sk 2>/dev/null > "$TMP/sizes.du" &
+# shellcheck disable=SC2016 # the inner sh expands $1, $AGE_MIN and $STAT_BLOCKS
+sort -u "$TMP/paths.age" | tr '\n' '\0' | AGE_MIN=$((KEEP_HOURS * 60)) STAT_BLOCKS=$STAT_BLOCKS xargs -0 -n1 -P "$JOBS" sh -c \
+  'find "$1" -type f -cmin +"$AGE_MIN" -exec $STAT_BLOCKS {} + 2>/dev/null |
+     awk -v p="$1" "{ b += \$1 } END { printf \"%d\t%s\n\", b / 2, p }"' \
+  _ > "$TMP/sizes.age" &
+wait
+cat "$TMP/sizes.du" "$TMP/sizes.age" > "$TMP/sizes"
+
+# list fields: kb, risk, category, label, sizespec, action, note — ordered by risk then size
+awk -F"$US" -v OFS="$US" -v min=$((MIN_MB * 1024)) '
+  FNR == NR { t = index($0, "\t"); sz[substr($0, t + 1)] = substr($0, 1, t - 1); next }
+  {
+    k = ($4 ~ /^=/) ? substr($4, 2) + 0 : sz[$4] + 0
+    if (k < min) next
+    r = ($1 == "safe") ? 1 : ($1 == "rebuild") ? 2 : 3
+    print r, k, $0
+  }' "$TMP/sizes" "$TMP/items" | sort -t"$US" -k1,1n -k2,2nr | cut -d"$US" -f2- > "$TMP/list"
+
+COUNT=$(wc -l < "$TMP/list" | tr -d ' ')
+ELAPSED=$(( $(date +%s) - START ))
+
+###############################################################################
+# report
+###############################################################################
+
+printf '\n%sFree:%s %s on %s  %s(scan %ss, %s items ≥ %sMB · caches keep the last %sh)%s\n' "$B" "$N" \
+  "$(free_kb | human)" "$(df -P "$HOME" | awk 'NR==2 { print $NF }')" "$D" "$ELAPSED" "$COUNT" "$MIN_MB" "$KEEP_HOURS" "$N"
+
+[ "$COUNT" -gt 0 ] || { echo "Nothing above ${MIN_MB}MB to reclaim."; exit 0; }
+
+awk -F"$US" -v B="$B" -v D="$D" -v N="$N" -v GRN="$GRN" -v YEL="$YEL" -v RED="$RED" -v keep="$KEEP_HOURS" '
+  function h(k) { return k >= 1048576 ? sprintf("%.1fG", k / 1048576) : sprintf("%.0fM", k / 1024) }
+  BEGIN {
+    col["safe"] = GRN;    title["safe"]    = "SAFE — caches & dead copies, regenerate on their own"
+    col["rebuild"] = YEL; title["rebuild"] = "REBUILD — deps & build output, reinstall when you next use the project"
+    col["review"] = RED;  title["review"]  = "REVIEW — may hold things you want; check before picking"
+  }
+  {
+    if ($2 != last) { printf "\n%s%s%s\n", B col[$2], title[$2], N; last = $2 }
+    note = $7; ub = sub(/^≤ ?/, "", note)
+    if (keep > 0 && $6 ~ /^(prune_in|if_idle |brew cleanup|for r in)/) ub = 1  # whole entries kept if partly recent
+    printf "%4d %s %s%6s%s  %s%s\n", NR, (ub ? "≤" : " "), B, h($1), N, $4, (note != "" ? "  " D "· " note N : "")
+    tot[$2] += $1
+  }
+  END {
+    printf "\n%sTotal:%s %s%s safe%s · %s%s rebuild%s · %s%s review%s\n", B, N,
+      GRN, h(tot["safe"]), N, YEL, h(tot["rebuild"]), N, RED, h(tot["review"]), N
+  }' "$TMP/list"
+
+[ "$LIST" -eq 1 ] && exit 0
+
+###############################################################################
+# select + confirm
+###############################################################################
+
+# SPEC tokens (comma/space separated, applied left to right):
+#   all | safe | rebuild | review | N | N-M, and ^TOKEN to deselect
+resolve() {
+  awk -F"$US" -v spec="$1" '
+    { risk[NR] = $2 }
+    END {
+      n = split(spec, tok, /[ ,]+/)
+      for (i = 1; i <= n; i++) {
+        t = tok[i]; if (t == "") continue
+        v = 1; if (substr(t, 1, 1) == "^") { v = 0; t = substr(t, 2) }
+        if (t == "all") { for (j = 1; j <= NR; j++) s[j] = v }
+        else if (t == "safe" || t == "rebuild" || t == "review") { for (j = 1; j <= NR; j++) if (risk[j] == t) s[j] = v }
+        else if (t ~ /^[0-9]+-[0-9]+$/) { split(t, ab, "-"); for (j = ab[1] + 0; j <= ab[2] + 0 && j <= NR; j++) s[j] = v }
+        else if (t ~ /^[0-9]+$/ && t + 0 >= 1 && t + 0 <= NR) s[t + 0] = v
+        else { print "bad selection: " tok[i] > "/dev/stderr"; bad = 1 }
+      }
+      if (bad) exit 1
+      for (j = 1; j <= NR; j++) if (s[j]) print j
+    }' "$TMP/list"
+}
+
+while :; do
+  if [ -z "$SELECT" ]; then
+    [ -t 0 ] || exit 0
+    printf '\n%sSelect%s (safe · rebuild · review · all · 1,4,7-9 · ^N to exclude · enter to quit): ' "$B" "$N"
+    read -r SELECT || exit 0
+    [ -n "$SELECT" ] || exit 0
+  fi
+  SEL=$(resolve "$SELECT") && [ -n "$SEL" ] && break
+  [ -t 0 ] || exit 2
+  echo "Nothing selected."; SELECT=""
+done
+
+printf '\n%sWill run:%s\n' "$B" "$N"
+for i in $SEL; do
+  sed -n "${i}p" "$TMP/list"
+done | awk -F"$US" -v D="$D" -v N="$N" '
+  { k = $1; printf "%4s  %s\n      %s%s%s\n", (k >= 1048576 ? sprintf("%.1fG", k/1048576) : sprintf("%.0fM", k/1024)), $4, D, $6, N; t += k }
+  END { printf "\n  ≈ %.1fG listed\n", t / 1048576 }'
+
+if [ "$DRY" -eq 1 ]; then echo "(dry run — nothing changed)"; exit 0; fi
+if [ "$YES" -ne 1 ]; then
+  [ -t 0 ] || { echo "Refusing to delete without a terminal; pass --yes." >&2; exit 2; }
+  printf '\nProceed? [y/N] '
+  read -r ans
+  case "$ans" in y|Y|yes) ;; *) echo "Aborted."; exit 0 ;; esac
+fi
+
+###############################################################################
+# run
+###############################################################################
+
+BEFORE=$(free_kb)
+cd "$HOME" || exit 1
+ok=0 failed=0 skipped=0
+for i in $SEL; do
+  IFS="$US" read -r kb risk _ label _ action note <<EOF
+$(sed -n "${i}p" "$TMP/list")
+EOF
+  printf '%s…%s %s' "$CYN" "$N" "$label"
+  ( eval "$action" ) </dev/null >"$TMP/log" 2>&1
+  case $? in
+    0) printf '\r%s✓%s %s\n' "$GRN" "$N" "$label"; ok=$((ok + 1)) ;;
+    3) printf '\r%s–%s %s  %s%s%s\n' "$YEL" "$N" "$label" "$D" "$(tail -n 1 "$TMP/log")" "$N"; skipped=$((skipped + 1)) ;;
+    *) if [ "$OS" = Darwin ] && grep -q 'Operation not permitted' "$TMP/log"; then
+         # macOS privacy protection (TCC / App Management), not file permissions — retrying won't help
+         printf '\r%s–%s %s  %sblocked by macOS protection — give your terminal App Management or Full Disk Access (System Settings → Privacy & Security), or delete in Finder%s\n' \
+           "$YEL" "$N" "$label" "$D" "$N"
+         skipped=$((skipped + 1))
+       else
+         printf '\r%s✗%s %s\n' "$RED" "$N" "$label"; failed=$((failed + 1))
+         tail -n 3 "$TMP/log" | sed "s/^/    $D/; s/\$/$N/"
+       fi ;;
+  esac
+done
+AFTER=$(free_kb)
+
+printf '\n%sDone:%s %s ok, %s skipped, %s failed · freed %s (now %s free)\n' "$B" "$N" "$ok" "$skipped" "$failed" \
+  "$(echo $(( AFTER > BEFORE ? AFTER - BEFORE : 0 )) | human)" "$(echo "$AFTER" | human)"
+[ "$failed" -eq 0 ]

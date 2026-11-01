@@ -35,6 +35,16 @@ terms:
     label: Branches
     facet: keyword
     definition: Creating, comparing, merging or deleting version control branches.
+  - id: caches
+    label: Caches
+    facet: keyword
+    aliases: [cache]
+    definition: Package-manager, build-tool and application caches that can be regenerated.
+  - id: disk-space
+    label: Disk space
+    facet: keyword
+    aliases: [storage, disk usage, free space]
+    definition: Finding what uses disk space and reclaiming it.
   - id: regression
     label: Regression
     facet: keyword

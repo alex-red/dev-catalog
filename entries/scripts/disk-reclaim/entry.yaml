@@ -1,0 +1,28 @@
+schemaVersion: 1
+id: disk-reclaim
+type: script
+title: Reclaim disk space from developer caches and build output
+summary: An interactive Bash script that finds reclaimable space in package-manager caches, build output, idle projects' dependencies, Docker, temp dirs and the Trash, lists it by risk (safe, rebuild, review) with sizes, and deletes only the items you pick after confirmation. Deletion is limited to $HOME and your own temp files.
+useWhen: A development machine is running low on disk and you want to see which caches, node_modules, build outputs and leftovers are worth clearing before deleting anything.
+tags: [ cleanup, disk-space, caches, cli ]
+platforms: [ macos, linux ]
+requires: [ bash ]
+rating:
+  rubric: dev-v1
+  dimensions:
+    value: 4
+    dependability: 3
+    ease: 3
+    safety: 3
+    adoption: 4
+    portability: 3
+    upkeep: 3
+  evidence: tested
+  reviewed: 2026-10-31
+  notes: Covers far more tools than any single cleanup command, and nothing is removed without picking it and confirming. Sizes are estimates, and the cache layouts it knows about drift as tools change, so upkeep is ongoing. Review-level items, such as Docker volumes or the Trash, delete data for good. Tested on macOS with Bash 3.2 and on Debian with Bash 5.2 against a fixture home; Docker, Xcode and toolchain cleaners are not covered by the tests.
+source:
+  kind: original
+  license: MIT
+  author: Alex Red
+overlap: ncdu, dust and gdu show where space goes but not what is safe to delete. docker system prune, brew cleanup, npm cache clean and go clean -cache each clear one tool. npkill and kondo clear project build artifacts only.
+evidence: [ tests/disk-reclaim.test.ts ]

@@ -22,6 +22,7 @@ Browse it at [alex-red.github.io/dev-catalog](https://alex-red.github.io/dev-cat
 | Entry | Use it when | Platforms | Score |
 | --- | --- | --- | --- |
 | [Prune merged local Git branches](entries/scripts/git-prune-merged/SCRIPT.md) | Local branches have piled up after merged pull requests and you want to clear the ones that are safely merged without guessing. | macos, linux | 8.6/10 |
+| [Reclaim disk space from developer caches and build output](entries/scripts/disk-reclaim/SCRIPT.md) | A development machine is running low on disk and you want to see which caches, node_modules, build outputs and leftovers are worth clearing before deleting anything. | macos, linux | 8.4/10 |
 
 ### Workflows
 
