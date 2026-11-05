@@ -29,3 +29,7 @@ As in Agentic Catalog, the plugin installs one skill that reads the published in
 ## 7. A browsable site shared with Agentic Catalog
 
 The site under `site/` is a port of Agentic Catalog's Vite site, so both catalogs look and work the same. It reads `catalog/index.json` and the entry files directly, with no separate data build. Host filters become platform filters, install tabs are per platform, and the bulk installer is left out because dev entries install one at a time with approval.
+
+## 8. The Starter Pack uses native package managers
+
+The Starter Pack is a catalog collection with a reviewable Brewfile and explicit Linux package commands. Git is a baseline package in those commands. Package managers own version selection and installation, while shell setup and project-specific add-ons are separate steps.

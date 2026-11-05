@@ -2880,5 +2880,23 @@
       "files": []
     }
   ],
-  "collections": []
+  "collections": [
+    {
+      "schemaVersion": 1,
+      "id": "developer-starter-pack-2026",
+      "title": "2026 Developer Starter Pack",
+      "description": "Everyday tools for a new macOS or Linux development machine. Search code, find and pick files, navigate repositories, inspect JSON, and lint shell scripts.",
+      "entries": [
+        "ripgrep",
+        "fd",
+        "fzf",
+        "eza",
+        "bat",
+        "zoxide",
+        "jq",
+        "shellcheck"
+      ],
+      "path": "collections/developer-starter-pack-2026.yaml"
+    }
+  ]
 }

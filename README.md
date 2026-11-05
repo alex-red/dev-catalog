@@ -9,6 +9,10 @@ Browse it at [alex-red.github.io/dev-catalog](https://alex-red.github.io/dev-cat
 
 **Status: experimental.** The catalog is just getting started. See [the plan](PLAN.md) for what comes next.
 
+## 2026 Developer Starter Pack
+
+Set up Git and eight everyday terminal tools for searching, navigating, and checking code. The [Starter Pack guide](docs/starter-pack/README.md) has install commands for macOS, Debian, Ubuntu, and Fedora, plus optional add-ons by workflow.
+
 ## What's in it
 
 - **Scripts** are small programs you copy onto your `PATH`. Anything that changes state does a dry run unless you pass a flag.
