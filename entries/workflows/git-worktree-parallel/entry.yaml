@@ -1,0 +1,33 @@
+schemaVersion: 1
+id: git-worktree-parallel
+type: workflow
+title: Work on parallel Git branches with worktrees
+summary: Keep a feature checkout open while reviewing another branch or handling a hotfix in a separate directory. Set up project dependencies there and clean up with Git when the task is done.
+useWhen: You need another branch checked out alongside work in progress, especially when switching branches would interrupt a dev server or trigger a rebuild.
+tags: [ git, branches, environment-setup ]
+platforms: [ any ]
+requires: [ git ]
+rating:
+  rubric: dev-v1
+  dimensions:
+    value: 4
+    dependability: 4
+    ease: 3
+    safety: 4
+    adoption: 4
+    portability: 4
+    upkeep: 4
+  evidence: reviewed
+  reviewed: 2026-11-05
+  notes: Git creates a separate working directory and refuses to remove a dirty worktree by default. Project dependencies and runtime state still need setup, and a branch can normally be checked out in only one worktree at a time.
+source:
+  kind: original
+  license: MIT
+  author: Dev Catalog contributors
+inspiredBy:
+  - title: Git worktree documentation
+    url: https://git-scm.com/docs/git-worktree
+  - title: Hacker News discussion on parallel development with worktrees
+    url: https://news.ycombinator.com/item?id=49413093
+overlap: Stash and switch when you only need one checkout at a time. A second clone gives you independent Git metadata and configuration, while linked worktrees share objects and refs.
+related: [ lazygit ]

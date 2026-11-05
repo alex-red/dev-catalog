@@ -1,0 +1,41 @@
+schemaVersion: 1
+id: atuin
+type: tool
+title: Atuin searchable shell history
+summary: Search shell history with context such as working directory and session. Keep it local or opt into encrypted sync across machines.
+useWhen: Built-in reverse search returns too many matches or you regularly need a command from a specific project or shell session.
+tags: [ cli, search ]
+platforms: [ macos, linux, windows ]
+rating:
+  rubric: dev-v1
+  dimensions:
+    value: 3
+    dependability: 4
+    ease: 3
+    safety: 3
+    adoption: 3
+    portability: 4
+    upkeep: 4
+  evidence: reviewed
+  reviewed: 2026-11-05
+  notes: Shell integration changes history key bindings. Search locally before enabling sync, and review filters for commands that may contain sensitive values. Sync is optional.
+source:
+  kind: linked
+  url: https://github.com/atuinsh/atuin
+  revision: ad5bf5c35b7788c05b8d936f5da59c9ab1ac320e
+  version: 18.24.5
+  retrieved: 2026-11-05
+  license: MIT
+  author: Atuin contributors
+install:
+  macos: brew install atuin
+  linux: Install Atuin from your distribution or extract the matching binary from GitHub Releases.
+  windows: winget install --exact --id Atuinsh.Atuin
+  notes: Follow the Atuin setup guide for your shell to enable history capture and search.
+inspiredBy:
+  - title: Reddit discussion on tools people use in their shell
+    url: https://www.reddit.com/r/linux/comments/1tgh0t2/tell_me_your_favorite_cli_apps/
+  - title: Atuin installation guide
+    url: https://docs.atuin.sh/latest/guide/installation/
+overlap: Shell reverse search and fzf already find past commands. Atuin adds indexed metadata and optional cross-machine sync.
+related: [ fzf ]

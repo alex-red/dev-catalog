@@ -1,0 +1,39 @@
+schemaVersion: 1
+id: zoxide
+type: tool
+title: zoxide for jumping to familiar directories
+summary: Jump to directories by typing a short name. zoxide learns from visited paths and ranks matches by how often and how recently they were visited.
+useWhen: You switch among many repos or deeply nested project directories from the shell.
+tags: [ cli, search ]
+platforms: [ macos, linux, windows ]
+rating:
+  rubric: dev-v1
+  dimensions:
+    value: 3
+    dependability: 4
+    ease: 4
+    safety: 4
+    adoption: 3
+    portability: 4
+    upkeep: 4
+  evidence: reviewed
+  reviewed: 2026-11-05
+  notes: The database needs some visits before its ranking becomes useful. Start with the separate z command so cd retains its usual behavior. Interactive selection with zi requires fzf.
+source:
+  kind: linked
+  url: https://github.com/ajeetdsouza/zoxide
+  revision: f84f9a3e1d16fabf3e34b199ec7d552993b41f29
+  version: 0.10.0
+  retrieved: 2026-11-05
+  license: MIT
+  author: Ajeet D'Souza and contributors
+install:
+  macos: brew install zoxide
+  linux: Install zoxide through your distribution or download a binary from GitHub Releases.
+  windows: winget install zoxide
+  notes: Follow the upstream init instructions for your shell, then restart the shell.
+inspiredBy:
+  - title: November Reddit discussion on zoxide and cd
+    url: https://www.reddit.com/r/CLI/comments/1xnt4px/whats_one_tiny_commandline_habit_that_saves_you_a/
+overlap: Shell completion and aliases work well for a small fixed set of paths. fzf can pick from an explicit list. zoxide ranks paths from your actual navigation history.
+related: [ fzf ]

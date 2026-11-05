@@ -1,0 +1,41 @@
+schemaVersion: 1
+id: dive
+type: tool
+title: Dive for inspecting container image layers
+summary: Browse a container image layer by layer and see which files were added, modified, or removed. Identify bytes retained by earlier layers.
+useWhen: An image grew unexpectedly or you need to trace a file back to the build layer that introduced it.
+tags: [ cli, containers, debugging, disk-space ]
+platforms: [ macos, linux, windows ]
+rating:
+  rubric: dev-v1
+  dimensions:
+    value: 4
+    dependability: 3
+    ease: 3
+    safety: 4
+    adoption: 3
+    portability: 4
+    upkeep: 3
+  evidence: reviewed
+  reviewed: 2026-11-05
+  notes: The default source is a Docker engine. You can also inspect a Docker image tar archive from disk or use the Podman source on Linux. Layer sizes help explain image contents and can differ from compressed registry transfer sizes.
+source:
+  kind: linked
+  url: https://github.com/wagoodman/dive
+  revision: fe98c8a2eb08c443a36e3cc7568078909e298433
+  version: 0.13.1
+  retrieved: 2026-11-05
+  license: MIT
+  author: Alex Goodman and contributors
+install:
+  macos: brew install dive
+  linux: Install Dive from your distribution or download the matching release package or archive.
+  windows: Download the Windows release archive and put dive.exe on PATH.
+  notes: Use an accessible container engine for local images, or pass --source docker-archive with an exported image tarball.
+inspiredBy:
+  - title: Docker community discussion of inspecting image contents
+    url: https://www.reddit.com/r/docker/comments/1vd5kka/revisit_old_post_titled_is_there_an_easy_way_to/
+  - title: Dive usage at the pinned release
+    url: https://github.com/wagoodman/dive/tree/v0.13.1
+overlap: docker history shows layer sizes and commands. docker image save can expose the raw layers. Dive adds a navigable file tree and per-layer changes.
+related: [ colima ]

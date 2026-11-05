@@ -1,0 +1,41 @@
+schemaVersion: 1
+id: gh
+type: tool
+title: GitHub CLI for pull requests and Actions
+summary: Check out pull requests, inspect CI runs and logs, and work with GitHub issues and releases from the terminal.
+useWhen: You review GitHub pull requests or investigate Actions failures often and want commands you can run in the active checkout.
+tags: [ cli, git, github ]
+platforms: [ macos, linux, windows ]
+rating:
+  rubric: dev-v1
+  dimensions:
+    value: 4
+    dependability: 4
+    ease: 4
+    safety: 3
+    adoption: 3
+    portability: 4
+    upkeep: 4
+  evidence: reviewed
+  reviewed: 2026-11-05
+  notes: Run gh pr checkout in a separate worktree when you have local changes. The CLI needs GitHub authentication for account and repository operations. Its commands can change remote state, so confirm the target repo and PR before merging or editing.
+source:
+  kind: linked
+  url: https://github.com/cli/cli
+  revision: 63837fb778d6a39f02be0ce76ff89f2bc8d74bdc
+  version: 2.103.3
+  retrieved: 2026-11-05
+  license: MIT
+  author: GitHub and contributors
+install:
+  macos: brew install gh
+  linux: Install gh from the GitHub CLI package repository for your distribution or use the matching release binary.
+  windows: winget install --exact --id GitHub.cli
+  notes: Run gh auth login for authenticated commands. Install Git for operations that use a local checkout, such as gh pr checkout.
+inspiredBy:
+  - title: Reddit discussion on checking out PRs from forks
+    url: https://www.reddit.com/r/git/comments/1syvw3m/how_do_people_usually_check_commits_from_a_pull/
+  - title: GitHub CLI manual
+    url: https://cli.github.com/manual/
+overlap: Git can fetch GitHub pull request refs directly. The GitHub web interface handles reviews and Actions, while gh makes those operations available in terminal scripts.
+related: [ git-worktree-parallel, jq ]

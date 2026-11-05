@@ -1,0 +1,39 @@
+schemaVersion: 1
+id: duckdb
+type: tool
+title: DuckDB CLI for local data inspection
+summary: Query, join, and aggregate CSV, JSON, and Parquet files with SQL from a terminal. The CLI can run in memory without a database server or an import step.
+useWhen: You regularly inspect data exports, compare before-and-after snapshots, or check fixtures and already know enough SQL to express the question.
+tags: [ cli, debugging, sql ]
+platforms: [ macos, linux, windows ]
+rating:
+  rubric: dev-v1
+  dimensions:
+    value: 4
+    dependability: 3
+    ease: 3
+    safety: 3
+    adoption: 4
+    portability: 4
+    upkeep: 4
+  evidence: reviewed
+  reviewed: 2026-11-05
+  notes: Open duckdb without a database path for an in-memory session. CSV type inference can hide formatting details such as leading zeros, so specify types or use all_varchar when inspecting raw values. Only run trusted SQL because queries can access files and load extensions.
+source:
+  kind: linked
+  url: https://github.com/duckdb/duckdb
+  revision: d54cbbe3df17e8e5ce68312f483b4155836112aa
+  version: 2.0.0
+  retrieved: 2026-11-05
+  license: MIT
+  author: DuckDB contributors
+install:
+  macos: brew install duckdb
+  linux: Download the DuckDB CLI archive for your architecture from GitHub Releases, extract it, and put duckdb on PATH.
+  windows: Download the Windows CLI zip from GitHub Releases, extract it, and add the directory containing duckdb.exe to PATH.
+inspiredBy:
+  - title: Reddit discussion on local SQL workflows with DuckDB
+    url: https://www.reddit.com/r/dataengineering/comments/1qwd5of/is_someone_using_duckdb_in_prod/
+  - title: Reddit example comparing Parquet snapshots of dbt tables
+    url: https://www.reddit.com/r/DuckDB/comments/1khrz85
+overlap: jq and command-line text tools cover simple filters. SQLite can import CSV, while pandas and Polars fit analysis that already lives in Python. DuckDB is useful when the input is already on disk and the job is a SQL join or aggregation.

@@ -1,0 +1,38 @@
+schemaVersion: 1
+id: fd
+type: tool
+title: fd for finding files by name
+summary: Find paths by name, extension, or file type with short commands. Respects ignore rules and skips hidden entries by default.
+useWhen: You search for paths in source trees or need a file list for a picker, watcher, or another command.
+tags: [ cli, search ]
+platforms: [ macos, linux, windows ]
+rating:
+  rubric: dev-v1
+  dimensions:
+    value: 4
+    dependability: 4
+    ease: 4
+    safety: 4
+    adoption: 4
+    portability: 4
+    upkeep: 4
+  evidence: reviewed
+  reviewed: 2026-11-05
+  notes: The default search pattern is a regular expression. Hidden and ignored files require explicit flags. Use null-delimited output when piping paths that might contain newlines to a command that supports it.
+source:
+  kind: linked
+  url: https://github.com/sharkdp/fd
+  revision: 193d0df1d0ad455e44506953a2cd80428203ff35
+  version: 10.5.1
+  retrieved: 2026-11-05
+  license: Apache-2.0 OR MIT
+  author: David Peter and the fd developers
+install:
+  macos: brew install fd
+  linux: Install your distribution package or download a release binary. On Debian and Ubuntu, apt install fd-find provides the fdfind executable.
+  windows: winget install --exact --id sharkdp.fd
+inspiredBy:
+  - title: Reddit example feeding fd results to entr
+    url: https://www.reddit.com/r/CLI/comments/1xnt4px/whats_one_tiny_commandline_habit_that_saves_you_a/
+overlap: find has more control over predicates and traversal. ripgrep searches file contents and can list candidate paths with rg --files. fd is most useful for interactive searches by filename.
+related: [ ripgrep, fzf, entr ]

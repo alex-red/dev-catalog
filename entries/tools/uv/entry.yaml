@@ -1,0 +1,38 @@
+schemaVersion: 1
+id: uv
+type: tool
+title: uv Python project and dependency manager
+summary: Install Python versions, lock and sync project dependencies, run commands in the project environment, and run scripts with inline dependency declarations.
+useWhen: You maintain Python projects or standalone scripts and regularly spend time setting up interpreters, virtual environments, and dependencies.
+tags: [ cli, environment-setup, python ]
+platforms: [ macos, linux, windows ]
+rating:
+  rubric: dev-v1
+  dimensions:
+    value: 4
+    dependability: 3
+    ease: 4
+    safety: 3
+    adoption: 4
+    portability: 4
+    upkeep: 4
+  evidence: reviewed
+  reviewed: 2026-11-05
+  notes: One CLI keeps the interpreter and dependency workflow together. Commit uv.lock and use uv sync --locked in CI to catch lockfile drift. Sync can remove undeclared packages from the project environment, and native builds still depend on the availability of wheels or system build tools.
+source:
+  kind: linked
+  url: https://github.com/astral-sh/uv
+  revision: 316c827e058c16b71d5c507a20729c2995a7bcce
+  version: 0.13.7
+  retrieved: 2026-11-05
+  license: Apache-2.0 OR MIT
+  author: Astral
+install:
+  macos: brew install uv
+  linux: Download the uv release archive for your architecture, extract it, and put uv and uvx on PATH.
+  windows: winget install --exact --id astral-sh.uv
+inspiredBy:
+  - title: Reddit discussion on managing Python development environments in 2026
+    url: https://www.reddit.com/r/Python/comments/1vexrvf/what_are_you_using_to_manage_your_dev/
+overlap: Python's venv and pip handle isolated installs, and Poetry manages projects and lockfiles. Conda and Pixi also handle non-Python dependencies through Conda packages. mise manages runtimes across languages, while uv manages Python project dependencies.
+related: [ mise ]

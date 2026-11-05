@@ -1,0 +1,39 @@
+schemaVersion: 1
+id: hyperfine
+type: tool
+title: Hyperfine benchmarks for command-line programs
+summary: Time repeated command runs with warmups and optional setup commands. Compare results and export measurements for later review.
+useWhen: You want to know whether a change improved a build, test command, or CLI before making it the default.
+tags: [ cli, testing, benchmarking ]
+platforms: [ macos, linux, windows ]
+rating:
+  rubric: dev-v1
+  dimensions:
+    value: 4
+    dependability: 4
+    ease: 3
+    safety: 3
+    adoption: 4
+    portability: 4
+    upkeep: 4
+  evidence: reviewed
+  reviewed: 2026-11-05
+  notes: Benchmark the same inputs and cache conditions. Use warmups for steady-state timing and prepare steps for deliberate resets. Hyperfine reruns commands, so isolate any side effects and keep unrelated host load low.
+source:
+  kind: linked
+  url: https://github.com/sharkdp/hyperfine
+  revision: b33755fe1fca8bcc1f182c773ca3ab040bfe517d
+  version: 2.0.0
+  retrieved: 2026-11-05
+  license: Apache-2.0 OR MIT
+  author: David Peter and contributors
+install:
+  macos: brew install hyperfine
+  linux: Install hyperfine from your distribution or extract the matching GitHub release binary.
+  windows: Download the matching Windows binary from GitHub Releases and put it on PATH.
+inspiredBy:
+  - title: Hacker News discussion on CLI benchmarking and caches
+    url: https://news.ycombinator.com/item?id=42177462
+  - title: Microsoft Rust training example using Hyperfine
+    url: https://microsoft.github.io/RustTraining/engineering-book/ch03-benchmarking-measuring-what-matters.html
+overlap: time is enough for a quick single run. Hyperfine gives repeated measurements and comparison. Language benchmark harnesses and profilers can isolate functions and explain where time goes.

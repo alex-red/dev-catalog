@@ -1,0 +1,40 @@
+schemaVersion: 1
+id: k9s
+type: tool
+title: K9s terminal UI for Kubernetes
+summary: Browse Kubernetes resources and inspect pod logs, events, and resource details from a terminal interface.
+useWhen: You regularly investigate Kubernetes workloads and want to move between related resources without typing each kubectl command.
+tags: [ cli, kubernetes, debugging ]
+platforms: [ macos, linux, windows ]
+rating:
+  rubric: dev-v1
+  dimensions:
+    value: 4
+    dependability: 3
+    ease: 3
+    safety: 3
+    adoption: 3
+    portability: 4
+    upkeep: 4
+  evidence: reviewed
+  reviewed: 2026-11-05
+  notes: K9s uses your kubeconfig and current context. Verify the cluster and namespace before making changes. Start in read-only mode for inspection, especially when you have write access to production.
+source:
+  kind: linked
+  url: https://github.com/derailed/k9s
+  revision: 558caafe7ba067467de46b320cc22ef11fef9c34
+  version: 0.51.0
+  retrieved: 2026-11-05
+  license: Apache-2.0
+  author: Fernand Galiana and contributors
+install:
+  macos: brew install derailed/k9s/k9s
+  linux: Download the matching Linux archive from GitHub Releases and put k9s on PATH.
+  windows: scoop install k9s
+  notes: An accessible Kubernetes cluster and kubeconfig are required for normal use. Start with k9s --readonly to disable modifications in the interface.
+inspiredBy:
+  - title: r/kubernetes discussion on tools people use to manage clusters
+    url: https://www.reddit.com/r/kubernetes/comments/1tahn2r/what_tool_do_you_use_the_most_to_manage_your/
+  - title: K9s installation documentation
+    url: https://k9scli.io/topics/install/
+overlap: kubectl already covers logs, events, and object inspection and is better suited to scripts. K9s makes repeated interactive navigation faster.

@@ -1,0 +1,39 @@
+schemaVersion: 1
+id: fzf
+type: tool
+title: fzf fuzzy finder
+summary: Interactively filter files, shell history, or any list piped into the terminal. Select one or more matches for use in another command.
+useWhen: You repeatedly scroll through shell history, navigate long lists, or write shell helpers that need a keyboard-driven picker.
+tags: [ cli, search ]
+platforms: [ macos, linux, windows ]
+rating:
+  rubric: dev-v1
+  dimensions:
+    value: 4
+    dependability: 4
+    ease: 3
+    safety: 4
+    adoption: 4
+    portability: 4
+    upkeep: 4
+  evidence: reviewed
+  reviewed: 2026-11-05
+  notes: Piping a list into fzf works without shell setup. History and file-picker shortcuts need shell integration, and the supported shortcuts vary by shell. Preview and action bindings run commands you configure.
+source:
+  kind: linked
+  url: https://github.com/junegunn/fzf
+  revision: c0a193e031f01fb50bf6f7be4381990a3753f7cf
+  version: 0.74.5
+  retrieved: 2026-11-05
+  license: MIT
+  author: Junegunn Choi
+install:
+  macos: brew install fzf
+  linux: Install fzf through your distribution or download the matching binary from GitHub Releases.
+  windows: winget install fzf
+  notes: Follow the upstream instructions to enable shortcuts for Bash, Zsh, or Fish.
+inspiredBy:
+  - title: Reddit discussion on command-line habits
+    url: https://www.reddit.com/r/CLI/comments/1xnt4px/whats_one_tiny_commandline_habit_that_saves_you_a/
+overlap: Shell reverse search is enough when you remember the command prefix or text. Editor pickers cover editor-local lists. ripgrep finds matching text in files and can feed results to fzf for interactive selection.
+related: [ ripgrep ]

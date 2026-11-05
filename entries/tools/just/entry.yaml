@@ -1,0 +1,38 @@
+schemaVersion: 1
+id: just
+type: tool
+title: just project command runner
+summary: Put named recipes for common development commands in a justfile. List available recipes and run them with a consistent interface across a project.
+useWhen: Contributors keep looking up setup, test, or maintenance commands and need a small shared command menu.
+tags: [ cli, automation, environment-setup ]
+platforms: [ macos, linux, windows ]
+rating:
+  rubric: dev-v1
+  dimensions:
+    value: 3
+    dependability: 4
+    ease: 4
+    safety: 3
+    adoption: 4
+    portability: 3
+    upkeep: 4
+  evidence: reviewed
+  reviewed: 2026-11-05
+  notes: Review recipes before running them because they execute shell commands with your permissions. The CLI is cross-platform, while a justfile's portability depends on the shell and commands its recipes use.
+source:
+  kind: linked
+  url: https://github.com/casey/just
+  revision: 2638e9c0941edb1f409da7426fa7842887656973
+  version: 1.59.0
+  retrieved: 2026-11-05
+  license: CC0-1.0
+  author: Casey Rodarmor and contributors
+install:
+  macos: brew install just
+  linux: Install just from your distribution or download the release archive and put just on PATH.
+  windows: Install just with Scoop, or download the matching Windows release archive and put just.exe on PATH.
+inspiredBy:
+  - title: Hacker News discussion on project task runners
+    url: https://news.ycombinator.com/item?id=49158287
+overlap: Make also runs named targets and handles build dependencies. Package scripts work well within their ecosystems. mise tasks cover much of the same job when a repo already uses mise.
+related: [ mise ]

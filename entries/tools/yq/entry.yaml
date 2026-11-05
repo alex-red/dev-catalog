@@ -1,0 +1,40 @@
+schemaVersion: 1
+id: yq
+type: tool
+title: Mike Farah's yq for querying and editing YAML
+summary: Read, filter, or update structured YAML from the command line. Use it to script targeted changes to configuration files.
+useWhen: You regularly inspect or update fields in Compose files, CI workflows, or Helm values from a script.
+tags: [ cli, yaml, search ]
+platforms: [ macos, linux, windows ]
+rating:
+  rubric: dev-v1
+  dimensions:
+    value: 4
+    dependability: 3
+    ease: 3
+    safety: 3
+    adoption: 4
+    portability: 4
+    upkeep: 4
+  evidence: reviewed
+  reviewed: 2026-11-05
+  notes: Several unrelated programs are named yq. Check that your installed binary is the Mike Farah v4 implementation. Preview output before using in-place edits because formatting or comment placement can change.
+source:
+  kind: linked
+  url: https://github.com/mikefarah/yq
+  revision: 504fc38780cc46be8444ea1b72fb55919fc0bfb0
+  version: 4.54.1
+  retrieved: 2026-11-05
+  license: MIT
+  author: Mike Farah and contributors
+install:
+  macos: brew install yq
+  linux: Download the matching Mike Farah yq binary from GitHub Releases and put it on PATH, or install a distribution package that identifies the same upstream.
+  windows: Download the matching Windows binary from GitHub Releases and name it yq.exe on PATH.
+inspiredBy:
+  - title: Kubernetes discussion on choosing a YAML editor
+    url: https://www.reddit.com/r/kubernetes/comments/1h3mcht
+  - title: Mike Farah yq documentation
+    url: https://mikefarah.gitbook.io/yq
+overlap: jq handles JSON. A YAML library is useful for complex transformations that need tests and application code. yq fits small field reads and edits without treating YAML as plain text.
+related: [ jq ]

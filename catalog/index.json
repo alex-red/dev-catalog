@@ -159,6 +159,1357 @@
     },
     {
       "schemaVersion": 1,
+      "id": "git-worktree-parallel",
+      "type": "workflow",
+      "title": "Work on parallel Git branches with worktrees",
+      "summary": "Keep a feature checkout open while reviewing another branch or handling a hotfix in a separate directory. Set up project dependencies there and clean up with Git when the task is done.",
+      "useWhen": "You need another branch checked out alongside work in progress, especially when switching branches would interrupt a dev server or trigger a rebuild.",
+      "tags": [
+        "git",
+        "branches",
+        "environment-setup"
+      ],
+      "platforms": [
+        "any"
+      ],
+      "requires": [
+        "git"
+      ],
+      "rating": {
+        "rubric": "dev-v1",
+        "dimensions": {
+          "value": 4,
+          "dependability": 4,
+          "ease": 3,
+          "safety": 4,
+          "adoption": 4,
+          "portability": 4,
+          "upkeep": 4
+        },
+        "evidence": "reviewed",
+        "reviewed": "2026-11-05",
+        "notes": "Git creates a separate working directory and refuses to remove a dirty worktree by default. Project dependencies and runtime state still need setup, and a branch can normally be checked out in only one worktree at a time."
+      },
+      "source": {
+        "kind": "original",
+        "license": "MIT",
+        "author": "Dev Catalog contributors"
+      },
+      "inspiredBy": [
+        {
+          "title": "Git worktree documentation",
+          "url": "https://git-scm.com/docs/git-worktree"
+        },
+        {
+          "title": "Hacker News discussion on parallel development with worktrees",
+          "url": "https://news.ycombinator.com/item?id=49413093"
+        }
+      ],
+      "overlap": "Stash and switch when you only need one checkout at a time. A second clone gives you independent Git metadata and configuration, while linked worktrees share objects and refs.",
+      "related": [
+        "lazygit"
+      ],
+      "score": 9.6,
+      "sourceUrl": "https://git-scm.com/docs/git-worktree",
+      "path": "entries/workflows/git-worktree-parallel",
+      "files": [
+        "entries/workflows/git-worktree-parallel/WORKFLOW.md"
+      ]
+    },
+    {
+      "schemaVersion": 1,
+      "id": "playwright-ci-traces",
+      "type": "workflow",
+      "title": "Diagnose failed CI browser tests with Playwright traces",
+      "summary": "Record traces selectively in Playwright Test, save the HTML report as a CI artifact, and inspect the failed action alongside the DOM, console, and network activity.",
+      "useWhen": "A Playwright test fails in CI and screenshots or logs alone do not explain what happened.",
+      "tags": [
+        "debugging",
+        "testing",
+        "playwright"
+      ],
+      "platforms": [
+        "macos",
+        "linux",
+        "windows"
+      ],
+      "requires": [
+        "Node.js",
+        "npm",
+        "Playwright Test (@playwright/test)"
+      ],
+      "rating": {
+        "rubric": "dev-v1",
+        "dimensions": {
+          "value": 4,
+          "dependability": 4,
+          "ease": 3,
+          "safety": 3,
+          "adoption": 3,
+          "portability": 3,
+          "upkeep": 4
+        },
+        "evidence": "reviewed",
+        "reviewed": "2026-11-05",
+        "notes": "Traces preserve failure context for inspection without reproducing the run. Recording adds overhead, retry-only tracing can miss a failure that passes on retry, and artifacts can contain sensitive test data. Requires an existing Playwright Test suite and a CI artifact upload step."
+      },
+      "source": {
+        "kind": "original",
+        "license": "MIT",
+        "author": "Dev Catalog contributors"
+      },
+      "inspiredBy": [
+        {
+          "title": "Playwright Trace Viewer documentation",
+          "url": "https://playwright.dev/docs/trace-viewer"
+        },
+        {
+          "title": "Reddit experience replacing custom screenshot capture with Playwright traces",
+          "url": "https://www.reddit.com/r/Playwright/comments/1wsmwvf/trace_viewer_has_probably_saved_me_more_time_than/"
+        }
+      ],
+      "overlap": "Screenshots show a single browser state, and logs can be enough for a clear backend error. Playwright UI Mode supports interactive local debugging, while a CI trace lets you inspect the recorded run.",
+      "score": 8.8,
+      "sourceUrl": "https://playwright.dev/docs/trace-viewer",
+      "path": "entries/workflows/playwright-ci-traces",
+      "files": [
+        "entries/workflows/playwright-ci-traces/WORKFLOW.md"
+      ]
+    },
+    {
+      "schemaVersion": 1,
+      "id": "ast-grep",
+      "type": "tool",
+      "title": "ast-grep structural search and rewrite",
+      "summary": "Match code by syntax across supported languages. Preview or apply repeatable rewrites and use rules to detect recurring patterns.",
+      "useWhen": "You need to find or migrate code that has the same structure but varies in spacing, arguments, or local names.",
+      "tags": [
+        "cli",
+        "search",
+        "linting"
+      ],
+      "platforms": [
+        "macos",
+        "linux",
+        "windows"
+      ],
+      "rating": {
+        "rubric": "dev-v1",
+        "dimensions": {
+          "value": 4,
+          "dependability": 3,
+          "ease": 2,
+          "safety": 3,
+          "adoption": 4,
+          "portability": 4,
+          "upkeep": 4
+        },
+        "evidence": "reviewed",
+        "reviewed": "2026-11-05",
+        "notes": "Start with a read-only match and inspect results before applying changes. Patterns match syntax rather than resolving symbol identity or types, so check for unrelated matches and run the project's tests after a rewrite."
+      },
+      "source": {
+        "kind": "linked",
+        "url": "https://github.com/ast-grep/ast-grep",
+        "revision": "5a204b1ef3facef94de125d990dddc7cf90011c0",
+        "version": "0.51.1",
+        "retrieved": "2026-11-05",
+        "license": "MIT",
+        "author": "Herrington Darkholme and contributors"
+      },
+      "install": {
+        "macos": "brew install ast-grep",
+        "linux": "Download the matching release archive from GitHub and put ast-grep on PATH.",
+        "windows": "Download the matching Windows archive from GitHub Releases and put ast-grep.exe on PATH.",
+        "notes": "Use the full command ast-grep where sg already names a system utility."
+      },
+      "inspiredBy": [
+        {
+          "title": "Developer account of anchoring specifications to code with ast-grep",
+          "url": "https://coles.codes/posts/anchoring-specs-to-code-with-ast-grep/"
+        },
+        {
+          "title": "ast-grep rewrite guide",
+          "url": "https://ast-grep.github.io/guide/rewrite-code"
+        }
+      ],
+      "overlap": "ripgrep handles text searches, and editor rename resolves symbols when language support is available. ast-grep fits repeated syntax-level matches and rewrites.",
+      "related": [
+        "ripgrep"
+      ],
+      "score": 8.4,
+      "sourceUrl": "https://github.com/ast-grep/ast-grep/tree/5a204b1ef3facef94de125d990dddc7cf90011c0",
+      "path": "entries/tools/ast-grep",
+      "files": []
+    },
+    {
+      "schemaVersion": 1,
+      "id": "atuin",
+      "type": "tool",
+      "title": "Atuin searchable shell history",
+      "summary": "Search shell history with context such as working directory and session. Keep it local or opt into encrypted sync across machines.",
+      "useWhen": "Built-in reverse search returns too many matches or you regularly need a command from a specific project or shell session.",
+      "tags": [
+        "cli",
+        "search"
+      ],
+      "platforms": [
+        "macos",
+        "linux",
+        "windows"
+      ],
+      "rating": {
+        "rubric": "dev-v1",
+        "dimensions": {
+          "value": 3,
+          "dependability": 4,
+          "ease": 3,
+          "safety": 3,
+          "adoption": 3,
+          "portability": 4,
+          "upkeep": 4
+        },
+        "evidence": "reviewed",
+        "reviewed": "2026-11-05",
+        "notes": "Shell integration changes history key bindings. Search locally before enabling sync, and review filters for commands that may contain sensitive values. Sync is optional."
+      },
+      "source": {
+        "kind": "linked",
+        "url": "https://github.com/atuinsh/atuin",
+        "revision": "ad5bf5c35b7788c05b8d936f5da59c9ab1ac320e",
+        "version": "18.24.5",
+        "retrieved": "2026-11-05",
+        "license": "MIT",
+        "author": "Atuin contributors"
+      },
+      "install": {
+        "macos": "brew install atuin",
+        "linux": "Install Atuin from your distribution or extract the matching binary from GitHub Releases.",
+        "windows": "winget install --exact --id Atuinsh.Atuin",
+        "notes": "Follow the Atuin setup guide for your shell to enable history capture and search."
+      },
+      "inspiredBy": [
+        {
+          "title": "Reddit discussion on tools people use in their shell",
+          "url": "https://www.reddit.com/r/linux/comments/1tgh0t2/tell_me_your_favorite_cli_apps/"
+        },
+        {
+          "title": "Atuin installation guide",
+          "url": "https://docs.atuin.sh/latest/guide/installation/"
+        }
+      ],
+      "overlap": "Shell reverse search and fzf already find past commands. Atuin adds indexed metadata and optional cross-machine sync.",
+      "related": [
+        "fzf"
+      ],
+      "score": 8.4,
+      "sourceUrl": "https://github.com/atuinsh/atuin/tree/ad5bf5c35b7788c05b8d936f5da59c9ab1ac320e",
+      "path": "entries/tools/atuin",
+      "files": []
+    },
+    {
+      "schemaVersion": 1,
+      "id": "colima",
+      "type": "tool",
+      "title": "Colima local container runtime",
+      "summary": "Start and manage a Lima virtual machine for a local Docker or containerd runtime. Use the Docker CLI and Compose against the VM when using Docker mode.",
+      "useWhen": "You need a local container runtime on macOS or a VM-backed container environment on Linux.",
+      "tags": [
+        "cli",
+        "containers",
+        "environment-setup"
+      ],
+      "platforms": [
+        "macos",
+        "linux"
+      ],
+      "requires": [
+        "Lima"
+      ],
+      "rating": {
+        "rubric": "dev-v1",
+        "dimensions": {
+          "value": 4,
+          "dependability": 3,
+          "ease": 3,
+          "safety": 3,
+          "adoption": 3,
+          "portability": 3,
+          "upkeep": 4
+        },
+        "evidence": "reviewed",
+        "reviewed": "2026-11-05",
+        "notes": "Colima starts a VM and the Docker mode needs a separate Docker client. Check the active Docker context before running commands. Bind mounts, networking, and cross-architecture images can behave differently from a native Linux engine."
+      },
+      "source": {
+        "kind": "linked",
+        "url": "https://github.com/abiosoft/colima",
+        "revision": "00f6c297e92a82c04a4ab507db0a61435650d7e8",
+        "version": "0.10.3",
+        "retrieved": "2026-11-05",
+        "license": "MIT",
+        "author": "Abiola Ibrahim and contributors"
+      },
+      "install": {
+        "macos": "brew install colima docker",
+        "linux": "Follow the upstream Linux instructions for Lima and its VM dependencies, then install the matching Colima release binary and your preferred container client.",
+        "notes": "Install the Docker Compose plugin separately if your project uses docker compose. Start the default Docker runtime with colima start."
+      },
+      "inspiredBy": [
+        {
+          "title": "Hacker News developer tool usage discussion",
+          "url": "https://news.ycombinator.com/item?id=47602040"
+        },
+        {
+          "title": "Reddit comparison of Colima and OrbStack",
+          "url": "https://www.reddit.com/r/macmini/comments/1wtlzfe/orbstack_vs_colima_for_docker/"
+        },
+        {
+          "title": "Colima installation guide for the pinned release",
+          "url": "https://github.com/abiosoft/colima/blob/v0.10.3/docs/INSTALL.md"
+        }
+      ],
+      "overlap": "Docker Desktop and OrbStack provide managed local Docker environments on macOS. A native Docker Engine or Podman installation may already meet the need on Linux.",
+      "related": [
+        "dive"
+      ],
+      "score": 8.3,
+      "sourceUrl": "https://github.com/abiosoft/colima/tree/00f6c297e92a82c04a4ab507db0a61435650d7e8",
+      "path": "entries/tools/colima",
+      "files": []
+    },
+    {
+      "schemaVersion": 1,
+      "id": "delta",
+      "type": "tool",
+      "title": "delta syntax-highlighting diff pager",
+      "summary": "Render Git diffs with syntax highlighting, within-line change emphasis, line numbers, or optional side-by-side views.",
+      "useWhen": "You regularly review patches in a terminal and want to spot small changes in dense diffs.",
+      "tags": [
+        "cli",
+        "git"
+      ],
+      "platforms": [
+        "macos",
+        "linux",
+        "windows"
+      ],
+      "rating": {
+        "rubric": "dev-v1",
+        "dimensions": {
+          "value": 3,
+          "dependability": 4,
+          "ease": 3,
+          "safety": 4,
+          "adoption": 4,
+          "portability": 4,
+          "upkeep": 3
+        },
+        "evidence": "reviewed",
+        "reviewed": "2026-11-05",
+        "notes": "The executable is delta, while some package managers call it git-delta. Try git diff piped into delta before changing Git configuration. Side-by-side mode needs a sufficiently wide terminal."
+      },
+      "source": {
+        "kind": "linked",
+        "url": "https://github.com/dandavison/delta",
+        "revision": "b88d2290468449d75950bfa150ea7c1291fe2977",
+        "version": "0.20.1",
+        "retrieved": "2026-11-05",
+        "license": "MIT",
+        "author": "Dan Davison and contributors"
+      },
+      "install": {
+        "macos": "brew install git-delta",
+        "linux": "Install git-delta from your distribution or download the matching release package or binary.",
+        "windows": "Download the Windows archive from GitHub Releases and add the directory containing delta.exe to PATH.",
+        "notes": "Git users can configure delta as core.pager after trying it on a diff."
+      },
+      "inspiredBy": [
+        {
+          "title": "Reddit developer CLI discussion",
+          "url": "https://www.reddit.com/r/KittyTerminal/comments/1w489b8/essential_cli_tools_for_developers/"
+        }
+      ],
+      "overlap": "Git's built-in color diff and --word-diff can make small edits visible. Lazygit and editor diff views also provide navigation and staging.",
+      "related": [
+        "lazygit"
+      ],
+      "score": 8.9,
+      "sourceUrl": "https://github.com/dandavison/delta/tree/b88d2290468449d75950bfa150ea7c1291fe2977",
+      "path": "entries/tools/delta",
+      "files": []
+    },
+    {
+      "schemaVersion": 1,
+      "id": "dive",
+      "type": "tool",
+      "title": "Dive for inspecting container image layers",
+      "summary": "Browse a container image layer by layer and see which files were added, modified, or removed. Identify bytes retained by earlier layers.",
+      "useWhen": "An image grew unexpectedly or you need to trace a file back to the build layer that introduced it.",
+      "tags": [
+        "cli",
+        "containers",
+        "debugging",
+        "disk-space"
+      ],
+      "platforms": [
+        "macos",
+        "linux",
+        "windows"
+      ],
+      "rating": {
+        "rubric": "dev-v1",
+        "dimensions": {
+          "value": 4,
+          "dependability": 3,
+          "ease": 3,
+          "safety": 4,
+          "adoption": 3,
+          "portability": 4,
+          "upkeep": 3
+        },
+        "evidence": "reviewed",
+        "reviewed": "2026-11-05",
+        "notes": "The default source is a Docker engine. You can also inspect a Docker image tar archive from disk or use the Podman source on Linux. Layer sizes help explain image contents and can differ from compressed registry transfer sizes."
+      },
+      "source": {
+        "kind": "linked",
+        "url": "https://github.com/wagoodman/dive",
+        "revision": "fe98c8a2eb08c443a36e3cc7568078909e298433",
+        "version": "0.13.1",
+        "retrieved": "2026-11-05",
+        "license": "MIT",
+        "author": "Alex Goodman and contributors"
+      },
+      "install": {
+        "macos": "brew install dive",
+        "linux": "Install Dive from your distribution or download the matching release package or archive.",
+        "windows": "Download the Windows release archive and put dive.exe on PATH.",
+        "notes": "Use an accessible container engine for local images, or pass --source docker-archive with an exported image tarball."
+      },
+      "inspiredBy": [
+        {
+          "title": "Docker community discussion of inspecting image contents",
+          "url": "https://www.reddit.com/r/docker/comments/1vd5kka/revisit_old_post_titled_is_there_an_easy_way_to/"
+        },
+        {
+          "title": "Dive usage at the pinned release",
+          "url": "https://github.com/wagoodman/dive/tree/v0.13.1"
+        }
+      ],
+      "overlap": "docker history shows layer sizes and commands. docker image save can expose the raw layers. Dive adds a navigable file tree and per-layer changes.",
+      "related": [
+        "colima"
+      ],
+      "score": 8.8,
+      "sourceUrl": "https://github.com/wagoodman/dive/tree/fe98c8a2eb08c443a36e3cc7568078909e298433",
+      "path": "entries/tools/dive",
+      "files": []
+    },
+    {
+      "schemaVersion": 1,
+      "id": "duckdb",
+      "type": "tool",
+      "title": "DuckDB CLI for local data inspection",
+      "summary": "Query, join, and aggregate CSV, JSON, and Parquet files with SQL from a terminal. The CLI can run in memory without a database server or an import step.",
+      "useWhen": "You regularly inspect data exports, compare before-and-after snapshots, or check fixtures and already know enough SQL to express the question.",
+      "tags": [
+        "cli",
+        "debugging",
+        "sql"
+      ],
+      "platforms": [
+        "macos",
+        "linux",
+        "windows"
+      ],
+      "rating": {
+        "rubric": "dev-v1",
+        "dimensions": {
+          "value": 4,
+          "dependability": 3,
+          "ease": 3,
+          "safety": 3,
+          "adoption": 4,
+          "portability": 4,
+          "upkeep": 4
+        },
+        "evidence": "reviewed",
+        "reviewed": "2026-11-05",
+        "notes": "Open duckdb without a database path for an in-memory session. CSV type inference can hide formatting details such as leading zeros, so specify types or use all_varchar when inspecting raw values. Only run trusted SQL because queries can access files and load extensions."
+      },
+      "source": {
+        "kind": "linked",
+        "url": "https://github.com/duckdb/duckdb",
+        "revision": "d54cbbe3df17e8e5ce68312f483b4155836112aa",
+        "version": "2.0.0",
+        "retrieved": "2026-11-05",
+        "license": "MIT",
+        "author": "DuckDB contributors"
+      },
+      "install": {
+        "macos": "brew install duckdb",
+        "linux": "Download the DuckDB CLI archive for your architecture from GitHub Releases, extract it, and put duckdb on PATH.",
+        "windows": "Download the Windows CLI zip from GitHub Releases, extract it, and add the directory containing duckdb.exe to PATH."
+      },
+      "inspiredBy": [
+        {
+          "title": "Reddit discussion on local SQL workflows with DuckDB",
+          "url": "https://www.reddit.com/r/dataengineering/comments/1qwd5of/is_someone_using_duckdb_in_prod/"
+        },
+        {
+          "title": "Reddit example comparing Parquet snapshots of dbt tables",
+          "url": "https://www.reddit.com/r/DuckDB/comments/1khrz85"
+        }
+      ],
+      "overlap": "jq and command-line text tools cover simple filters. SQLite can import CSV, while pandas and Polars fit analysis that already lives in Python. DuckDB is useful when the input is already on disk and the job is a SQL join or aggregation.",
+      "score": 8.8,
+      "sourceUrl": "https://github.com/duckdb/duckdb/tree/d54cbbe3df17e8e5ce68312f483b4155836112aa",
+      "path": "entries/tools/duckdb",
+      "files": []
+    },
+    {
+      "schemaVersion": 1,
+      "id": "entr",
+      "type": "tool",
+      "title": "entr for rerunning commands on file changes",
+      "summary": "Read a list of paths from standard input and rerun a command when they change. Use it for a focused test, a linter, or a local process restart.",
+      "useWhen": "Your command lacks a useful watch mode and you want quick feedback from a specific set of files.",
+      "tags": [
+        "cli",
+        "automation",
+        "testing"
+      ],
+      "platforms": [
+        "macos",
+        "linux"
+      ],
+      "rating": {
+        "rubric": "dev-v1",
+        "dimensions": {
+          "value": 3,
+          "dependability": 4,
+          "ease": 3,
+          "safety": 3,
+          "adoption": 4,
+          "portability": 3,
+          "upkeep": 4
+        },
+        "evidence": "reviewed",
+        "reviewed": "2026-11-05",
+        "notes": "Only watch the files relevant to the command. Rebuild the file list when inputs change. Restart mode stops the old process before launching a new one, and rerunning a command repeats any side effects it has."
+      },
+      "source": {
+        "kind": "linked",
+        "url": "https://github.com/eradman/entr",
+        "revision": "046d8d7cc6ce67775926cc585e313cab8f26e42a",
+        "version": "5.8",
+        "retrieved": "2026-11-05",
+        "license": "ISC",
+        "author": "Eric Radman and contributors",
+        "notes": "The 5.8 license file separately lists licenses for bundled compatibility code. Package managers may install a newer release."
+      },
+      "install": {
+        "macos": "brew install entr",
+        "linux": "Install entr through your distribution, such as apt install entr on Debian or Ubuntu."
+      },
+      "inspiredBy": [
+        {
+          "title": "November Reddit example combining fd and entr",
+          "url": "https://www.reddit.com/r/CLI/comments/1xnt4px/whats_one_tiny_commandline_habit_that_saves_you_a/"
+        },
+        {
+          "title": "entr project examples and manual",
+          "url": "https://eradman.com/entrproject/"
+        }
+      ],
+      "overlap": "Many test runners and bundlers have their own watch modes. entr works with arbitrary commands and leaves the file selection to the caller.",
+      "related": [
+        "fd"
+      ],
+      "score": 8.4,
+      "sourceUrl": "https://github.com/eradman/entr/tree/046d8d7cc6ce67775926cc585e313cab8f26e42a",
+      "path": "entries/tools/entr",
+      "files": []
+    },
+    {
+      "schemaVersion": 1,
+      "id": "fd",
+      "type": "tool",
+      "title": "fd for finding files by name",
+      "summary": "Find paths by name, extension, or file type with short commands. Respects ignore rules and skips hidden entries by default.",
+      "useWhen": "You search for paths in source trees or need a file list for a picker, watcher, or another command.",
+      "tags": [
+        "cli",
+        "search"
+      ],
+      "platforms": [
+        "macos",
+        "linux",
+        "windows"
+      ],
+      "rating": {
+        "rubric": "dev-v1",
+        "dimensions": {
+          "value": 4,
+          "dependability": 4,
+          "ease": 4,
+          "safety": 4,
+          "adoption": 4,
+          "portability": 4,
+          "upkeep": 4
+        },
+        "evidence": "reviewed",
+        "reviewed": "2026-11-05",
+        "notes": "The default search pattern is a regular expression. Hidden and ignored files require explicit flags. Use null-delimited output when piping paths that might contain newlines to a command that supports it."
+      },
+      "source": {
+        "kind": "linked",
+        "url": "https://github.com/sharkdp/fd",
+        "revision": "193d0df1d0ad455e44506953a2cd80428203ff35",
+        "version": "10.5.1",
+        "retrieved": "2026-11-05",
+        "license": "Apache-2.0 OR MIT",
+        "author": "David Peter and the fd developers"
+      },
+      "install": {
+        "macos": "brew install fd",
+        "linux": "Install your distribution package or download a release binary. On Debian and Ubuntu, apt install fd-find provides the fdfind executable.",
+        "windows": "winget install --exact --id sharkdp.fd"
+      },
+      "inspiredBy": [
+        {
+          "title": "Reddit example feeding fd results to entr",
+          "url": "https://www.reddit.com/r/CLI/comments/1xnt4px/whats_one_tiny_commandline_habit_that_saves_you_a/"
+        }
+      ],
+      "overlap": "find has more control over predicates and traversal. ripgrep searches file contents and can list candidate paths with rg --files. fd is most useful for interactive searches by filename.",
+      "related": [
+        "ripgrep",
+        "fzf",
+        "entr"
+      ],
+      "score": 10,
+      "sourceUrl": "https://github.com/sharkdp/fd/tree/193d0df1d0ad455e44506953a2cd80428203ff35",
+      "path": "entries/tools/fd",
+      "files": []
+    },
+    {
+      "schemaVersion": 1,
+      "id": "fzf",
+      "type": "tool",
+      "title": "fzf fuzzy finder",
+      "summary": "Interactively filter files, shell history, or any list piped into the terminal. Select one or more matches for use in another command.",
+      "useWhen": "You repeatedly scroll through shell history, navigate long lists, or write shell helpers that need a keyboard-driven picker.",
+      "tags": [
+        "cli",
+        "search"
+      ],
+      "platforms": [
+        "macos",
+        "linux",
+        "windows"
+      ],
+      "rating": {
+        "rubric": "dev-v1",
+        "dimensions": {
+          "value": 4,
+          "dependability": 4,
+          "ease": 3,
+          "safety": 4,
+          "adoption": 4,
+          "portability": 4,
+          "upkeep": 4
+        },
+        "evidence": "reviewed",
+        "reviewed": "2026-11-05",
+        "notes": "Piping a list into fzf works without shell setup. History and file-picker shortcuts need shell integration, and the supported shortcuts vary by shell. Preview and action bindings run commands you configure."
+      },
+      "source": {
+        "kind": "linked",
+        "url": "https://github.com/junegunn/fzf",
+        "revision": "c0a193e031f01fb50bf6f7be4381990a3753f7cf",
+        "version": "0.74.5",
+        "retrieved": "2026-11-05",
+        "license": "MIT",
+        "author": "Junegunn Choi"
+      },
+      "install": {
+        "macos": "brew install fzf",
+        "linux": "Install fzf through your distribution or download the matching binary from GitHub Releases.",
+        "windows": "winget install fzf",
+        "notes": "Follow the upstream instructions to enable shortcuts for Bash, Zsh, or Fish."
+      },
+      "inspiredBy": [
+        {
+          "title": "Reddit discussion on command-line habits",
+          "url": "https://www.reddit.com/r/CLI/comments/1xnt4px/whats_one_tiny_commandline_habit_that_saves_you_a/"
+        }
+      ],
+      "overlap": "Shell reverse search is enough when you remember the command prefix or text. Editor pickers cover editor-local lists. ripgrep finds matching text in files and can feed results to fzf for interactive selection.",
+      "related": [
+        "ripgrep"
+      ],
+      "score": 9.6,
+      "sourceUrl": "https://github.com/junegunn/fzf/tree/c0a193e031f01fb50bf6f7be4381990a3753f7cf",
+      "path": "entries/tools/fzf",
+      "files": []
+    },
+    {
+      "schemaVersion": 1,
+      "id": "gh",
+      "type": "tool",
+      "title": "GitHub CLI for pull requests and Actions",
+      "summary": "Check out pull requests, inspect CI runs and logs, and work with GitHub issues and releases from the terminal.",
+      "useWhen": "You review GitHub pull requests or investigate Actions failures often and want commands you can run in the active checkout.",
+      "tags": [
+        "cli",
+        "git",
+        "github"
+      ],
+      "platforms": [
+        "macos",
+        "linux",
+        "windows"
+      ],
+      "rating": {
+        "rubric": "dev-v1",
+        "dimensions": {
+          "value": 4,
+          "dependability": 4,
+          "ease": 4,
+          "safety": 3,
+          "adoption": 3,
+          "portability": 4,
+          "upkeep": 4
+        },
+        "evidence": "reviewed",
+        "reviewed": "2026-11-05",
+        "notes": "Run gh pr checkout in a separate worktree when you have local changes. The CLI needs GitHub authentication for account and repository operations. Its commands can change remote state, so confirm the target repo and PR before merging or editing."
+      },
+      "source": {
+        "kind": "linked",
+        "url": "https://github.com/cli/cli",
+        "revision": "63837fb778d6a39f02be0ce76ff89f2bc8d74bdc",
+        "version": "2.103.3",
+        "retrieved": "2026-11-05",
+        "license": "MIT",
+        "author": "GitHub and contributors"
+      },
+      "install": {
+        "macos": "brew install gh",
+        "linux": "Install gh from the GitHub CLI package repository for your distribution or use the matching release binary.",
+        "windows": "winget install --exact --id GitHub.cli",
+        "notes": "Run gh auth login for authenticated commands. Install Git for operations that use a local checkout, such as gh pr checkout."
+      },
+      "inspiredBy": [
+        {
+          "title": "Reddit discussion on checking out PRs from forks",
+          "url": "https://www.reddit.com/r/git/comments/1syvw3m/how_do_people_usually_check_commits_from_a_pull/"
+        },
+        {
+          "title": "GitHub CLI manual",
+          "url": "https://cli.github.com/manual/"
+        }
+      ],
+      "overlap": "Git can fetch GitHub pull request refs directly. The GitHub web interface handles reviews and Actions, while gh makes those operations available in terminal scripts.",
+      "related": [
+        "git-worktree-parallel",
+        "jq"
+      ],
+      "score": 9.4,
+      "sourceUrl": "https://github.com/cli/cli/tree/63837fb778d6a39f02be0ce76ff89f2bc8d74bdc",
+      "path": "entries/tools/gh",
+      "files": []
+    },
+    {
+      "schemaVersion": 1,
+      "id": "gitleaks",
+      "type": "tool",
+      "title": "Gitleaks secret scanning for Git and files",
+      "summary": "Scan Git history, directories, or standard input for likely credentials. Use a local hook for staged changes and CI for a shared check.",
+      "useWhen": "You want to catch common credentials before they land in a branch or need to audit existing Git history.",
+      "tags": [
+        "cli",
+        "git",
+        "security"
+      ],
+      "platforms": [
+        "macos",
+        "linux",
+        "windows"
+      ],
+      "rating": {
+        "rubric": "dev-v1",
+        "dimensions": {
+          "value": 4,
+          "dependability": 3,
+          "ease": 3,
+          "safety": 3,
+          "adoption": 4,
+          "portability": 4,
+          "upkeep": 2
+        },
+        "evidence": "reviewed",
+        "reviewed": "2026-11-05",
+        "notes": "Pattern and entropy rules produce false positives and can miss custom secret formats. Use redaction when publishing findings. Rotate exposed credentials. Upstream is feature-complete and plans security patches only, with new feature work moving to Betterleaks."
+      },
+      "source": {
+        "kind": "linked",
+        "url": "https://github.com/gitleaks/gitleaks",
+        "revision": "83d9cd684c87d95d656c1458ef04895a7f1cbd8e",
+        "version": "8.30.1",
+        "retrieved": "2026-11-05",
+        "license": "MIT",
+        "author": "Zachary Rice and contributors"
+      },
+      "install": {
+        "macos": "brew install gitleaks",
+        "linux": "Download the matching Linux archive from GitHub Releases and put gitleaks on PATH.",
+        "windows": "Download the Windows release archive and put gitleaks.exe on PATH.",
+        "notes": "The git scan mode requires Git. Use the upstream hook setup if you want to scan staged changes automatically."
+      },
+      "inspiredBy": [
+        {
+          "title": "November r/devops discussion on secret handling",
+          "url": "https://www.reddit.com/r/devops/comments/1xo9cfw/whats_your_goto_strategy_for_handling_secrets/"
+        },
+        {
+          "title": "Gitleaks upstream maintenance notice",
+          "url": "https://github.com/gitleaks/gitleaks"
+        }
+      ],
+      "overlap": "Hosted secret scanning and push protection can cover centralized enforcement. Gitleaks runs locally and in forge-independent CI. Betterleaks is the maintainer's successor project for new feature development.",
+      "score": 8.5,
+      "sourceUrl": "https://github.com/gitleaks/gitleaks/tree/83d9cd684c87d95d656c1458ef04895a7f1cbd8e",
+      "path": "entries/tools/gitleaks",
+      "files": []
+    },
+    {
+      "schemaVersion": 1,
+      "id": "hurl",
+      "type": "tool",
+      "title": "Hurl repeatable HTTP requests and assertions",
+      "summary": "Describe HTTP requests, captures, and response assertions in plain-text files. Run the same scenario locally and in CI.",
+      "useWhen": "You repeat a multi-step API check such as signing in, using a captured token, and asserting the next response.",
+      "tags": [
+        "cli",
+        "testing"
+      ],
+      "platforms": [
+        "macos",
+        "linux",
+        "windows"
+      ],
+      "rating": {
+        "rubric": "dev-v1",
+        "dimensions": {
+          "value": 4,
+          "dependability": 4,
+          "ease": 3,
+          "safety": 3,
+          "adoption": 4,
+          "portability": 4,
+          "upkeep": 4
+        },
+        "evidence": "reviewed",
+        "reviewed": "2026-11-05",
+        "notes": "Requests run against real endpoints, so use a test environment for scenarios that write data. Pass credentials through variables and keep them out of checked-in files and CI output."
+      },
+      "source": {
+        "kind": "linked",
+        "url": "https://github.com/Orange-OpenSource/hurl",
+        "revision": "2641800501e077c835cc4059e39e5a251e8b1ccb",
+        "version": "8.1.0",
+        "retrieved": "2026-11-05",
+        "license": "Apache-2.0",
+        "author": "Orange and Hurl contributors"
+      },
+      "install": {
+        "macos": "brew install hurl",
+        "linux": "Install your distribution's Hurl package or extract a matching archive from GitHub Releases.",
+        "windows": "winget install hurl"
+      },
+      "inspiredBy": [
+        {
+          "title": "Hacker News experience reusing Hurl tests through an API migration",
+          "url": "https://news.ycombinator.com/item?id=44324592"
+        },
+        {
+          "title": "Hurl installation documentation",
+          "url": "https://hurl.dev/docs/installation.html"
+        }
+      ],
+      "overlap": "curl handles one-off requests. Postman and Bruno offer interactive API clients. Hurl fits repeatable text scenarios with chained requests and assertions.",
+      "related": [
+        "jq",
+        "playwright-ci-traces"
+      ],
+      "score": 9.3,
+      "sourceUrl": "https://github.com/Orange-OpenSource/hurl/tree/2641800501e077c835cc4059e39e5a251e8b1ccb",
+      "path": "entries/tools/hurl",
+      "files": []
+    },
+    {
+      "schemaVersion": 1,
+      "id": "hyperfine",
+      "type": "tool",
+      "title": "Hyperfine benchmarks for command-line programs",
+      "summary": "Time repeated command runs with warmups and optional setup commands. Compare results and export measurements for later review.",
+      "useWhen": "You want to know whether a change improved a build, test command, or CLI before making it the default.",
+      "tags": [
+        "cli",
+        "testing",
+        "benchmarking"
+      ],
+      "platforms": [
+        "macos",
+        "linux",
+        "windows"
+      ],
+      "rating": {
+        "rubric": "dev-v1",
+        "dimensions": {
+          "value": 4,
+          "dependability": 4,
+          "ease": 3,
+          "safety": 3,
+          "adoption": 4,
+          "portability": 4,
+          "upkeep": 4
+        },
+        "evidence": "reviewed",
+        "reviewed": "2026-11-05",
+        "notes": "Benchmark the same inputs and cache conditions. Use warmups for steady-state timing and prepare steps for deliberate resets. Hyperfine reruns commands, so isolate any side effects and keep unrelated host load low."
+      },
+      "source": {
+        "kind": "linked",
+        "url": "https://github.com/sharkdp/hyperfine",
+        "revision": "b33755fe1fca8bcc1f182c773ca3ab040bfe517d",
+        "version": "2.0.0",
+        "retrieved": "2026-11-05",
+        "license": "Apache-2.0 OR MIT",
+        "author": "David Peter and contributors"
+      },
+      "install": {
+        "macos": "brew install hyperfine",
+        "linux": "Install hyperfine from your distribution or extract the matching GitHub release binary.",
+        "windows": "Download the matching Windows binary from GitHub Releases and put it on PATH."
+      },
+      "inspiredBy": [
+        {
+          "title": "Hacker News discussion on CLI benchmarking and caches",
+          "url": "https://news.ycombinator.com/item?id=42177462"
+        },
+        {
+          "title": "Microsoft Rust training example using Hyperfine",
+          "url": "https://microsoft.github.io/RustTraining/engineering-book/ch03-benchmarking-measuring-what-matters.html"
+        }
+      ],
+      "overlap": "time is enough for a quick single run. Hyperfine gives repeated measurements and comparison. Language benchmark harnesses and profilers can isolate functions and explain where time goes.",
+      "score": 9.3,
+      "sourceUrl": "https://github.com/sharkdp/hyperfine/tree/b33755fe1fca8bcc1f182c773ca3ab040bfe517d",
+      "path": "entries/tools/hyperfine",
+      "files": []
+    },
+    {
+      "schemaVersion": 1,
+      "id": "jq",
+      "type": "tool",
+      "title": "jq for querying and transforming JSON",
+      "summary": "Filter, reshape, and generate JSON in shell pipelines. Read data from files or standard input and emit JSON or raw values for downstream commands.",
+      "useWhen": "You repeatedly extract fields from API responses, CLI output, or JSON logs and want a reusable command.",
+      "tags": [
+        "cli",
+        "json",
+        "search"
+      ],
+      "platforms": [
+        "macos",
+        "linux",
+        "windows"
+      ],
+      "rating": {
+        "rubric": "dev-v1",
+        "dimensions": {
+          "value": 4,
+          "dependability": 4,
+          "ease": 3,
+          "safety": 4,
+          "adoption": 4,
+          "portability": 4,
+          "upkeep": 4
+        },
+        "evidence": "reviewed",
+        "reviewed": "2026-11-05",
+        "notes": "Start with keys or a single field before building a larger filter. Shell quoting differs by shell. jq normally parses a whole JSON value into memory, so use streaming mode or a line-oriented format when the input requires it."
+      },
+      "source": {
+        "kind": "linked",
+        "url": "https://github.com/jqlang/jq",
+        "revision": "34f7186b86743a083a589741b6cea95293524108",
+        "version": "1.8.2",
+        "retrieved": "2026-11-05",
+        "license": "MIT",
+        "author": "Stephen Dolan and jq contributors",
+        "notes": "The upstream COPYING file also lists licenses for bundled and derived components."
+      },
+      "install": {
+        "macos": "brew install jq",
+        "linux": "Install jq through your distribution or download the matching binary from GitHub Releases.",
+        "windows": "winget install --exact --id jqlang.jq"
+      },
+      "inspiredBy": [
+        {
+          "title": "Reddit example inspecting JSON response keys",
+          "url": "https://www.reddit.com/r/commandline/comments/1wd9744/how_do_you_handle_largeunknown_json_responses_in/"
+        },
+        {
+          "title": "jq manual",
+          "url": "https://jqlang.org/manual/"
+        }
+      ],
+      "overlap": "Python and JavaScript can parse JSON and may be easier to maintain for longer transformations. DuckDB fits SQL joins across files, while jq fits document filters and pipelines.",
+      "related": [
+        "duckdb",
+        "yq"
+      ],
+      "score": 9.6,
+      "sourceUrl": "https://github.com/jqlang/jq/tree/34f7186b86743a083a589741b6cea95293524108",
+      "path": "entries/tools/jq",
+      "files": []
+    },
+    {
+      "schemaVersion": 1,
+      "id": "jujutsu",
+      "type": "tool",
+      "title": "Jujutsu version control with a Git backend",
+      "summary": "Use jj to edit stacked changes, split and squash commits, and recover local operations through the operation log while collaborating through Git remotes.",
+      "useWhen": "You frequently revise earlier commits in a stack and spend time rebasing descendants or recovering from local history edits.",
+      "tags": [
+        "cli",
+        "git",
+        "branches"
+      ],
+      "platforms": [
+        "macos",
+        "linux",
+        "windows"
+      ],
+      "rating": {
+        "rubric": "dev-v1",
+        "dimensions": {
+          "value": 4,
+          "dependability": 3,
+          "ease": 2,
+          "safety": 3,
+          "adoption": 2,
+          "portability": 4,
+          "upkeep": 3
+        },
+        "evidence": "reviewed",
+        "reviewed": "2026-11-05",
+        "notes": "Automatic descendant rebases and the local operation log help with stacked changes. The working copy is snapshotted as a commit, so check ignore rules and review changes before pushing. Check your repository's Git hooks and editor integrations before switching.",
+        "blockers": [
+          {
+            "scope": "Repositories that require Git submodules in the working copy",
+            "reason": "Jujutsu preserves submodule entries in history but does not check them out itself."
+          }
+        ]
+      },
+      "source": {
+        "kind": "linked",
+        "url": "https://github.com/jj-vcs/jj",
+        "revision": "d16ee1fc88a72c54142241b079a34bbf3b033bc0",
+        "version": "0.47.1",
+        "retrieved": "2026-11-05",
+        "license": "Apache-2.0",
+        "author": "Martin von Zweigbergk and contributors"
+      },
+      "install": {
+        "macos": "brew install jj",
+        "linux": "Download the jj release archive for your architecture, extract it, and put jj on PATH.",
+        "windows": "winget install --exact --id jj-vcs.jj"
+      },
+      "inspiredBy": [
+        {
+          "title": "Jujutsu Git compatibility documentation",
+          "url": "https://docs.jj-vcs.dev/latest/git-compatibility/"
+        },
+        {
+          "title": "Hacker News discussion on Jujutsu workflows",
+          "url": "https://news.ycombinator.com/item?id=47763759"
+        },
+        {
+          "title": "Reddit discussion on Jujutsu adoption and Git integrations",
+          "url": "https://www.reddit.com/r/linux/comments/1t6fapq/jujutsu_a_gitcompatible_vcs_that_is_both_simple/"
+        }
+      ],
+      "overlap": "Git's interactive rebase, fixup commits, and reflog cover the same editing and recovery jobs. Lazygit is a lighter change for developers who want a UI over their current Git workflow.",
+      "related": [
+        "lazygit"
+      ],
+      "score": 7.8,
+      "sourceUrl": "https://github.com/jj-vcs/jj/tree/d16ee1fc88a72c54142241b079a34bbf3b033bc0",
+      "path": "entries/tools/jujutsu",
+      "files": []
+    },
+    {
+      "schemaVersion": 1,
+      "id": "just",
+      "type": "tool",
+      "title": "just project command runner",
+      "summary": "Put named recipes for common development commands in a justfile. List available recipes and run them with a consistent interface across a project.",
+      "useWhen": "Contributors keep looking up setup, test, or maintenance commands and need a small shared command menu.",
+      "tags": [
+        "cli",
+        "automation",
+        "environment-setup"
+      ],
+      "platforms": [
+        "macos",
+        "linux",
+        "windows"
+      ],
+      "rating": {
+        "rubric": "dev-v1",
+        "dimensions": {
+          "value": 3,
+          "dependability": 4,
+          "ease": 4,
+          "safety": 3,
+          "adoption": 4,
+          "portability": 3,
+          "upkeep": 4
+        },
+        "evidence": "reviewed",
+        "reviewed": "2026-11-05",
+        "notes": "Review recipes before running them because they execute shell commands with your permissions. The CLI is cross-platform, while a justfile's portability depends on the shell and commands its recipes use."
+      },
+      "source": {
+        "kind": "linked",
+        "url": "https://github.com/casey/just",
+        "revision": "2638e9c0941edb1f409da7426fa7842887656973",
+        "version": "1.59.0",
+        "retrieved": "2026-11-05",
+        "license": "CC0-1.0",
+        "author": "Casey Rodarmor and contributors"
+      },
+      "install": {
+        "macos": "brew install just",
+        "linux": "Install just from your distribution or download the release archive and put just on PATH.",
+        "windows": "Install just with Scoop, or download the matching Windows release archive and put just.exe on PATH."
+      },
+      "inspiredBy": [
+        {
+          "title": "Hacker News discussion on project task runners",
+          "url": "https://news.ycombinator.com/item?id=49158287"
+        }
+      ],
+      "overlap": "Make also runs named targets and handles build dependencies. Package scripts work well within their ecosystems. mise tasks cover much of the same job when a repo already uses mise.",
+      "related": [
+        "mise"
+      ],
+      "score": 8.8,
+      "sourceUrl": "https://github.com/casey/just/tree/2638e9c0941edb1f409da7426fa7842887656973",
+      "path": "entries/tools/just",
+      "files": []
+    },
+    {
+      "schemaVersion": 1,
+      "id": "k9s",
+      "type": "tool",
+      "title": "K9s terminal UI for Kubernetes",
+      "summary": "Browse Kubernetes resources and inspect pod logs, events, and resource details from a terminal interface.",
+      "useWhen": "You regularly investigate Kubernetes workloads and want to move between related resources without typing each kubectl command.",
+      "tags": [
+        "cli",
+        "kubernetes",
+        "debugging"
+      ],
+      "platforms": [
+        "macos",
+        "linux",
+        "windows"
+      ],
+      "rating": {
+        "rubric": "dev-v1",
+        "dimensions": {
+          "value": 4,
+          "dependability": 3,
+          "ease": 3,
+          "safety": 3,
+          "adoption": 3,
+          "portability": 4,
+          "upkeep": 4
+        },
+        "evidence": "reviewed",
+        "reviewed": "2026-11-05",
+        "notes": "K9s uses your kubeconfig and current context. Verify the cluster and namespace before making changes. Start in read-only mode for inspection, especially when you have write access to production."
+      },
+      "source": {
+        "kind": "linked",
+        "url": "https://github.com/derailed/k9s",
+        "revision": "558caafe7ba067467de46b320cc22ef11fef9c34",
+        "version": "0.51.0",
+        "retrieved": "2026-11-05",
+        "license": "Apache-2.0",
+        "author": "Fernand Galiana and contributors"
+      },
+      "install": {
+        "macos": "brew install derailed/k9s/k9s",
+        "linux": "Download the matching Linux archive from GitHub Releases and put k9s on PATH.",
+        "windows": "scoop install k9s",
+        "notes": "An accessible Kubernetes cluster and kubeconfig are required for normal use. Start with k9s --readonly to disable modifications in the interface."
+      },
+      "inspiredBy": [
+        {
+          "title": "r/kubernetes discussion on tools people use to manage clusters",
+          "url": "https://www.reddit.com/r/kubernetes/comments/1tahn2r/what_tool_do_you_use_the_most_to_manage_your/"
+        },
+        {
+          "title": "K9s installation documentation",
+          "url": "https://k9scli.io/topics/install/"
+        }
+      ],
+      "overlap": "kubectl already covers logs, events, and object inspection and is better suited to scripts. K9s makes repeated interactive navigation faster.",
+      "score": 8.5,
+      "sourceUrl": "https://github.com/derailed/k9s/tree/558caafe7ba067467de46b320cc22ef11fef9c34",
+      "path": "entries/tools/k9s",
+      "files": []
+    },
+    {
+      "schemaVersion": 1,
+      "id": "lazygit",
+      "type": "tool",
+      "title": "Lazygit terminal UI for Git",
+      "summary": "Browse branches, commits, and diffs side by side. Stage individual hunks or lines, build commits, and manage rebases from a keyboard-driven terminal interface.",
+      "useWhen": "You frequently move between diffs, staging, and history edits and want to stay in the terminal.",
+      "tags": [
+        "cli",
+        "git",
+        "branches"
+      ],
+      "platforms": [
+        "macos",
+        "linux",
+        "windows"
+      ],
+      "requires": [
+        "git"
+      ],
+      "rating": {
+        "rubric": "dev-v1",
+        "dimensions": {
+          "value": 3,
+          "dependability": 4,
+          "ease": 3,
+          "safety": 3,
+          "adoption": 4,
+          "portability": 4,
+          "upkeep": 4
+        },
+        "evidence": "reviewed",
+        "reviewed": "2026-11-05",
+        "notes": "Contextual key hints help with discovery, but the panes and shortcuts take practice. Review the active repository, selection, and target branch before history edits, resets, or pushes."
+      },
+      "source": {
+        "kind": "linked",
+        "url": "https://github.com/jesseduffield/lazygit",
+        "revision": "63ab89fff478854deb4a35ef8902676b3cc5ca72",
+        "version": "0.66.2",
+        "retrieved": "2026-11-05",
+        "license": "MIT",
+        "author": "Jesse Duffield and contributors"
+      },
+      "install": {
+        "macos": "brew install lazygit",
+        "linux": "Install the distribution package if available, or extract the matching release binary and put it on PATH.",
+        "windows": "winget install --exact --id JesseDuffield.lazygit"
+      },
+      "inspiredBy": [
+        {
+          "title": "Hacker News discussion on Lazygit",
+          "url": "https://news.ycombinator.com/item?id=49580702"
+        }
+      ],
+      "overlap": "Git already provides git add -p, git log, and git rebase -i. Many editors offer visual diff and staging views. Lazygit brings these jobs into one terminal UI for standard Git repositories.",
+      "related": [
+        "git-worktree-parallel",
+        "jujutsu"
+      ],
+      "score": 8.6,
+      "sourceUrl": "https://github.com/jesseduffield/lazygit/tree/63ab89fff478854deb4a35ef8902676b3cc5ca72",
+      "path": "entries/tools/lazygit",
+      "files": []
+    },
+    {
+      "schemaVersion": 1,
+      "id": "mise",
+      "type": "tool",
+      "title": "mise runtime manager and task runner",
+      "summary": "Declare runtime and tool versions, environment settings, and repeatable project tasks in mise.toml. Run tasks with the project's tools on PATH.",
+      "useWhen": "You switch among repositories with different Node, Python, Go, or other tool versions and want one setup command for contributors.",
+      "tags": [
+        "cli",
+        "environment-setup"
+      ],
+      "platforms": [
+        "macos",
+        "linux",
+        "windows"
+      ],
+      "rating": {
+        "rubric": "dev-v1",
+        "dimensions": {
+          "value": 4,
+          "dependability": 3,
+          "ease": 3,
+          "safety": 3,
+          "adoption": 3,
+          "portability": 3,
+          "upkeep": 4
+        },
+        "evidence": "reviewed",
+        "reviewed": "2026-11-05",
+        "notes": "A shared config can replace several onboarding steps. Available binaries and backend behavior vary by tool and OS, and tasks must still use commands available on the target platform. Review project configuration before trusting it because tasks and some configuration features can execute code."
+      },
+      "source": {
+        "kind": "linked",
+        "url": "https://github.com/jdx/mise",
+        "revision": "43ee02c5b4975f6d7d2319958d0e1cde0f895187",
+        "version": "2026.11.2",
+        "retrieved": "2026-11-05",
+        "license": "MIT",
+        "author": "Jeff Dickey and contributors"
+      },
+      "install": {
+        "macos": "brew install mise",
+        "linux": "Download the release binary for your architecture and put it on PATH.",
+        "windows": "winget install --exact --id jdx.mise",
+        "notes": "Use mise exec or mise run to start without changing shell startup files. Follow the upstream activation instructions for automatic shell integration."
+      },
+      "inspiredBy": [
+        {
+          "title": "Hacker News discussion on daily developer tools",
+          "url": "https://news.ycombinator.com/item?id=47602040"
+        },
+        {
+          "title": "Reddit discussion on command-line habits",
+          "url": "https://www.reddit.com/r/CLI/comments/1xnt4px/whats_one_tiny_commandline_habit_that_saves_you_a/"
+        }
+      ],
+      "overlap": "asdf covers multi-language version management, direnv covers per-directory environment variables, and Make or just can run project tasks. uv can manage both Python versions and dependencies for Python-only projects.",
+      "related": [
+        "uv"
+      ],
+      "score": 8.3,
+      "sourceUrl": "https://github.com/jdx/mise/tree/43ee02c5b4975f6d7d2319958d0e1cde0f895187",
+      "path": "entries/tools/mise",
+      "files": []
+    },
+    {
+      "schemaVersion": 1,
       "id": "ripgrep",
       "type": "tool",
       "title": "ripgrep (rg) recursive search",
@@ -207,6 +1558,319 @@
       "score": 9.3,
       "sourceUrl": "https://github.com/BurntSushi/ripgrep/tree/e89fff89ac9af12e8d4ce9d5fd07beb408ca730f",
       "path": "entries/tools/ripgrep",
+      "files": []
+    },
+    {
+      "schemaVersion": 1,
+      "id": "ruff",
+      "type": "tool",
+      "title": "Ruff Python linter and formatter",
+      "summary": "Run Python lint checks, sort imports with the import rules, and format source code. Use check-only commands in CI.",
+      "useWhen": "You maintain Python repos and want consistent linting and formatting with one command-line tool.",
+      "tags": [
+        "cli",
+        "python",
+        "linting"
+      ],
+      "platforms": [
+        "macos",
+        "linux",
+        "windows"
+      ],
+      "rating": {
+        "rubric": "dev-v1",
+        "dimensions": {
+          "value": 4,
+          "dependability": 4,
+          "ease": 4,
+          "safety": 3,
+          "adoption": 4,
+          "portability": 4,
+          "upkeep": 4
+        },
+        "evidence": "reviewed",
+        "reviewed": "2026-11-05",
+        "notes": "Run ruff check and ruff format --check first. Lint fixes and formatting can edit files. Ruff's rule coverage and formatting choices differ from other tools, so review the migration diff and any rules your team relies on."
+      },
+      "source": {
+        "kind": "linked",
+        "url": "https://github.com/astral-sh/ruff",
+        "revision": "ba65abf8ba7bfbcc059f7fb9712be5ba9cab6abc",
+        "version": "0.17.3",
+        "retrieved": "2026-11-05",
+        "license": "MIT",
+        "author": "Astral and Ruff contributors"
+      },
+      "install": {
+        "macos": "brew install ruff",
+        "linux": "Download the matching standalone binary from GitHub Releases, or add Ruff as a project development dependency through your Python package manager.",
+        "windows": "Download the Windows binary from GitHub Releases, or install Ruff through your Python package manager.",
+        "notes": "For projects using uv, add it with uv add --dev ruff and invoke it with uv run ruff."
+      },
+      "inspiredBy": [
+        {
+          "title": "r/Python discussion on current Python linters",
+          "url": "https://www.reddit.com/r/Python/comments/1wyz8qw/2026_best_python_linter_as_of_right_now/"
+        },
+        {
+          "title": "Ruff documentation",
+          "url": "https://docs.astral.sh/ruff/"
+        }
+      ],
+      "overlap": "Black formats, Flake8 and its plugins lint, and isort sorts imports. A separate type checker still covers type analysis.",
+      "related": [
+        "uv"
+      ],
+      "score": 9.6,
+      "sourceUrl": "https://github.com/astral-sh/ruff/tree/ba65abf8ba7bfbcc059f7fb9712be5ba9cab6abc",
+      "path": "entries/tools/ruff",
+      "files": []
+    },
+    {
+      "schemaVersion": 1,
+      "id": "shellcheck",
+      "type": "tool",
+      "title": "ShellCheck static analysis for shell scripts",
+      "summary": "Flag common shell bugs such as unintended word splitting, unsafe expansions, and constructs unsupported by the selected shell dialect.",
+      "useWhen": "You maintain Bash or POSIX shell scripts and want actionable diagnostics before local runs or CI.",
+      "tags": [
+        "cli",
+        "linting"
+      ],
+      "platforms": [
+        "macos",
+        "linux",
+        "windows"
+      ],
+      "rating": {
+        "rubric": "dev-v1",
+        "dimensions": {
+          "value": 4,
+          "dependability": 4,
+          "ease": 4,
+          "safety": 4,
+          "adoption": 4,
+          "portability": 4,
+          "upkeep": 4
+        },
+        "evidence": "reviewed",
+        "reviewed": "2026-11-05",
+        "notes": "Use the script's real shebang so diagnostics target the right dialect. Review suggested fixes and run the script under the oldest shell version you support. Static analysis cannot exercise runtime behavior."
+      },
+      "source": {
+        "kind": "linked",
+        "url": "https://github.com/koalaman/shellcheck",
+        "revision": "aac0823e6b58f8a499e856e93738082691cbf212",
+        "version": "0.11.0",
+        "retrieved": "2026-11-05",
+        "license": "GPL-3.0-or-later",
+        "author": "Vidar Holen and contributors"
+      },
+      "install": {
+        "macos": "brew install shellcheck",
+        "linux": "Install shellcheck from your distribution or extract a matching standalone binary from GitHub Releases.",
+        "windows": "winget install --exact --id koalaman.shellcheck"
+      },
+      "inspiredBy": [
+        {
+          "title": "Hacker News discussion on ShellCheck in shell workflows",
+          "url": "https://news.ycombinator.com/item?id=27030504"
+        }
+      ],
+      "overlap": "A shell syntax check catches parse errors, while ShellCheck also flags suspicious but valid shell code. Runtime and compatibility tests remain useful.",
+      "related": [
+        "ruff"
+      ],
+      "score": 10,
+      "sourceUrl": "https://github.com/koalaman/shellcheck/tree/aac0823e6b58f8a499e856e93738082691cbf212",
+      "path": "entries/tools/shellcheck",
+      "files": []
+    },
+    {
+      "schemaVersion": 1,
+      "id": "uv",
+      "type": "tool",
+      "title": "uv Python project and dependency manager",
+      "summary": "Install Python versions, lock and sync project dependencies, run commands in the project environment, and run scripts with inline dependency declarations.",
+      "useWhen": "You maintain Python projects or standalone scripts and regularly spend time setting up interpreters, virtual environments, and dependencies.",
+      "tags": [
+        "cli",
+        "environment-setup",
+        "python"
+      ],
+      "platforms": [
+        "macos",
+        "linux",
+        "windows"
+      ],
+      "rating": {
+        "rubric": "dev-v1",
+        "dimensions": {
+          "value": 4,
+          "dependability": 3,
+          "ease": 4,
+          "safety": 3,
+          "adoption": 4,
+          "portability": 4,
+          "upkeep": 4
+        },
+        "evidence": "reviewed",
+        "reviewed": "2026-11-05",
+        "notes": "One CLI keeps the interpreter and dependency workflow together. Commit uv.lock and use uv sync --locked in CI to catch lockfile drift. Sync can remove undeclared packages from the project environment, and native builds still depend on the availability of wheels or system build tools."
+      },
+      "source": {
+        "kind": "linked",
+        "url": "https://github.com/astral-sh/uv",
+        "revision": "316c827e058c16b71d5c507a20729c2995a7bcce",
+        "version": "0.13.7",
+        "retrieved": "2026-11-05",
+        "license": "Apache-2.0 OR MIT",
+        "author": "Astral"
+      },
+      "install": {
+        "macos": "brew install uv",
+        "linux": "Download the uv release archive for your architecture, extract it, and put uv and uvx on PATH.",
+        "windows": "winget install --exact --id astral-sh.uv"
+      },
+      "inspiredBy": [
+        {
+          "title": "Reddit discussion on managing Python development environments in 2026",
+          "url": "https://www.reddit.com/r/Python/comments/1vexrvf/what_are_you_using_to_manage_your_dev/"
+        }
+      ],
+      "overlap": "Python's venv and pip handle isolated installs, and Poetry manages projects and lockfiles. Conda and Pixi also handle non-Python dependencies through Conda packages. mise manages runtimes across languages, while uv manages Python project dependencies.",
+      "related": [
+        "mise"
+      ],
+      "score": 9.1,
+      "sourceUrl": "https://github.com/astral-sh/uv/tree/316c827e058c16b71d5c507a20729c2995a7bcce",
+      "path": "entries/tools/uv",
+      "files": []
+    },
+    {
+      "schemaVersion": 1,
+      "id": "yq",
+      "type": "tool",
+      "title": "Mike Farah's yq for querying and editing YAML",
+      "summary": "Read, filter, or update structured YAML from the command line. Use it to script targeted changes to configuration files.",
+      "useWhen": "You regularly inspect or update fields in Compose files, CI workflows, or Helm values from a script.",
+      "tags": [
+        "cli",
+        "yaml",
+        "search"
+      ],
+      "platforms": [
+        "macos",
+        "linux",
+        "windows"
+      ],
+      "rating": {
+        "rubric": "dev-v1",
+        "dimensions": {
+          "value": 4,
+          "dependability": 3,
+          "ease": 3,
+          "safety": 3,
+          "adoption": 4,
+          "portability": 4,
+          "upkeep": 4
+        },
+        "evidence": "reviewed",
+        "reviewed": "2026-11-05",
+        "notes": "Several unrelated programs are named yq. Check that your installed binary is the Mike Farah v4 implementation. Preview output before using in-place edits because formatting or comment placement can change."
+      },
+      "source": {
+        "kind": "linked",
+        "url": "https://github.com/mikefarah/yq",
+        "revision": "504fc38780cc46be8444ea1b72fb55919fc0bfb0",
+        "version": "4.54.1",
+        "retrieved": "2026-11-05",
+        "license": "MIT",
+        "author": "Mike Farah and contributors"
+      },
+      "install": {
+        "macos": "brew install yq",
+        "linux": "Download the matching Mike Farah yq binary from GitHub Releases and put it on PATH, or install a distribution package that identifies the same upstream.",
+        "windows": "Download the matching Windows binary from GitHub Releases and name it yq.exe on PATH."
+      },
+      "inspiredBy": [
+        {
+          "title": "Kubernetes discussion on choosing a YAML editor",
+          "url": "https://www.reddit.com/r/kubernetes/comments/1h3mcht"
+        },
+        {
+          "title": "Mike Farah yq documentation",
+          "url": "https://mikefarah.gitbook.io/yq"
+        }
+      ],
+      "overlap": "jq handles JSON. A YAML library is useful for complex transformations that need tests and application code. yq fits small field reads and edits without treating YAML as plain text.",
+      "related": [
+        "jq"
+      ],
+      "score": 8.8,
+      "sourceUrl": "https://github.com/mikefarah/yq/tree/504fc38780cc46be8444ea1b72fb55919fc0bfb0",
+      "path": "entries/tools/yq",
+      "files": []
+    },
+    {
+      "schemaVersion": 1,
+      "id": "zoxide",
+      "type": "tool",
+      "title": "zoxide for jumping to familiar directories",
+      "summary": "Jump to directories by typing a short name. zoxide learns from visited paths and ranks matches by how often and how recently they were visited.",
+      "useWhen": "You switch among many repos or deeply nested project directories from the shell.",
+      "tags": [
+        "cli",
+        "search"
+      ],
+      "platforms": [
+        "macos",
+        "linux",
+        "windows"
+      ],
+      "rating": {
+        "rubric": "dev-v1",
+        "dimensions": {
+          "value": 3,
+          "dependability": 4,
+          "ease": 4,
+          "safety": 4,
+          "adoption": 3,
+          "portability": 4,
+          "upkeep": 4
+        },
+        "evidence": "reviewed",
+        "reviewed": "2026-11-05",
+        "notes": "The database needs some visits before its ranking becomes useful. Start with the separate z command so cd retains its usual behavior. Interactive selection with zi requires fzf."
+      },
+      "source": {
+        "kind": "linked",
+        "url": "https://github.com/ajeetdsouza/zoxide",
+        "revision": "f84f9a3e1d16fabf3e34b199ec7d552993b41f29",
+        "version": "0.10.0",
+        "retrieved": "2026-11-05",
+        "license": "MIT",
+        "author": "Ajeet D'Souza and contributors"
+      },
+      "install": {
+        "macos": "brew install zoxide",
+        "linux": "Install zoxide through your distribution or download a binary from GitHub Releases.",
+        "windows": "winget install zoxide",
+        "notes": "Follow the upstream init instructions for your shell, then restart the shell."
+      },
+      "inspiredBy": [
+        {
+          "title": "November Reddit discussion on zoxide and cd",
+          "url": "https://www.reddit.com/r/CLI/comments/1xnt4px/whats_one_tiny_commandline_habit_that_saves_you_a/"
+        }
+      ],
+      "overlap": "Shell completion and aliases work well for a small fixed set of paths. fzf can pick from an explicit list. zoxide ranks paths from your actual navigation history.",
+      "related": [
+        "fzf"
+      ],
+      "score": 9.1,
+      "sourceUrl": "https://github.com/ajeetdsouza/zoxide/tree/f84f9a3e1d16fabf3e34b199ec7d552993b41f29",
+      "path": "entries/tools/zoxide",
       "files": []
     }
   ],

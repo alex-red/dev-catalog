@@ -10,7 +10,23 @@ terms:
     facet: topic
     aliases: [terminal, shell]
     definition: Programs and techniques used from a terminal rather than an editor or web interface.
+  - id: containers
+    label: Containers
+    facet: topic
+    definition: Running containerized services and inspecting container images.
+  - id: security
+    label: Security
+    facet: topic
+    definition: Detecting security issues and protecting credentials in development workflows.
   # Tasks
+  - id: automation
+    label: Automation
+    facet: task
+    definition: Running repeatable development commands from named recipes or event triggers.
+  - id: benchmarking
+    label: Benchmarking
+    facet: task
+    definition: Measuring and comparing the performance of programs or development commands.
   - id: cleanup
     label: Cleanup
     facet: task
@@ -20,16 +36,57 @@ terms:
     label: Debugging
     facet: task
     definition: Finding and diagnosing the cause of incorrect behavior.
+  - id: environment-setup
+    label: Environment setup
+    facet: task
+    definition: Preparing a local checkout with the runtimes, dependencies, and configuration it needs.
+  - id: linting
+    label: Linting
+    facet: task
+    definition: Analyzing source code for errors, suspicious patterns, or rule violations.
   - id: search
     label: Search
     facet: task
     aliases: [grep, find]
     definition: Locating text, files or symbols across a codebase or filesystem.
+  - id: testing
+    label: Testing
+    facet: task
+    definition: Running automated checks or investigating their results.
   # Technologies
   - id: git
     label: Git
     facet: technology
     definition: The Git version control system, its commands and repository conventions.
+  - id: github
+    label: GitHub
+    facet: technology
+    definition: GitHub repositories, pull requests, releases, and Actions workflows.
+  - id: json
+    label: JSON
+    facet: technology
+    definition: The JSON data format and tools for reading or transforming it.
+  - id: kubernetes
+    label: Kubernetes
+    facet: technology
+    aliases: [k8s]
+    definition: The Kubernetes platform and its workloads, resources, and clusters.
+  - id: playwright
+    label: Playwright
+    facet: technology
+    definition: The Playwright browser automation and testing framework.
+  - id: python
+    label: Python
+    facet: technology
+    definition: The Python programming language and its tooling.
+  - id: sql
+    label: SQL
+    facet: technology
+    definition: Structured Query Language for querying and transforming data.
+  - id: yaml
+    label: YAML
+    facet: technology
+    definition: The YAML data format and tools for reading or transforming it.
   # Keywords
   - id: branches
     label: Branches

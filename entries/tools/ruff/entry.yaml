@@ -1,0 +1,41 @@
+schemaVersion: 1
+id: ruff
+type: tool
+title: Ruff Python linter and formatter
+summary: Run Python lint checks, sort imports with the import rules, and format source code. Use check-only commands in CI.
+useWhen: You maintain Python repos and want consistent linting and formatting with one command-line tool.
+tags: [ cli, python, linting ]
+platforms: [ macos, linux, windows ]
+rating:
+  rubric: dev-v1
+  dimensions:
+    value: 4
+    dependability: 4
+    ease: 4
+    safety: 3
+    adoption: 4
+    portability: 4
+    upkeep: 4
+  evidence: reviewed
+  reviewed: 2026-11-05
+  notes: Run ruff check and ruff format --check first. Lint fixes and formatting can edit files. Ruff's rule coverage and formatting choices differ from other tools, so review the migration diff and any rules your team relies on.
+source:
+  kind: linked
+  url: https://github.com/astral-sh/ruff
+  revision: ba65abf8ba7bfbcc059f7fb9712be5ba9cab6abc
+  version: 0.17.3
+  retrieved: 2026-11-05
+  license: MIT
+  author: Astral and Ruff contributors
+install:
+  macos: brew install ruff
+  linux: Download the matching standalone binary from GitHub Releases, or add Ruff as a project development dependency through your Python package manager.
+  windows: Download the Windows binary from GitHub Releases, or install Ruff through your Python package manager.
+  notes: For projects using uv, add it with uv add --dev ruff and invoke it with uv run ruff.
+inspiredBy:
+  - title: r/Python discussion on current Python linters
+    url: https://www.reddit.com/r/Python/comments/1wyz8qw/2026_best_python_linter_as_of_right_now/
+  - title: Ruff documentation
+    url: https://docs.astral.sh/ruff/
+overlap: Black formats, Flake8 and its plugins lint, and isort sorts imports. A separate type checker still covers type analysis.
+related: [ uv ]

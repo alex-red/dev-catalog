@@ -1,0 +1,38 @@
+schemaVersion: 1
+id: shellcheck
+type: tool
+title: ShellCheck static analysis for shell scripts
+summary: Flag common shell bugs such as unintended word splitting, unsafe expansions, and constructs unsupported by the selected shell dialect.
+useWhen: You maintain Bash or POSIX shell scripts and want actionable diagnostics before local runs or CI.
+tags: [ cli, linting ]
+platforms: [ macos, linux, windows ]
+rating:
+  rubric: dev-v1
+  dimensions:
+    value: 4
+    dependability: 4
+    ease: 4
+    safety: 4
+    adoption: 4
+    portability: 4
+    upkeep: 4
+  evidence: reviewed
+  reviewed: 2026-11-05
+  notes: Use the script's real shebang so diagnostics target the right dialect. Review suggested fixes and run the script under the oldest shell version you support. Static analysis cannot exercise runtime behavior.
+source:
+  kind: linked
+  url: https://github.com/koalaman/shellcheck
+  revision: aac0823e6b58f8a499e856e93738082691cbf212
+  version: 0.11.0
+  retrieved: 2026-11-05
+  license: GPL-3.0-or-later
+  author: Vidar Holen and contributors
+install:
+  macos: brew install shellcheck
+  linux: Install shellcheck from your distribution or extract a matching standalone binary from GitHub Releases.
+  windows: winget install --exact --id koalaman.shellcheck
+inspiredBy:
+  - title: Hacker News discussion on ShellCheck in shell workflows
+    url: https://news.ycombinator.com/item?id=27030504
+overlap: A shell syntax check catches parse errors, while ShellCheck also flags suspicious but valid shell code. Runtime and compatibility tests remain useful.
+related: [ ruff ]

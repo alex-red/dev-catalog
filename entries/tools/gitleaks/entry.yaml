@@ -1,0 +1,40 @@
+schemaVersion: 1
+id: gitleaks
+type: tool
+title: Gitleaks secret scanning for Git and files
+summary: Scan Git history, directories, or standard input for likely credentials. Use a local hook for staged changes and CI for a shared check.
+useWhen: You want to catch common credentials before they land in a branch or need to audit existing Git history.
+tags: [ cli, git, security ]
+platforms: [ macos, linux, windows ]
+rating:
+  rubric: dev-v1
+  dimensions:
+    value: 4
+    dependability: 3
+    ease: 3
+    safety: 3
+    adoption: 4
+    portability: 4
+    upkeep: 2
+  evidence: reviewed
+  reviewed: 2026-11-05
+  notes: Pattern and entropy rules produce false positives and can miss custom secret formats. Use redaction when publishing findings. Rotate exposed credentials. Upstream is feature-complete and plans security patches only, with new feature work moving to Betterleaks.
+source:
+  kind: linked
+  url: https://github.com/gitleaks/gitleaks
+  revision: 83d9cd684c87d95d656c1458ef04895a7f1cbd8e
+  version: 8.30.1
+  retrieved: 2026-11-05
+  license: MIT
+  author: Zachary Rice and contributors
+install:
+  macos: brew install gitleaks
+  linux: Download the matching Linux archive from GitHub Releases and put gitleaks on PATH.
+  windows: Download the Windows release archive and put gitleaks.exe on PATH.
+  notes: The git scan mode requires Git. Use the upstream hook setup if you want to scan staged changes automatically.
+inspiredBy:
+  - title: November r/devops discussion on secret handling
+    url: https://www.reddit.com/r/devops/comments/1xo9cfw/whats_your_goto_strategy_for_handling_secrets/
+  - title: Gitleaks upstream maintenance notice
+    url: https://github.com/gitleaks/gitleaks
+overlap: Hosted secret scanning and push protection can cover centralized enforcement. Gitleaks runs locally and in forge-independent CI. Betterleaks is the maintainer's successor project for new feature development.

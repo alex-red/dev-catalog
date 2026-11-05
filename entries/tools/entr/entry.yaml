@@ -1,0 +1,40 @@
+schemaVersion: 1
+id: entr
+type: tool
+title: entr for rerunning commands on file changes
+summary: Read a list of paths from standard input and rerun a command when they change. Use it for a focused test, a linter, or a local process restart.
+useWhen: Your command lacks a useful watch mode and you want quick feedback from a specific set of files.
+tags: [ cli, automation, testing ]
+platforms: [ macos, linux ]
+rating:
+  rubric: dev-v1
+  dimensions:
+    value: 3
+    dependability: 4
+    ease: 3
+    safety: 3
+    adoption: 4
+    portability: 3
+    upkeep: 4
+  evidence: reviewed
+  reviewed: 2026-11-05
+  notes: Only watch the files relevant to the command. Rebuild the file list when inputs change. Restart mode stops the old process before launching a new one, and rerunning a command repeats any side effects it has.
+source:
+  kind: linked
+  url: https://github.com/eradman/entr
+  revision: 046d8d7cc6ce67775926cc585e313cab8f26e42a
+  version: "5.8"
+  retrieved: 2026-11-05
+  license: ISC
+  author: Eric Radman and contributors
+  notes: The 5.8 license file separately lists licenses for bundled compatibility code. Package managers may install a newer release.
+install:
+  macos: brew install entr
+  linux: Install entr through your distribution, such as apt install entr on Debian or Ubuntu.
+inspiredBy:
+  - title: November Reddit example combining fd and entr
+    url: https://www.reddit.com/r/CLI/comments/1xnt4px/whats_one_tiny_commandline_habit_that_saves_you_a/
+  - title: entr project examples and manual
+    url: https://eradman.com/entrproject/
+overlap: Many test runners and bundlers have their own watch modes. entr works with arbitrary commands and leaves the file selection to the caller.
+related: [ fd ]

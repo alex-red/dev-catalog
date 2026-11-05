@@ -1,0 +1,45 @@
+schemaVersion: 1
+id: jujutsu
+type: tool
+title: Jujutsu version control with a Git backend
+summary: Use jj to edit stacked changes, split and squash commits, and recover local operations through the operation log while collaborating through Git remotes.
+useWhen: You frequently revise earlier commits in a stack and spend time rebasing descendants or recovering from local history edits.
+tags: [ cli, git, branches ]
+platforms: [ macos, linux, windows ]
+rating:
+  rubric: dev-v1
+  dimensions:
+    value: 4
+    dependability: 3
+    ease: 2
+    safety: 3
+    adoption: 2
+    portability: 4
+    upkeep: 3
+  evidence: reviewed
+  reviewed: 2026-11-05
+  notes: Automatic descendant rebases and the local operation log help with stacked changes. The working copy is snapshotted as a commit, so check ignore rules and review changes before pushing. Check your repository's Git hooks and editor integrations before switching.
+  blockers:
+    - scope: Repositories that require Git submodules in the working copy
+      reason: Jujutsu preserves submodule entries in history but does not check them out itself.
+source:
+  kind: linked
+  url: https://github.com/jj-vcs/jj
+  revision: d16ee1fc88a72c54142241b079a34bbf3b033bc0
+  version: 0.47.1
+  retrieved: 2026-11-05
+  license: Apache-2.0
+  author: Martin von Zweigbergk and contributors
+install:
+  macos: brew install jj
+  linux: Download the jj release archive for your architecture, extract it, and put jj on PATH.
+  windows: winget install --exact --id jj-vcs.jj
+inspiredBy:
+  - title: Jujutsu Git compatibility documentation
+    url: https://docs.jj-vcs.dev/latest/git-compatibility/
+  - title: Hacker News discussion on Jujutsu workflows
+    url: https://news.ycombinator.com/item?id=47763759
+  - title: Reddit discussion on Jujutsu adoption and Git integrations
+    url: https://www.reddit.com/r/linux/comments/1t6fapq/jujutsu_a_gitcompatible_vcs_that_is_both_simple/
+overlap: Git's interactive rebase, fixup commits, and reflog cover the same editing and recovery jobs. Lazygit is a lighter change for developers who want a UI over their current Git workflow.
+related: [ lazygit ]

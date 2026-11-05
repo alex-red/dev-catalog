@@ -1,0 +1,41 @@
+schemaVersion: 1
+id: mise
+type: tool
+title: mise runtime manager and task runner
+summary: Declare runtime and tool versions, environment settings, and repeatable project tasks in mise.toml. Run tasks with the project's tools on PATH.
+useWhen: You switch among repositories with different Node, Python, Go, or other tool versions and want one setup command for contributors.
+tags: [ cli, environment-setup ]
+platforms: [ macos, linux, windows ]
+rating:
+  rubric: dev-v1
+  dimensions:
+    value: 4
+    dependability: 3
+    ease: 3
+    safety: 3
+    adoption: 3
+    portability: 3
+    upkeep: 4
+  evidence: reviewed
+  reviewed: 2026-11-05
+  notes: A shared config can replace several onboarding steps. Available binaries and backend behavior vary by tool and OS, and tasks must still use commands available on the target platform. Review project configuration before trusting it because tasks and some configuration features can execute code.
+source:
+  kind: linked
+  url: https://github.com/jdx/mise
+  revision: 43ee02c5b4975f6d7d2319958d0e1cde0f895187
+  version: 2026.11.2
+  retrieved: 2026-11-05
+  license: MIT
+  author: Jeff Dickey and contributors
+install:
+  macos: brew install mise
+  linux: Download the release binary for your architecture and put it on PATH.
+  windows: winget install --exact --id jdx.mise
+  notes: Use mise exec or mise run to start without changing shell startup files. Follow the upstream activation instructions for automatic shell integration.
+inspiredBy:
+  - title: Hacker News discussion on daily developer tools
+    url: https://news.ycombinator.com/item?id=47602040
+  - title: Reddit discussion on command-line habits
+    url: https://www.reddit.com/r/CLI/comments/1xnt4px/whats_one_tiny_commandline_habit_that_saves_you_a/
+overlap: asdf covers multi-language version management, direnv covers per-directory environment variables, and Make or just can run project tasks. uv can manage both Python versions and dependencies for Python-only projects.
+related: [ uv ]

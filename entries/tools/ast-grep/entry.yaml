@@ -1,0 +1,41 @@
+schemaVersion: 1
+id: ast-grep
+type: tool
+title: ast-grep structural search and rewrite
+summary: Match code by syntax across supported languages. Preview or apply repeatable rewrites and use rules to detect recurring patterns.
+useWhen: You need to find or migrate code that has the same structure but varies in spacing, arguments, or local names.
+tags: [ cli, search, linting ]
+platforms: [ macos, linux, windows ]
+rating:
+  rubric: dev-v1
+  dimensions:
+    value: 4
+    dependability: 3
+    ease: 2
+    safety: 3
+    adoption: 4
+    portability: 4
+    upkeep: 4
+  evidence: reviewed
+  reviewed: 2026-11-05
+  notes: Start with a read-only match and inspect results before applying changes. Patterns match syntax rather than resolving symbol identity or types, so check for unrelated matches and run the project's tests after a rewrite.
+source:
+  kind: linked
+  url: https://github.com/ast-grep/ast-grep
+  revision: 5a204b1ef3facef94de125d990dddc7cf90011c0
+  version: 0.51.1
+  retrieved: 2026-11-05
+  license: MIT
+  author: Herrington Darkholme and contributors
+install:
+  macos: brew install ast-grep
+  linux: Download the matching release archive from GitHub and put ast-grep on PATH.
+  windows: Download the matching Windows archive from GitHub Releases and put ast-grep.exe on PATH.
+  notes: Use the full command ast-grep where sg already names a system utility.
+inspiredBy:
+  - title: Developer account of anchoring specifications to code with ast-grep
+    url: https://coles.codes/posts/anchoring-specs-to-code-with-ast-grep/
+  - title: ast-grep rewrite guide
+    url: https://ast-grep.github.io/guide/rewrite-code
+overlap: ripgrep handles text searches, and editor rename resolves symbols when language support is available. ast-grep fits repeated syntax-level matches and rewrites.
+related: [ ripgrep ]

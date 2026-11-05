@@ -1,0 +1,39 @@
+schemaVersion: 1
+id: delta
+type: tool
+title: delta syntax-highlighting diff pager
+summary: Render Git diffs with syntax highlighting, within-line change emphasis, line numbers, or optional side-by-side views.
+useWhen: You regularly review patches in a terminal and want to spot small changes in dense diffs.
+tags: [ cli, git ]
+platforms: [ macos, linux, windows ]
+rating:
+  rubric: dev-v1
+  dimensions:
+    value: 3
+    dependability: 4
+    ease: 3
+    safety: 4
+    adoption: 4
+    portability: 4
+    upkeep: 3
+  evidence: reviewed
+  reviewed: 2026-11-05
+  notes: The executable is delta, while some package managers call it git-delta. Try git diff piped into delta before changing Git configuration. Side-by-side mode needs a sufficiently wide terminal.
+source:
+  kind: linked
+  url: https://github.com/dandavison/delta
+  revision: b88d2290468449d75950bfa150ea7c1291fe2977
+  version: 0.20.1
+  retrieved: 2026-11-05
+  license: MIT
+  author: Dan Davison and contributors
+install:
+  macos: brew install git-delta
+  linux: Install git-delta from your distribution or download the matching release package or binary.
+  windows: Download the Windows archive from GitHub Releases and add the directory containing delta.exe to PATH.
+  notes: Git users can configure delta as core.pager after trying it on a diff.
+inspiredBy:
+  - title: Reddit developer CLI discussion
+    url: https://www.reddit.com/r/KittyTerminal/comments/1w489b8/essential_cli_tools_for_developers/
+overlap: Git's built-in color diff and --word-diff can make small edits visible. Lazygit and editor diff views also provide navigation and staging.
+related: [ lazygit ]

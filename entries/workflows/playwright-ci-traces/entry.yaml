@@ -1,0 +1,32 @@
+schemaVersion: 1
+id: playwright-ci-traces
+type: workflow
+title: Diagnose failed CI browser tests with Playwright traces
+summary: Record traces selectively in Playwright Test, save the HTML report as a CI artifact, and inspect the failed action alongside the DOM, console, and network activity.
+useWhen: A Playwright test fails in CI and screenshots or logs alone do not explain what happened.
+tags: [ debugging, testing, playwright ]
+platforms: [ macos, linux, windows ]
+requires: [ Node.js, npm, Playwright Test (@playwright/test) ]
+rating:
+  rubric: dev-v1
+  dimensions:
+    value: 4
+    dependability: 4
+    ease: 3
+    safety: 3
+    adoption: 3
+    portability: 3
+    upkeep: 4
+  evidence: reviewed
+  reviewed: 2026-11-05
+  notes: Traces preserve failure context for inspection without reproducing the run. Recording adds overhead, retry-only tracing can miss a failure that passes on retry, and artifacts can contain sensitive test data. Requires an existing Playwright Test suite and a CI artifact upload step.
+source:
+  kind: original
+  license: MIT
+  author: Dev Catalog contributors
+inspiredBy:
+  - title: Playwright Trace Viewer documentation
+    url: https://playwright.dev/docs/trace-viewer
+  - title: Reddit experience replacing custom screenshot capture with Playwright traces
+    url: https://www.reddit.com/r/Playwright/comments/1wsmwvf/trace_viewer_has_probably_saved_me_more_time_than/
+overlap: Screenshots show a single browser state, and logs can be enough for a clear backend error. Playwright UI Mode supports interactive local debugging, while a CI trace lets you inspect the recorded run.

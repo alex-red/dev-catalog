@@ -1,0 +1,41 @@
+schemaVersion: 1
+id: jq
+type: tool
+title: jq for querying and transforming JSON
+summary: Filter, reshape, and generate JSON in shell pipelines. Read data from files or standard input and emit JSON or raw values for downstream commands.
+useWhen: You repeatedly extract fields from API responses, CLI output, or JSON logs and want a reusable command.
+tags: [ cli, json, search ]
+platforms: [ macos, linux, windows ]
+rating:
+  rubric: dev-v1
+  dimensions:
+    value: 4
+    dependability: 4
+    ease: 3
+    safety: 4
+    adoption: 4
+    portability: 4
+    upkeep: 4
+  evidence: reviewed
+  reviewed: 2026-11-05
+  notes: Start with keys or a single field before building a larger filter. Shell quoting differs by shell. jq normally parses a whole JSON value into memory, so use streaming mode or a line-oriented format when the input requires it.
+source:
+  kind: linked
+  url: https://github.com/jqlang/jq
+  revision: 34f7186b86743a083a589741b6cea95293524108
+  version: 1.8.2
+  retrieved: 2026-11-05
+  license: MIT
+  author: Stephen Dolan and jq contributors
+  notes: The upstream COPYING file also lists licenses for bundled and derived components.
+install:
+  macos: brew install jq
+  linux: Install jq through your distribution or download the matching binary from GitHub Releases.
+  windows: winget install --exact --id jqlang.jq
+inspiredBy:
+  - title: Reddit example inspecting JSON response keys
+    url: https://www.reddit.com/r/commandline/comments/1wd9744/how_do_you_handle_largeunknown_json_responses_in/
+  - title: jq manual
+    url: https://jqlang.org/manual/
+overlap: Python and JavaScript can parse JSON and may be easier to maintain for longer transformations. DuckDB fits SQL joins across files, while jq fits document filters and pipelines.
+related: [ duckdb, yq ]

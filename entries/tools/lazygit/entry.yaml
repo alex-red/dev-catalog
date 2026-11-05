@@ -1,0 +1,39 @@
+schemaVersion: 1
+id: lazygit
+type: tool
+title: Lazygit terminal UI for Git
+summary: Browse branches, commits, and diffs side by side. Stage individual hunks or lines, build commits, and manage rebases from a keyboard-driven terminal interface.
+useWhen: You frequently move between diffs, staging, and history edits and want to stay in the terminal.
+tags: [ cli, git, branches ]
+platforms: [ macos, linux, windows ]
+requires: [ git ]
+rating:
+  rubric: dev-v1
+  dimensions:
+    value: 3
+    dependability: 4
+    ease: 3
+    safety: 3
+    adoption: 4
+    portability: 4
+    upkeep: 4
+  evidence: reviewed
+  reviewed: 2026-11-05
+  notes: Contextual key hints help with discovery, but the panes and shortcuts take practice. Review the active repository, selection, and target branch before history edits, resets, or pushes.
+source:
+  kind: linked
+  url: https://github.com/jesseduffield/lazygit
+  revision: 63ab89fff478854deb4a35ef8902676b3cc5ca72
+  version: 0.66.2
+  retrieved: 2026-11-05
+  license: MIT
+  author: Jesse Duffield and contributors
+install:
+  macos: brew install lazygit
+  linux: Install the distribution package if available, or extract the matching release binary and put it on PATH.
+  windows: winget install --exact --id JesseDuffield.lazygit
+inspiredBy:
+  - title: Hacker News discussion on Lazygit
+    url: https://news.ycombinator.com/item?id=49580702
+overlap: Git already provides git add -p, git log, and git rebase -i. Many editors offer visual diff and staging views. Lazygit brings these jobs into one terminal UI for standard Git repositories.
+related: [ git-worktree-parallel, jujutsu ]

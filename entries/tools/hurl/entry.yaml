@@ -1,0 +1,40 @@
+schemaVersion: 1
+id: hurl
+type: tool
+title: Hurl repeatable HTTP requests and assertions
+summary: Describe HTTP requests, captures, and response assertions in plain-text files. Run the same scenario locally and in CI.
+useWhen: You repeat a multi-step API check such as signing in, using a captured token, and asserting the next response.
+tags: [ cli, testing ]
+platforms: [ macos, linux, windows ]
+rating:
+  rubric: dev-v1
+  dimensions:
+    value: 4
+    dependability: 4
+    ease: 3
+    safety: 3
+    adoption: 4
+    portability: 4
+    upkeep: 4
+  evidence: reviewed
+  reviewed: 2026-11-05
+  notes: Requests run against real endpoints, so use a test environment for scenarios that write data. Pass credentials through variables and keep them out of checked-in files and CI output.
+source:
+  kind: linked
+  url: https://github.com/Orange-OpenSource/hurl
+  revision: 2641800501e077c835cc4059e39e5a251e8b1ccb
+  version: 8.1.0
+  retrieved: 2026-11-05
+  license: Apache-2.0
+  author: Orange and Hurl contributors
+install:
+  macos: brew install hurl
+  linux: Install your distribution's Hurl package or extract a matching archive from GitHub Releases.
+  windows: winget install hurl
+inspiredBy:
+  - title: Hacker News experience reusing Hurl tests through an API migration
+    url: https://news.ycombinator.com/item?id=44324592
+  - title: Hurl installation documentation
+    url: https://hurl.dev/docs/installation.html
+overlap: curl handles one-off requests. Postman and Bruno offer interactive API clients. Hurl fits repeatable text scenarios with chained requests and assertions.
+related: [ jq, playwright-ci-traces ]

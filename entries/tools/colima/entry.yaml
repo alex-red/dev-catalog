@@ -1,0 +1,43 @@
+schemaVersion: 1
+id: colima
+type: tool
+title: Colima local container runtime
+summary: Start and manage a Lima virtual machine for a local Docker or containerd runtime. Use the Docker CLI and Compose against the VM when using Docker mode.
+useWhen: You need a local container runtime on macOS or a VM-backed container environment on Linux.
+tags: [ cli, containers, environment-setup ]
+platforms: [ macos, linux ]
+requires: [ Lima ]
+rating:
+  rubric: dev-v1
+  dimensions:
+    value: 4
+    dependability: 3
+    ease: 3
+    safety: 3
+    adoption: 3
+    portability: 3
+    upkeep: 4
+  evidence: reviewed
+  reviewed: 2026-11-05
+  notes: Colima starts a VM and the Docker mode needs a separate Docker client. Check the active Docker context before running commands. Bind mounts, networking, and cross-architecture images can behave differently from a native Linux engine.
+source:
+  kind: linked
+  url: https://github.com/abiosoft/colima
+  revision: 00f6c297e92a82c04a4ab507db0a61435650d7e8
+  version: 0.10.3
+  retrieved: 2026-11-05
+  license: MIT
+  author: Abiola Ibrahim and contributors
+install:
+  macos: brew install colima docker
+  linux: Follow the upstream Linux instructions for Lima and its VM dependencies, then install the matching Colima release binary and your preferred container client.
+  notes: Install the Docker Compose plugin separately if your project uses docker compose. Start the default Docker runtime with colima start.
+inspiredBy:
+  - title: Hacker News developer tool usage discussion
+    url: https://news.ycombinator.com/item?id=47602040
+  - title: Reddit comparison of Colima and OrbStack
+    url: https://www.reddit.com/r/macmini/comments/1wtlzfe/orbstack_vs_colima_for_docker/
+  - title: Colima installation guide for the pinned release
+    url: https://github.com/abiosoft/colima/blob/v0.10.3/docs/INSTALL.md
+overlap: Docker Desktop and OrbStack provide managed local Docker environments on macOS. A native Docker Engine or Podman installation may already meet the need on Linux.
+related: [ dive ]
