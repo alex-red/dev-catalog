@@ -409,6 +409,190 @@
     },
     {
       "schemaVersion": 1,
+      "id": "bat",
+      "type": "tool",
+      "title": "bat syntax-highlighting file viewer",
+      "summary": "Read text files in the terminal with syntax highlighting, optional line numbers and Git change markers, and automatic paging.",
+      "useWhen": "You regularly read code, configuration, or logs from the terminal or want syntax-highlighted fzf previews.",
+      "tags": [
+        "cli",
+        "navigation"
+      ],
+      "platforms": [
+        "macos",
+        "linux",
+        "windows"
+      ],
+      "rating": {
+        "rubric": "dev-v1",
+        "dimensions": {
+          "value": 4,
+          "dependability": 4,
+          "ease": 4,
+          "safety": 4,
+          "adoption": 4,
+          "portability": 4,
+          "upkeep": 4
+        },
+        "evidence": "reviewed",
+        "reviewed": "2026-11-05",
+        "notes": "Interactive output can include line numbers and use a pager. For fzf previews, bat --color=always --paging=never renders color without waiting for a pager. Debian and Ubuntu may name the executable batcat."
+      },
+      "source": {
+        "kind": "linked",
+        "url": "https://github.com/sharkdp/bat",
+        "revision": "979ba22628bc9d8171f2cffca2bd5c90c9fc0a9e",
+        "version": "0.26.1",
+        "retrieved": "2026-11-05",
+        "license": "Apache-2.0 OR MIT",
+        "author": "David Peter and the bat developers"
+      },
+      "install": {
+        "macos": "brew install bat",
+        "linux": "Install bat through your distribution or extract a matching release binary. On Debian and Ubuntu the package may install the executable as batcat.",
+        "windows": "Download the Windows release archive and put bat.exe on PATH."
+      },
+      "inspiredBy": [
+        {
+          "title": "Reddit discussion on moving from cat to bat",
+          "url": "https://www.reddit.com/r/commandline/comments/1r8tljk/after_22_years_on_linux_i_finally_switched_to/"
+        }
+      ],
+      "overlap": "cat concatenates files and less pages long output. bat is useful for interactive reading with language-aware display and for previews in fzf.",
+      "related": [
+        "fzf"
+      ],
+      "score": 10,
+      "sourceUrl": "https://github.com/sharkdp/bat/tree/979ba22628bc9d8171f2cffca2bd5c90c9fc0a9e",
+      "path": "entries/tools/bat",
+      "files": []
+    },
+    {
+      "schemaVersion": 1,
+      "id": "broot",
+      "type": "tool",
+      "title": "broot interactive directory tree navigation",
+      "summary": "Browse and filter a directory tree as you type. Select matching paths, open files, and use optional shell integration to change directories.",
+      "useWhen": "You need to navigate a deep source tree and want to retain directory context while filtering for a file or folder.",
+      "tags": [
+        "cli",
+        "navigation",
+        "search"
+      ],
+      "platforms": [
+        "macos",
+        "linux",
+        "windows"
+      ],
+      "rating": {
+        "rubric": "dev-v1",
+        "dimensions": {
+          "value": 3,
+          "dependability": 4,
+          "ease": 3,
+          "safety": 3,
+          "adoption": 3,
+          "portability": 4,
+          "upkeep": 4
+        },
+        "evidence": "reviewed",
+        "reviewed": "2026-11-05",
+        "notes": "Run broot directly to try browsing. Changing the parent shell directory requires the shell function. Some verbs can modify files or execute configured commands, so review bindings before using them."
+      },
+      "source": {
+        "kind": "linked",
+        "url": "https://github.com/Canop/broot",
+        "revision": "54c95a07cd1f1440c553968e246f94d7690c3057",
+        "version": "1.62.0",
+        "retrieved": "2026-11-05",
+        "license": "MIT",
+        "author": "Denys Séguret and contributors"
+      },
+      "install": {
+        "macos": "brew install broot",
+        "linux": "Install broot from your distribution or download a release archive for your architecture.",
+        "windows": "scoop install broot",
+        "notes": "See the upstream shell integration instructions if you want the br command to change the current shell directory."
+      },
+      "inspiredBy": [
+        {
+          "title": "Broot installation guide",
+          "url": "https://dystroy.org/broot/install/"
+        }
+      ],
+      "overlap": "eza and tree display static directory trees. fd piped into fzf provides a flat picker. Broot keeps the tree context while you search and navigate.",
+      "related": [
+        "eza",
+        "fd",
+        "fzf",
+        "zoxide"
+      ],
+      "score": 8.4,
+      "sourceUrl": "https://github.com/Canop/broot/tree/54c95a07cd1f1440c553968e246f94d7690c3057",
+      "path": "entries/tools/broot",
+      "files": []
+    },
+    {
+      "schemaVersion": 1,
+      "id": "btop",
+      "type": "tool",
+      "title": "btop system resource dashboard",
+      "summary": "View CPU, memory, disks, networking, and processes together in an interactive terminal dashboard.",
+      "useWhen": "You need to see whether local slowdowns line up with resource pressure and identify the processes involved.",
+      "tags": [
+        "cli",
+        "monitoring",
+        "debugging"
+      ],
+      "platforms": [
+        "macos",
+        "linux"
+      ],
+      "rating": {
+        "rubric": "dev-v1",
+        "dimensions": {
+          "value": 4,
+          "dependability": 4,
+          "ease": 4,
+          "safety": 3,
+          "adoption": 4,
+          "portability": 3,
+          "upkeep": 4
+        },
+        "evidence": "reviewed",
+        "reviewed": "2026-11-05",
+        "notes": "A wide terminal makes the dashboard easier to use. Available metrics vary by OS and build. Confirm the selected PID before sending a signal from the process panel."
+      },
+      "source": {
+        "kind": "linked",
+        "url": "https://github.com/aristocratos/btop",
+        "revision": "cf1da5900b1e9eaa1c20fd7148dd812b43340b8a",
+        "version": "1.4.8",
+        "retrieved": "2026-11-05",
+        "license": "Apache-2.0",
+        "author": "Aristocratos and contributors"
+      },
+      "install": {
+        "macos": "brew install btop",
+        "linux": "Install btop through your distribution or download the matching release archive."
+      },
+      "inspiredBy": [
+        {
+          "title": "Reddit discussion of terminal monitoring alternatives",
+          "url": "https://www.reddit.com/r/LinuxTeck/comments/1s8l2dn/10_modern_linux_tools_that_replace_old_commands/"
+        }
+      ],
+      "overlap": "top provides basic resource and process data. htop offers a compact process-first view. btop is the better fit when you want resource graphs and process data side by side.",
+      "related": [
+        "htop"
+      ],
+      "score": 9.4,
+      "sourceUrl": "https://github.com/aristocratos/btop/tree/cf1da5900b1e9eaa1c20fd7148dd812b43340b8a",
+      "path": "entries/tools/btop",
+      "files": []
+    },
+    {
+      "schemaVersion": 1,
       "id": "colima",
       "type": "tool",
       "title": "Colima local container runtime",
@@ -541,6 +725,71 @@
     },
     {
       "schemaVersion": 1,
+      "id": "difftastic",
+      "type": "tool",
+      "title": "Difftastic syntax-aware code diffs",
+      "summary": "Compare source files by syntax so formatting churn is easier to distinguish from edits to the code. Falls back to line-based comparisons where appropriate.",
+      "useWhen": "You review refactors where wrapping, reindentation, or moved syntax makes the ordinary diff difficult to read.",
+      "tags": [
+        "cli",
+        "git"
+      ],
+      "platforms": [
+        "macos",
+        "linux",
+        "windows"
+      ],
+      "rating": {
+        "rubric": "dev-v1",
+        "dimensions": {
+          "value": 4,
+          "dependability": 3,
+          "ease": 3,
+          "safety": 4,
+          "adoption": 4,
+          "portability": 4,
+          "upkeep": 4
+        },
+        "evidence": "reviewed",
+        "reviewed": "2026-11-05",
+        "notes": "Run difft on two files or configure Git to use it for review. Use an ordinary Git diff when whitespace matters or you need a patch. Parser coverage and fallback behavior vary by file type and size."
+      },
+      "source": {
+        "kind": "linked",
+        "url": "https://github.com/Wilfred/difftastic",
+        "revision": "6201bc988aba1f5fc49cd0799461fba2aed5e0cf",
+        "version": "0.72.0",
+        "retrieved": "2026-11-05",
+        "license": "MIT",
+        "author": "Wilfred Hughes and contributors",
+        "notes": "Bundled tree-sitter parsers carry their own MIT or Apache-2.0 licenses."
+      },
+      "install": {
+        "macos": "brew install difftastic",
+        "linux": "Install difftastic from your distribution or download a matching GitHub release and put difft on PATH.",
+        "windows": "winget install difftastic"
+      },
+      "inspiredBy": [
+        {
+          "title": "Hacker News discussion on syntax-aware diffs",
+          "url": "https://news.ycombinator.com/item?id=39778412"
+        },
+        {
+          "title": "Difftastic examples",
+          "url": "https://difftastic.wilfred.me.uk/"
+        }
+      ],
+      "overlap": "git diff and delta keep line-level changes visible. Difftastic adds a structural view when a formatting-heavy edit is difficult to review.",
+      "related": [
+        "delta"
+      ],
+      "score": 9.1,
+      "sourceUrl": "https://github.com/Wilfred/difftastic/tree/6201bc988aba1f5fc49cd0799461fba2aed5e0cf",
+      "path": "entries/tools/difftastic",
+      "files": []
+    },
+    {
+      "schemaVersion": 1,
       "id": "dive",
       "type": "tool",
       "title": "Dive for inspecting container image layers",
@@ -608,6 +857,68 @@
     },
     {
       "schemaVersion": 1,
+      "id": "dua",
+      "type": "tool",
+      "title": "dua disk usage summaries and interactive browsing",
+      "summary": "Summarize disk use or browse a directory tree interactively. Optionally count fully shared APFS file clones once on macOS.",
+      "useWhen": "You want one tool for printed and interactive disk usage or need a closer look at fully cloned files on APFS.",
+      "tags": [
+        "cli",
+        "disk-space"
+      ],
+      "platforms": [
+        "macos",
+        "linux",
+        "windows"
+      ],
+      "rating": {
+        "rubric": "dev-v1",
+        "dimensions": {
+          "value": 3,
+          "dependability": 4,
+          "ease": 3,
+          "safety": 3,
+          "adoption": 4,
+          "portability": 4,
+          "upkeep": 4
+        },
+        "evidence": "reviewed",
+        "reviewed": "2026-11-05",
+        "notes": "Start in aggregate mode for a report. Interactive mode supports deletion. APFS clone deduplication adds traversal overhead and covers fully shared clones only. Partially shared files can still skew estimates."
+      },
+      "source": {
+        "kind": "linked",
+        "url": "https://github.com/Byron/dua-cli",
+        "revision": "c74ed619a0e2f9ab9830cd5b863dc139e8f340eb",
+        "version": "3.0.0",
+        "retrieved": "2026-11-05",
+        "license": "MIT",
+        "author": "Sebastian Thiel and contributors"
+      },
+      "install": {
+        "macos": "brew install dua-cli",
+        "linux": "Download the matching dua release archive, extract it, and put dua on PATH.",
+        "windows": "winget install --exact --id Byron.dua-cli"
+      },
+      "inspiredBy": [
+        {
+          "title": "Reddit discussion of modern command alternatives",
+          "url": "https://www.reddit.com/r/linuxquestions/comments/1sc0e87/real_modern_alternatives_to_common_tools/"
+        }
+      ],
+      "overlap": "dust covers a quick printed tree and ncdu is the general interactive pick. dua combines both and has a specific advantage when inspecting fully shared APFS clones.",
+      "related": [
+        "dust",
+        "ncdu",
+        "gdu"
+      ],
+      "score": 8.6,
+      "sourceUrl": "https://github.com/Byron/dua-cli/tree/c74ed619a0e2f9ab9830cd5b863dc139e8f340eb",
+      "path": "entries/tools/dua",
+      "files": []
+    },
+    {
+      "schemaVersion": 1,
       "id": "duckdb",
       "type": "tool",
       "title": "DuckDB CLI for local data inspection",
@@ -666,6 +977,137 @@
       "score": 8.8,
       "sourceUrl": "https://github.com/duckdb/duckdb/tree/d54cbbe3df17e8e5ce68312f483b4155836112aa",
       "path": "entries/tools/duckdb",
+      "files": []
+    },
+    {
+      "schemaVersion": 1,
+      "id": "duf",
+      "type": "tool",
+      "title": "duf free space by filesystem",
+      "summary": "Show capacity, used space, and available space for mounted filesystems in a grouped terminal table or JSON.",
+      "useWhen": "You need to identify which mounted volume is running low before investigating individual directories.",
+      "tags": [
+        "cli",
+        "disk-space"
+      ],
+      "platforms": [
+        "macos",
+        "linux",
+        "windows"
+      ],
+      "rating": {
+        "rubric": "dev-v1",
+        "dimensions": {
+          "value": 3,
+          "dependability": 4,
+          "ease": 4,
+          "safety": 4,
+          "adoption": 4,
+          "portability": 4,
+          "upkeep": 3
+        },
+        "evidence": "reviewed",
+        "reviewed": "2026-11-05",
+        "notes": "Start with duf to identify the mount. For downstream processing use duf --json. Directory sizes and estimated cleanup savings come from a different scan."
+      },
+      "source": {
+        "kind": "linked",
+        "url": "https://github.com/muesli/duf",
+        "revision": "b2f01a1ecbfd1af63015b83296c50a95260f97b1",
+        "version": "0.9.1",
+        "retrieved": "2026-11-05",
+        "license": "MIT",
+        "author": "Christian Muehlhaeuser and contributors",
+        "notes": "The license file also reproduces the license for gopsutil."
+      },
+      "install": {
+        "macos": "brew install duf",
+        "linux": "Install duf from your distribution or download the matching release package or archive.",
+        "windows": "Download the matching Windows release archive and put duf.exe on PATH."
+      },
+      "inspiredBy": [
+        {
+          "title": "Hacker News discussion distinguishing filesystem and directory usage tools",
+          "url": "https://news.ycombinator.com/item?id=24604800"
+        }
+      ],
+      "overlap": "df -h already reports free capacity. duf groups and filters mounts and offers JSON. Use dust or ncdu to identify the directories consuming space.",
+      "related": [
+        "dust",
+        "ncdu",
+        "disk-reclaim"
+      ],
+      "score": 9.3,
+      "sourceUrl": "https://github.com/muesli/duf/tree/b2f01a1ecbfd1af63015b83296c50a95260f97b1",
+      "path": "entries/tools/duf",
+      "files": []
+    },
+    {
+      "schemaVersion": 1,
+      "id": "dust",
+      "type": "tool",
+      "title": "dust ranked directory sizes",
+      "summary": "Summarize disk usage as a tree with size bars so the largest paths stand out. Limit depth or change what gets counted when investigating a large tree.",
+      "useWhen": "You want a quick answer to which files or subdirectories account for most of the space under a path.",
+      "tags": [
+        "cli",
+        "disk-space"
+      ],
+      "platforms": [
+        "macos",
+        "linux",
+        "windows"
+      ],
+      "rating": {
+        "rubric": "dev-v1",
+        "dimensions": {
+          "value": 4,
+          "dependability": 4,
+          "ease": 4,
+          "safety": 4,
+          "adoption": 4,
+          "portability": 4,
+          "upkeep": 4
+        },
+        "evidence": "reviewed",
+        "reviewed": "2026-11-05",
+        "notes": "Start with dust -d 2 . for a bounded view. The tool reports allocated space by default and can show apparent file lengths instead. Tree totals describe the scan and may differ from space freed after deleting files."
+      },
+      "source": {
+        "kind": "linked",
+        "url": "https://github.com/bootandy/dust",
+        "revision": "079c55266917387e416e0f871c97c06da52df12d",
+        "version": "1.2.7",
+        "retrieved": "2026-11-05",
+        "license": "Apache-2.0",
+        "author": "Andy Boot and contributors"
+      },
+      "install": {
+        "macos": "brew install dust",
+        "linux": "Install the dust package from your distribution or extract the matching GitHub release archive.",
+        "windows": "Download the matching Windows archive from GitHub Releases and put dust.exe on PATH."
+      },
+      "inspiredBy": [
+        {
+          "title": "Hacker News discussion on dust and other disk analyzers",
+          "url": "https://news.ycombinator.com/item?id=47627217"
+        },
+        {
+          "title": "Homebrew formula and install analytics",
+          "url": "https://formulae.brew.sh/formula/dust"
+        }
+      ],
+      "overlap": "du plus sort gives a scriptable size listing. ncdu lets you browse a scan interactively, and disk-reclaim identifies known developer caches and build artifacts for cleanup.",
+      "related": [
+        "ncdu",
+        "gdu",
+        "dua",
+        "duf",
+        "disk-reclaim"
+      ],
+      "score": 10,
+      "sourceUrl": "https://github.com/bootandy/dust/tree/079c55266917387e416e0f871c97c06da52df12d",
+      "path": "entries/tools/dust",
       "files": []
     },
     {
@@ -730,6 +1172,72 @@
       "score": 8.4,
       "sourceUrl": "https://github.com/eradman/entr/tree/046d8d7cc6ce67775926cc585e313cab8f26e42a",
       "path": "entries/tools/entr",
+      "files": []
+    },
+    {
+      "schemaVersion": 1,
+      "id": "eza",
+      "type": "tool",
+      "title": "eza Git-aware directory listings",
+      "summary": "List directory contents with optional Git status, metadata, and a bounded tree view.",
+      "useWhen": "You inspect source directories interactively and want to see file status or structure at a glance.",
+      "tags": [
+        "cli",
+        "git",
+        "navigation"
+      ],
+      "platforms": [
+        "macos",
+        "linux",
+        "windows"
+      ],
+      "rating": {
+        "rubric": "dev-v1",
+        "dimensions": {
+          "value": 3,
+          "dependability": 4,
+          "ease": 4,
+          "safety": 4,
+          "adoption": 4,
+          "portability": 4,
+          "upkeep": 4
+        },
+        "evidence": "reviewed",
+        "reviewed": "2026-11-05",
+        "notes": "Try eza -la --git for file status or eza --tree --level=2 for a shallow overview. Opt into Git status and recursion when useful. The options and display format differ from system ls."
+      },
+      "source": {
+        "kind": "linked",
+        "url": "https://github.com/eza-community/eza",
+        "revision": "98442ab17c2c3738701b62a7e060b1431ae2d6ea",
+        "version": "0.23.5",
+        "retrieved": "2026-11-05",
+        "license": "EUPL-1.2",
+        "author": "eza contributors"
+      },
+      "install": {
+        "macos": "brew install eza",
+        "linux": "Install eza from your distribution or use the matching GitHub release archive.",
+        "windows": "winget install --exact --id eza-community.eza"
+      },
+      "inspiredBy": [
+        {
+          "title": "Hacker News discussion comparing eza and lsd",
+          "url": "https://news.ycombinator.com/item?id=41031112"
+        },
+        {
+          "title": "Upstream installation instructions",
+          "url": "https://github.com/eza-community/eza/blob/main/INSTALL.md"
+        }
+      ],
+      "overlap": "ls handles standard listings and tree handles static directory trees. lsd offers a configurable alternative. eza is the maintained successor to exa and is the first pick here when Git status matters.",
+      "related": [
+        "lsd",
+        "broot"
+      ],
+      "score": 9.4,
+      "sourceUrl": "https://github.com/eza-community/eza/tree/98442ab17c2c3738701b62a7e060b1431ae2d6ea",
+      "path": "entries/tools/eza",
       "files": []
     },
     {
@@ -853,6 +1361,70 @@
       "score": 9.6,
       "sourceUrl": "https://github.com/junegunn/fzf/tree/c0a193e031f01fb50bf6f7be4381990a3753f7cf",
       "path": "entries/tools/fzf",
+      "files": []
+    },
+    {
+      "schemaVersion": 1,
+      "id": "gdu",
+      "type": "tool",
+      "title": "gdu parallel disk usage analyzer",
+      "summary": "Scan file trees in parallel and browse the resulting directory sizes in a terminal UI or print a non-interactive report.",
+      "useWhen": "You regularly scan large SSD-backed trees and want an alternative to ncdu that can take advantage of parallel traversal.",
+      "tags": [
+        "cli",
+        "disk-space"
+      ],
+      "platforms": [
+        "macos",
+        "linux"
+      ],
+      "rating": {
+        "rubric": "dev-v1",
+        "dimensions": {
+          "value": 3,
+          "dependability": 4,
+          "ease": 3,
+          "safety": 3,
+          "adoption": 3,
+          "portability": 3,
+          "upkeep": 4
+        },
+        "evidence": "reviewed",
+        "reviewed": "2026-11-05",
+        "notes": "Homebrew exposes this analyzer as gdu-go because gdu can refer to GNU du. Compare scan times on your own storage. The interactive interface can delete entries, so use the non-interactive mode when you only want a report."
+      },
+      "source": {
+        "kind": "linked",
+        "url": "https://github.com/dundee/gdu",
+        "revision": "387cf50377e53bad628603658cfb76fd4a54d718",
+        "version": "5.38.0",
+        "retrieved": "2026-11-05",
+        "license": "MIT",
+        "author": "Daniel Milde and contributors"
+      },
+      "install": {
+        "macos": "Run brew install gdu, then invoke gdu-go.",
+        "linux": "Install gdu from your distribution or download the matching release binary."
+      },
+      "inspiredBy": [
+        {
+          "title": "Hacker News discussion of disk-usage tools",
+          "url": "https://news.ycombinator.com/item?id=47627217"
+        },
+        {
+          "title": "Homebrew executable naming note",
+          "url": "https://formulae.brew.sh/formula/gdu"
+        }
+      ],
+      "overlap": "ncdu is the general-purpose choice for interactive inspection. dust prints a ranked tree. gdu earns a place when its parallel scanner helps on your storage.",
+      "related": [
+        "ncdu",
+        "dust",
+        "dua"
+      ],
+      "score": 8.1,
+      "sourceUrl": "https://github.com/dundee/gdu/tree/387cf50377e53bad628603658cfb76fd4a54d718",
+      "path": "entries/tools/gdu",
       "files": []
     },
     {
@@ -983,6 +1555,127 @@
       "score": 8.5,
       "sourceUrl": "https://github.com/gitleaks/gitleaks/tree/83d9cd684c87d95d656c1458ef04895a7f1cbd8e",
       "path": "entries/tools/gitleaks",
+      "files": []
+    },
+    {
+      "schemaVersion": 1,
+      "id": "htop",
+      "type": "tool",
+      "title": "htop interactive process viewer",
+      "summary": "Inspect, sort, filter, and browse processes in a tree. Send signals or change process priority from an interactive terminal view.",
+      "useWhen": "You primarily want a compact view of running processes, parent-child relationships, and CPU or memory use.",
+      "tags": [
+        "cli",
+        "monitoring",
+        "debugging"
+      ],
+      "platforms": [
+        "macos",
+        "linux"
+      ],
+      "rating": {
+        "rubric": "dev-v1",
+        "dimensions": {
+          "value": 3,
+          "dependability": 4,
+          "ease": 4,
+          "safety": 3,
+          "adoption": 4,
+          "portability": 3,
+          "upkeep": 4
+        },
+        "evidence": "reviewed",
+        "reviewed": "2026-11-05",
+        "notes": "Tree view is useful for following worker processes. Features and metrics vary by platform and permissions. Confirm selected processes before sending signals or changing priorities."
+      },
+      "source": {
+        "kind": "linked",
+        "url": "https://github.com/htop-dev/htop",
+        "revision": "20882b8ef8271fb49ea0eb74bbfd484e9b0a11d8",
+        "version": "3.5.3",
+        "retrieved": "2026-11-05",
+        "license": "GPL-2.0-or-later",
+        "author": "Hisham Muhammad and htop contributors"
+      },
+      "install": {
+        "macos": "brew install htop",
+        "linux": "Install htop from your distribution package manager."
+      },
+      "inspiredBy": [
+        {
+          "title": "Reddit discussion comparing terminal process monitors",
+          "url": "https://www.reddit.com/r/LinuxTeck/comments/1s8l2dn/10_modern_linux_tools_that_replace_old_commands/"
+        }
+      ],
+      "overlap": "top is sufficient for a quick look at resource use. btop adds graphs and more panels. Choose htop when process navigation is the main job or terminal space is limited.",
+      "related": [
+        "btop"
+      ],
+      "score": 8.8,
+      "sourceUrl": "https://github.com/htop-dev/htop/tree/20882b8ef8271fb49ea0eb74bbfd484e9b0a11d8",
+      "path": "entries/tools/htop",
+      "files": []
+    },
+    {
+      "schemaVersion": 1,
+      "id": "httpie",
+      "type": "tool",
+      "title": "HTTPie CLI for interactive HTTP requests",
+      "summary": "Send HTTP requests with concise header and JSON syntax and read formatted responses in the terminal. Supports optional named sessions.",
+      "useWhen": "You manually exercise an API and want readable requests and responses without opening a GUI client.",
+      "tags": [
+        "cli",
+        "http",
+        "debugging"
+      ],
+      "platforms": [
+        "macos",
+        "linux",
+        "windows"
+      ],
+      "rating": {
+        "rubric": "dev-v1",
+        "dimensions": {
+          "value": 3,
+          "dependability": 4,
+          "ease": 4,
+          "safety": 3,
+          "adoption": 3,
+          "portability": 4,
+          "upkeep": 3
+        },
+        "evidence": "reviewed",
+        "reviewed": "2026-11-05",
+        "notes": "The main commands are http and https. Named sessions can store credentials and cookies in local files. Inspect the request and environment before sending methods that modify data."
+      },
+      "source": {
+        "kind": "linked",
+        "url": "https://github.com/httpie/cli",
+        "revision": "2105caa49bae87c5809c274e407619a0de2639d1",
+        "version": "3.2.4",
+        "retrieved": "2026-11-05",
+        "license": "BSD-3-Clause",
+        "author": "Jakub Roztocil and HTTPie contributors"
+      },
+      "install": {
+        "macos": "brew install httpie",
+        "linux": "Install httpie through your distribution, or use pipx install httpie in a Python environment with pipx.",
+        "windows": "Use the Windows installer or package-manager instructions in the HTTPie installation guide."
+      },
+      "inspiredBy": [
+        {
+          "title": "HTTPie CLI installation and usage documentation",
+          "url": "https://httpie.io/docs/cli/installation"
+        }
+      ],
+      "overlap": "curl is widely available and covers a broader range of transfer options. xh offers similar HTTP-oriented syntax in a standalone executable. Hurl covers repeatable assertions and request sequences in CI.",
+      "related": [
+        "xh",
+        "hurl"
+      ],
+      "score": 8.6,
+      "sourceUrl": "https://github.com/httpie/cli/tree/2105caa49bae87c5809c274e407619a0de2639d1",
+      "path": "entries/tools/httpie",
       "files": []
     },
     {
@@ -1445,6 +2138,66 @@
     },
     {
       "schemaVersion": 1,
+      "id": "lsd",
+      "type": "tool",
+      "title": "lsd configurable directory listings",
+      "summary": "Display directory listings and trees with configurable columns, colors, and icons.",
+      "useWhen": "You want an interactive ls-style listing and want to customize the default layout or presentation across machines.",
+      "tags": [
+        "cli",
+        "navigation"
+      ],
+      "platforms": [
+        "macos",
+        "linux",
+        "windows"
+      ],
+      "rating": {
+        "rubric": "dev-v1",
+        "dimensions": {
+          "value": 3,
+          "dependability": 4,
+          "ease": 3,
+          "safety": 4,
+          "adoption": 4,
+          "portability": 4,
+          "upkeep": 3
+        },
+        "evidence": "reviewed",
+        "reviewed": "2026-11-05",
+        "notes": "Basic use is simple. Icon display depends on terminal font support and can be disabled. Keep script dependencies explicit because lsd output and options differ from system ls."
+      },
+      "source": {
+        "kind": "linked",
+        "url": "https://github.com/lsd-rs/lsd",
+        "revision": "d5a4e1cb80626d5ec94b237f6b77f7280d0f2fc9",
+        "version": "1.2.0",
+        "retrieved": "2026-11-05",
+        "license": "Apache-2.0",
+        "author": "lsd contributors"
+      },
+      "install": {
+        "macos": "brew install lsd",
+        "linux": "Install lsd from your distribution or extract the matching GitHub release archive.",
+        "windows": "Download the matching Windows archive from GitHub Releases and put lsd.exe on PATH."
+      },
+      "inspiredBy": [
+        {
+          "title": "Reddit discussion on alternatives to ls and tree",
+          "url": "https://www.reddit.com/r/LinuxTeck/comments/1s6ra9n/10_modern_cli_tools_that_replace_classic_linux/"
+        }
+      ],
+      "overlap": "ls and tree cover plain output. eza is the default catalog pick for Git-aware project listings. Choose lsd when its layout and appearance configuration are a better fit.",
+      "related": [
+        "eza"
+      ],
+      "score": 8.9,
+      "sourceUrl": "https://github.com/lsd-rs/lsd/tree/d5a4e1cb80626d5ec94b237f6b77f7280d0f2fc9",
+      "path": "entries/tools/lsd",
+      "files": []
+    },
+    {
+      "schemaVersion": 1,
       "id": "mise",
       "type": "tool",
       "title": "mise runtime manager and task runner",
@@ -1506,6 +2259,72 @@
       "score": 8.3,
       "sourceUrl": "https://github.com/jdx/mise/tree/43ee02c5b4975f6d7d2319958d0e1cde0f895187",
       "path": "entries/tools/mise",
+      "files": []
+    },
+    {
+      "schemaVersion": 1,
+      "id": "ncdu",
+      "type": "tool",
+      "title": "ncdu interactive disk usage browser",
+      "summary": "Scan disk usage once, then drill into large directories and switch between allocated and apparent size in a terminal interface.",
+      "useWhen": "A quick size summary shows a large directory and you want to inspect its contents interactively, including over SSH.",
+      "tags": [
+        "cli",
+        "disk-space"
+      ],
+      "platforms": [
+        "macos",
+        "linux"
+      ],
+      "rating": {
+        "rubric": "dev-v1",
+        "dimensions": {
+          "value": 4,
+          "dependability": 4,
+          "ease": 4,
+          "safety": 3,
+          "adoption": 4,
+          "portability": 3,
+          "upkeep": 4
+        },
+        "evidence": "reviewed",
+        "reviewed": "2026-11-05",
+        "notes": "On ncdu 2.x, use ncdu -rr -x . to disable deletion and shell access and stay on one filesystem. Confirm the major version when installing from a distribution. For large scans, narrow the starting path or exclude irrelevant subtrees."
+      },
+      "source": {
+        "kind": "linked",
+        "url": "https://dev.yorhel.nl/ncdu",
+        "revision": "1b3d0a670e730b338de6b716e2a60cf86351e44b",
+        "version": "2.9.2",
+        "retrieved": "2026-11-05",
+        "license": "MIT",
+        "author": "Yoran Heling and contributors",
+        "notes": "The source revision is the v2.9.2 tag in the upstream Git repository at https://g.blicky.net/ncdu.git/."
+      },
+      "install": {
+        "macos": "brew install ncdu",
+        "linux": "Install ncdu through your distribution or download the matching static Linux binary from the upstream download page."
+      },
+      "inspiredBy": [
+        {
+          "title": "ncdu manual",
+          "url": "https://dev.yorhel.nl/ncdu/man"
+        },
+        {
+          "title": "Hacker News disk-usage discussion",
+          "url": "https://news.ycombinator.com/item?id=47627217"
+        }
+      ],
+      "overlap": "dust prints a quick size tree. gdu is an alternative interactive scanner for SSD-backed trees. disk-reclaim knows about developer-specific cleanup targets.",
+      "related": [
+        "dust",
+        "gdu",
+        "dua",
+        "disk-reclaim"
+      ],
+      "score": 9.4,
+      "sourceUrl": "https://dev.yorhel.nl/ncdu",
+      "path": "entries/tools/ncdu",
       "files": []
     },
     {
@@ -1628,6 +2447,70 @@
     },
     {
       "schemaVersion": 1,
+      "id": "sd",
+      "type": "tool",
+      "title": "sd literal and regex text substitutions",
+      "summary": "Replace literal text or regex matches in files or standard input with a short command.",
+      "useWhen": "You need a straightforward text substitution across a few files and want a simpler invocation than a sed expression.",
+      "tags": [
+        "cli",
+        "automation"
+      ],
+      "platforms": [
+        "macos",
+        "linux",
+        "windows"
+      ],
+      "rating": {
+        "rubric": "dev-v1",
+        "dimensions": {
+          "value": 3,
+          "dependability": 4,
+          "ease": 4,
+          "safety": 2,
+          "adoption": 4,
+          "portability": 4,
+          "upkeep": 3
+        },
+        "evidence": "reviewed",
+        "reviewed": "2026-11-05",
+        "notes": "File arguments are edited in place by default. Preview the output or use standard input first. Check the regex flavor and quoting when porting a sed expression."
+      },
+      "source": {
+        "kind": "linked",
+        "url": "https://github.com/chmln/sd",
+        "revision": "4a7b216552d64134c0fa17a59b9d557d89019f0f",
+        "version": "1.1.0",
+        "retrieved": "2026-11-05",
+        "license": "MIT",
+        "author": "Gregory and sd contributors"
+      },
+      "install": {
+        "macos": "brew install sd",
+        "linux": "Install sd through your distribution or download the matching release archive and put sd on PATH.",
+        "windows": "Download the matching Windows release archive and put sd.exe on PATH."
+      },
+      "inspiredBy": [
+        {
+          "title": "Reddit discussion of replacements for common commands",
+          "url": "https://www.reddit.com/r/linuxquestions/comments/1sc0e87/real_modern_alternatives_to_common_tools/"
+        },
+        {
+          "title": "sd usage and preview examples",
+          "url": "https://github.com/chmln/sd#quick-guide"
+        }
+      ],
+      "overlap": "sed is widely available and handles multi-step editing programs. ast-grep is a better fit for syntax-aware code rewrites. sd targets quick text substitutions.",
+      "related": [
+        "ast-grep"
+      ],
+      "score": 8.5,
+      "sourceUrl": "https://github.com/chmln/sd/tree/4a7b216552d64134c0fa17a59b9d557d89019f0f",
+      "path": "entries/tools/sd",
+      "files": []
+    },
+    {
+      "schemaVersion": 1,
       "id": "shellcheck",
       "type": "tool",
       "title": "ShellCheck static analysis for shell scripts",
@@ -1684,6 +2567,67 @@
       "score": 10,
       "sourceUrl": "https://github.com/koalaman/shellcheck/tree/aac0823e6b58f8a499e856e93738082691cbf212",
       "path": "entries/tools/shellcheck",
+      "files": []
+    },
+    {
+      "schemaVersion": 1,
+      "id": "tealdeer",
+      "type": "tool",
+      "title": "Tealdeer command examples from tldr pages",
+      "summary": "Look up concise, community-maintained command examples from the terminal. Keep the pages in a local cache for offline lookups.",
+      "useWhen": "You remember the command name and want a working example before looking up full option semantics in the manual.",
+      "tags": [
+        "cli",
+        "documentation"
+      ],
+      "platforms": [
+        "macos",
+        "linux",
+        "windows"
+      ],
+      "rating": {
+        "rubric": "dev-v1",
+        "dimensions": {
+          "value": 3,
+          "dependability": 4,
+          "ease": 4,
+          "safety": 4,
+          "adoption": 4,
+          "portability": 4,
+          "upkeep": 4
+        },
+        "evidence": "reviewed",
+        "reviewed": "2026-11-05",
+        "notes": "Install the tealdeer package and invoke tldr. Run tldr --update to populate or refresh the local cache. Coverage and examples depend on the upstream tldr pages, so use the manual for exact semantics."
+      },
+      "source": {
+        "kind": "linked",
+        "url": "https://github.com/tealdeer-rs/tealdeer",
+        "revision": "993a8e0232ef42c4d9935ff5598796b6e98bf213",
+        "version": "1.9.1",
+        "retrieved": "2026-11-05",
+        "license": "Apache-2.0 OR MIT",
+        "author": "Tealdeer contributors"
+      },
+      "install": {
+        "macos": "brew install tealdeer",
+        "linux": "Install tealdeer from your distribution or use the matching release binary as tldr.",
+        "windows": "Install Tealdeer through Scoop or download the matching Windows release binary and put it on PATH as tldr.exe."
+      },
+      "inspiredBy": [
+        {
+          "title": "tldr pages project and example conventions",
+          "url": "https://github.com/tldr-pages/tldr"
+        },
+        {
+          "title": "Reddit discussion of tldr alongside man",
+          "url": "https://www.reddit.com/r/linuxquestions/comments/1sc0e87/real_modern_alternatives_to_common_tools/"
+        }
+      ],
+      "overlap": "man and --help document exact flags and edge cases. Tealdeer is a client for tldr pages and helps with quick recall of common examples.",
+      "score": 9.4,
+      "sourceUrl": "https://github.com/tealdeer-rs/tealdeer/tree/993a8e0232ef42c4d9935ff5598796b6e98bf213",
+      "path": "entries/tools/tealdeer",
       "files": []
     },
     {
@@ -1745,6 +2689,68 @@
       "score": 9.1,
       "sourceUrl": "https://github.com/astral-sh/uv/tree/316c827e058c16b71d5c507a20729c2995a7bcce",
       "path": "entries/tools/uv",
+      "files": []
+    },
+    {
+      "schemaVersion": 1,
+      "id": "xh",
+      "type": "tool",
+      "title": "xh standalone CLI for interactive HTTP requests",
+      "summary": "Send and inspect HTTP requests with HTTPie-style syntax, automatic JSON request bodies, and formatted output.",
+      "useWhen": "You want convenient ad hoc API requests from a standalone CLI, especially where installing a Python application is inconvenient.",
+      "tags": [
+        "cli",
+        "http",
+        "debugging"
+      ],
+      "platforms": [
+        "macos",
+        "linux",
+        "windows"
+      ],
+      "rating": {
+        "rubric": "dev-v1",
+        "dimensions": {
+          "value": 3,
+          "dependability": 4,
+          "ease": 4,
+          "safety": 3,
+          "adoption": 4,
+          "portability": 4,
+          "upkeep": 4
+        },
+        "evidence": "reviewed",
+        "reviewed": "2026-11-05",
+        "notes": "The syntax is familiar to HTTPie users, with differences in supported options and integrations. Use the curl translation option when you need to share a command with someone who uses curl."
+      },
+      "source": {
+        "kind": "linked",
+        "url": "https://github.com/ducaale/xh",
+        "revision": "319d39c2561d2a8697acb3eb9800abcc33bbad98",
+        "version": "0.26.3",
+        "retrieved": "2026-11-05",
+        "license": "MIT",
+        "author": "Mohamed Daahir and contributors"
+      },
+      "install": {
+        "macos": "brew install xh",
+        "linux": "Install xh through your distribution or download the matching binary from GitHub Releases.",
+        "windows": "winget install --exact --id ducaale.xh"
+      },
+      "inspiredBy": [
+        {
+          "title": "Reddit discussion of xh as a curl alternative",
+          "url": "https://www.reddit.com/r/linuxquestions/comments/1sc0e87/real_modern_alternatives_to_common_tools/"
+        }
+      ],
+      "overlap": "curl covers common scripts and more protocols. HTTPie is an alternative when its sessions, integrations, or ecosystem suit the task. Hurl is for reusable HTTP test scenarios.",
+      "related": [
+        "httpie",
+        "hurl"
+      ],
+      "score": 9,
+      "sourceUrl": "https://github.com/ducaale/xh/tree/319d39c2561d2a8697acb3eb9800abcc33bbad98",
+      "path": "entries/tools/xh",
       "files": []
     },
     {

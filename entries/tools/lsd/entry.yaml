@@ -1,0 +1,38 @@
+schemaVersion: 1
+id: lsd
+type: tool
+title: lsd configurable directory listings
+summary: Display directory listings and trees with configurable columns, colors, and icons.
+useWhen: You want an interactive ls-style listing and want to customize the default layout or presentation across machines.
+tags: [ cli, navigation ]
+platforms: [ macos, linux, windows ]
+rating:
+  rubric: dev-v1
+  dimensions:
+    value: 3
+    dependability: 4
+    ease: 3
+    safety: 4
+    adoption: 4
+    portability: 4
+    upkeep: 3
+  evidence: reviewed
+  reviewed: 2026-11-05
+  notes: Basic use is simple. Icon display depends on terminal font support and can be disabled. Keep script dependencies explicit because lsd output and options differ from system ls.
+source:
+  kind: linked
+  url: https://github.com/lsd-rs/lsd
+  revision: d5a4e1cb80626d5ec94b237f6b77f7280d0f2fc9
+  version: 1.2.0
+  retrieved: 2026-11-05
+  license: Apache-2.0
+  author: lsd contributors
+install:
+  macos: brew install lsd
+  linux: Install lsd from your distribution or extract the matching GitHub release archive.
+  windows: Download the matching Windows archive from GitHub Releases and put lsd.exe on PATH.
+inspiredBy:
+  - title: Reddit discussion on alternatives to ls and tree
+    url: https://www.reddit.com/r/LinuxTeck/comments/1s6ra9n/10_modern_cli_tools_that_replace_classic_linux/
+overlap: ls and tree cover plain output. eza is the default catalog pick for Git-aware project listings. Choose lsd when its layout and appearance configuration are a better fit.
+related: [ eza ]

@@ -1,0 +1,39 @@
+schemaVersion: 1
+id: gdu
+type: tool
+title: gdu parallel disk usage analyzer
+summary: Scan file trees in parallel and browse the resulting directory sizes in a terminal UI or print a non-interactive report.
+useWhen: You regularly scan large SSD-backed trees and want an alternative to ncdu that can take advantage of parallel traversal.
+tags: [ cli, disk-space ]
+platforms: [ macos, linux ]
+rating:
+  rubric: dev-v1
+  dimensions:
+    value: 3
+    dependability: 4
+    ease: 3
+    safety: 3
+    adoption: 3
+    portability: 3
+    upkeep: 4
+  evidence: reviewed
+  reviewed: 2026-11-05
+  notes: Homebrew exposes this analyzer as gdu-go because gdu can refer to GNU du. Compare scan times on your own storage. The interactive interface can delete entries, so use the non-interactive mode when you only want a report.
+source:
+  kind: linked
+  url: https://github.com/dundee/gdu
+  revision: 387cf50377e53bad628603658cfb76fd4a54d718
+  version: 5.38.0
+  retrieved: 2026-11-05
+  license: MIT
+  author: Daniel Milde and contributors
+install:
+  macos: Run brew install gdu, then invoke gdu-go.
+  linux: Install gdu from your distribution or download the matching release binary.
+inspiredBy:
+  - title: Hacker News discussion of disk-usage tools
+    url: https://news.ycombinator.com/item?id=47627217
+  - title: Homebrew executable naming note
+    url: https://formulae.brew.sh/formula/gdu
+overlap: ncdu is the general-purpose choice for interactive inspection. dust prints a ranked tree. gdu earns a place when its parallel scanner helps on your storage.
+related: [ ncdu, dust, dua ]

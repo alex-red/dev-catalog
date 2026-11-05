@@ -1,0 +1,38 @@
+schemaVersion: 1
+id: bat
+type: tool
+title: bat syntax-highlighting file viewer
+summary: Read text files in the terminal with syntax highlighting, optional line numbers and Git change markers, and automatic paging.
+useWhen: You regularly read code, configuration, or logs from the terminal or want syntax-highlighted fzf previews.
+tags: [ cli, navigation ]
+platforms: [ macos, linux, windows ]
+rating:
+  rubric: dev-v1
+  dimensions:
+    value: 4
+    dependability: 4
+    ease: 4
+    safety: 4
+    adoption: 4
+    portability: 4
+    upkeep: 4
+  evidence: reviewed
+  reviewed: 2026-11-05
+  notes: Interactive output can include line numbers and use a pager. For fzf previews, bat --color=always --paging=never renders color without waiting for a pager. Debian and Ubuntu may name the executable batcat.
+source:
+  kind: linked
+  url: https://github.com/sharkdp/bat
+  revision: 979ba22628bc9d8171f2cffca2bd5c90c9fc0a9e
+  version: 0.26.1
+  retrieved: 2026-11-05
+  license: Apache-2.0 OR MIT
+  author: David Peter and the bat developers
+install:
+  macos: brew install bat
+  linux: Install bat through your distribution or extract a matching release binary. On Debian and Ubuntu the package may install the executable as batcat.
+  windows: Download the Windows release archive and put bat.exe on PATH.
+inspiredBy:
+  - title: Reddit discussion on moving from cat to bat
+    url: https://www.reddit.com/r/commandline/comments/1r8tljk/after_22_years_on_linux_i_finally_switched_to/
+overlap: cat concatenates files and less pages long output. bat is useful for interactive reading with language-aware display and for previews in fzf.
+related: [ fzf ]

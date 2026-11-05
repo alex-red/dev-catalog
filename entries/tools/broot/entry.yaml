@@ -1,0 +1,39 @@
+schemaVersion: 1
+id: broot
+type: tool
+title: broot interactive directory tree navigation
+summary: Browse and filter a directory tree as you type. Select matching paths, open files, and use optional shell integration to change directories.
+useWhen: You need to navigate a deep source tree and want to retain directory context while filtering for a file or folder.
+tags: [ cli, navigation, search ]
+platforms: [ macos, linux, windows ]
+rating:
+  rubric: dev-v1
+  dimensions:
+    value: 3
+    dependability: 4
+    ease: 3
+    safety: 3
+    adoption: 3
+    portability: 4
+    upkeep: 4
+  evidence: reviewed
+  reviewed: 2026-11-05
+  notes: Run broot directly to try browsing. Changing the parent shell directory requires the shell function. Some verbs can modify files or execute configured commands, so review bindings before using them.
+source:
+  kind: linked
+  url: https://github.com/Canop/broot
+  revision: 54c95a07cd1f1440c553968e246f94d7690c3057
+  version: 1.62.0
+  retrieved: 2026-11-05
+  license: MIT
+  author: Denys Séguret and contributors
+install:
+  macos: brew install broot
+  linux: Install broot from your distribution or download a release archive for your architecture.
+  windows: scoop install broot
+  notes: See the upstream shell integration instructions if you want the br command to change the current shell directory.
+inspiredBy:
+  - title: Broot installation guide
+    url: https://dystroy.org/broot/install/
+overlap: eza and tree display static directory trees. fd piped into fzf provides a flat picker. Broot keeps the tree context while you search and navigate.
+related: [ eza, fd, fzf, zoxide ]

@@ -1,0 +1,38 @@
+schemaVersion: 1
+id: dua
+type: tool
+title: dua disk usage summaries and interactive browsing
+summary: Summarize disk use or browse a directory tree interactively. Optionally count fully shared APFS file clones once on macOS.
+useWhen: You want one tool for printed and interactive disk usage or need a closer look at fully cloned files on APFS.
+tags: [ cli, disk-space ]
+platforms: [ macos, linux, windows ]
+rating:
+  rubric: dev-v1
+  dimensions:
+    value: 3
+    dependability: 4
+    ease: 3
+    safety: 3
+    adoption: 4
+    portability: 4
+    upkeep: 4
+  evidence: reviewed
+  reviewed: 2026-11-05
+  notes: Start in aggregate mode for a report. Interactive mode supports deletion. APFS clone deduplication adds traversal overhead and covers fully shared clones only. Partially shared files can still skew estimates.
+source:
+  kind: linked
+  url: https://github.com/Byron/dua-cli
+  revision: c74ed619a0e2f9ab9830cd5b863dc139e8f340eb
+  version: 3.0.0
+  retrieved: 2026-11-05
+  license: MIT
+  author: Sebastian Thiel and contributors
+install:
+  macos: brew install dua-cli
+  linux: Download the matching dua release archive, extract it, and put dua on PATH.
+  windows: winget install --exact --id Byron.dua-cli
+inspiredBy:
+  - title: Reddit discussion of modern command alternatives
+    url: https://www.reddit.com/r/linuxquestions/comments/1sc0e87/real_modern_alternatives_to_common_tools/
+overlap: dust covers a quick printed tree and ncdu is the general interactive pick. dua combines both and has a specific advantage when inspecting fully shared APFS clones.
+related: [ dust, ncdu, gdu ]

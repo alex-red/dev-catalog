@@ -1,0 +1,37 @@
+schemaVersion: 1
+id: btop
+type: tool
+title: btop system resource dashboard
+summary: View CPU, memory, disks, networking, and processes together in an interactive terminal dashboard.
+useWhen: You need to see whether local slowdowns line up with resource pressure and identify the processes involved.
+tags: [ cli, monitoring, debugging ]
+platforms: [ macos, linux ]
+rating:
+  rubric: dev-v1
+  dimensions:
+    value: 4
+    dependability: 4
+    ease: 4
+    safety: 3
+    adoption: 4
+    portability: 3
+    upkeep: 4
+  evidence: reviewed
+  reviewed: 2026-11-05
+  notes: A wide terminal makes the dashboard easier to use. Available metrics vary by OS and build. Confirm the selected PID before sending a signal from the process panel.
+source:
+  kind: linked
+  url: https://github.com/aristocratos/btop
+  revision: cf1da5900b1e9eaa1c20fd7148dd812b43340b8a
+  version: 1.4.8
+  retrieved: 2026-11-05
+  license: Apache-2.0
+  author: Aristocratos and contributors
+install:
+  macos: brew install btop
+  linux: Install btop through your distribution or download the matching release archive.
+inspiredBy:
+  - title: Reddit discussion of terminal monitoring alternatives
+    url: https://www.reddit.com/r/LinuxTeck/comments/1s8l2dn/10_modern_linux_tools_that_replace_old_commands/
+overlap: top provides basic resource and process data. htop offers a compact process-first view. btop is the better fit when you want resource graphs and process data side by side.
+related: [ htop ]

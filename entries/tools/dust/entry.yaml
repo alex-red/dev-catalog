@@ -1,0 +1,40 @@
+schemaVersion: 1
+id: dust
+type: tool
+title: dust ranked directory sizes
+summary: Summarize disk usage as a tree with size bars so the largest paths stand out. Limit depth or change what gets counted when investigating a large tree.
+useWhen: You want a quick answer to which files or subdirectories account for most of the space under a path.
+tags: [ cli, disk-space ]
+platforms: [ macos, linux, windows ]
+rating:
+  rubric: dev-v1
+  dimensions:
+    value: 4
+    dependability: 4
+    ease: 4
+    safety: 4
+    adoption: 4
+    portability: 4
+    upkeep: 4
+  evidence: reviewed
+  reviewed: 2026-11-05
+  notes: Start with dust -d 2 . for a bounded view. The tool reports allocated space by default and can show apparent file lengths instead. Tree totals describe the scan and may differ from space freed after deleting files.
+source:
+  kind: linked
+  url: https://github.com/bootandy/dust
+  revision: 079c55266917387e416e0f871c97c06da52df12d
+  version: 1.2.7
+  retrieved: 2026-11-05
+  license: Apache-2.0
+  author: Andy Boot and contributors
+install:
+  macos: brew install dust
+  linux: Install the dust package from your distribution or extract the matching GitHub release archive.
+  windows: Download the matching Windows archive from GitHub Releases and put dust.exe on PATH.
+inspiredBy:
+  - title: Hacker News discussion on dust and other disk analyzers
+    url: https://news.ycombinator.com/item?id=47627217
+  - title: Homebrew formula and install analytics
+    url: https://formulae.brew.sh/formula/dust
+overlap: du plus sort gives a scriptable size listing. ncdu lets you browse a scan interactively, and disk-reclaim identifies known developer caches and build artifacts for cleanup.
+related: [ ncdu, gdu, dua, duf, disk-reclaim ]

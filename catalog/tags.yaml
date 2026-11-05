@@ -36,6 +36,10 @@ terms:
     label: Debugging
     facet: task
     definition: Finding and diagnosing the cause of incorrect behavior.
+  - id: documentation
+    label: Documentation
+    facet: task
+    definition: Looking up usage examples or reference material.
   - id: environment-setup
     label: Environment setup
     facet: task
@@ -44,6 +48,14 @@ terms:
     label: Linting
     facet: task
     definition: Analyzing source code for errors, suspicious patterns, or rule violations.
+  - id: monitoring
+    label: Monitoring
+    facet: task
+    definition: Observing processes, system resources, or their activity over time.
+  - id: navigation
+    label: Navigation
+    facet: task
+    definition: Browsing file and directory listings or moving through a filesystem tree.
   - id: search
     label: Search
     facet: task
@@ -62,6 +74,10 @@ terms:
     label: GitHub
     facet: technology
     definition: GitHub repositories, pull requests, releases, and Actions workflows.
+  - id: http
+    label: HTTP
+    facet: technology
+    definition: Making, inspecting, or testing requests and responses over HTTP.
   - id: json
     label: JSON
     facet: technology

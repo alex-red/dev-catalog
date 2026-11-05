@@ -36,30 +36,46 @@ Browse it at [alex-red.github.io/dev-catalog](https://alex-red.github.io/dev-cat
 
 | Entry | Use it when | Platforms | Score |
 | --- | --- | --- | --- |
+| [bat syntax-highlighting file viewer](https://github.com/sharkdp/bat) | You regularly read code, configuration, or logs from the terminal or want syntax-highlighted fzf previews. | macos, linux, windows | 10.0/10 |
+| [dust ranked directory sizes](https://github.com/bootandy/dust) | You want a quick answer to which files or subdirectories account for most of the space under a path. | macos, linux, windows | 10.0/10 |
 | [fd for finding files by name](https://github.com/sharkdp/fd) | You search for paths in source trees or need a file list for a picker, watcher, or another command. | macos, linux, windows | 10.0/10 |
 | [ShellCheck static analysis for shell scripts](https://github.com/koalaman/shellcheck) | You maintain Bash or POSIX shell scripts and want actionable diagnostics before local runs or CI. | macos, linux, windows | 10.0/10 |
 | [fzf fuzzy finder](https://github.com/junegunn/fzf) | You repeatedly scroll through shell history, navigate long lists, or write shell helpers that need a keyboard-driven picker. | macos, linux, windows | 9.6/10 |
 | [jq for querying and transforming JSON](https://github.com/jqlang/jq) | You repeatedly extract fields from API responses, CLI output, or JSON logs and want a reusable command. | macos, linux, windows | 9.6/10 |
 | [Ruff Python linter and formatter](https://github.com/astral-sh/ruff) | You maintain Python repos and want consistent linting and formatting with one command-line tool. | macos, linux, windows | 9.6/10 |
+| [btop system resource dashboard](https://github.com/aristocratos/btop) | You need to see whether local slowdowns line up with resource pressure and identify the processes involved. | macos, linux | 9.4/10 |
+| [eza Git-aware directory listings](https://github.com/eza-community/eza) | You inspect source directories interactively and want to see file status or structure at a glance. | macos, linux, windows | 9.4/10 |
 | [GitHub CLI for pull requests and Actions](https://github.com/cli/cli) | You review GitHub pull requests or investigate Actions failures often and want commands you can run in the active checkout. | macos, linux, windows | 9.4/10 |
+| [ncdu interactive disk usage browser](https://dev.yorhel.nl/ncdu) | A quick size summary shows a large directory and you want to inspect its contents interactively, including over SSH. | macos, linux | 9.4/10 |
+| [Tealdeer command examples from tldr pages](https://github.com/tealdeer-rs/tealdeer) | You remember the command name and want a working example before looking up full option semantics in the manual. | macos, linux, windows | 9.4/10 |
+| [duf free space by filesystem](https://github.com/muesli/duf) | You need to identify which mounted volume is running low before investigating individual directories. | macos, linux, windows | 9.3/10 |
 | [Hurl repeatable HTTP requests and assertions](https://github.com/Orange-OpenSource/hurl) | You repeat a multi-step API check such as signing in, using a captured token, and asserting the next response. | macos, linux, windows | 9.3/10 |
 | [Hyperfine benchmarks for command-line programs](https://github.com/sharkdp/hyperfine) | You want to know whether a change improved a build, test command, or CLI before making it the default. | macos, linux, windows | 9.3/10 |
 | [ripgrep (rg) recursive search](https://github.com/BurntSushi/ripgrep) | You search codebases from the terminal and grep -r is slow or noisy with build output, vendored dependencies, or ignored files. | macos, linux, windows | 9.3/10 |
+| [Difftastic syntax-aware code diffs](https://github.com/Wilfred/difftastic) | You review refactors where wrapping, reindentation, or moved syntax makes the ordinary diff difficult to read. | macos, linux, windows | 9.1/10 |
 | [uv Python project and dependency manager](https://github.com/astral-sh/uv) | You maintain Python projects or standalone scripts and regularly spend time setting up interpreters, virtual environments, and dependencies. | macos, linux, windows | 9.1/10 |
 | [zoxide for jumping to familiar directories](https://github.com/ajeetdsouza/zoxide) | You switch among many repos or deeply nested project directories from the shell. | macos, linux, windows | 9.1/10 |
+| [xh standalone CLI for interactive HTTP requests](https://github.com/ducaale/xh) | You want convenient ad hoc API requests from a standalone CLI, especially where installing a Python application is inconvenient. | macos, linux, windows | 9.0/10 |
 | [delta syntax-highlighting diff pager](https://github.com/dandavison/delta) | You regularly review patches in a terminal and want to spot small changes in dense diffs. | macos, linux, windows | 8.9/10 |
+| [lsd configurable directory listings](https://github.com/lsd-rs/lsd) | You want an interactive ls-style listing and want to customize the default layout or presentation across machines. | macos, linux, windows | 8.9/10 |
 | [Dive for inspecting container image layers](https://github.com/wagoodman/dive) | An image grew unexpectedly or you need to trace a file back to the build layer that introduced it. | macos, linux, windows | 8.8/10 |
 | [DuckDB CLI for local data inspection](https://github.com/duckdb/duckdb) | You regularly inspect data exports, compare before-and-after snapshots, or check fixtures and already know enough SQL to express the question. | macos, linux, windows | 8.8/10 |
+| [htop interactive process viewer](https://github.com/htop-dev/htop) | You primarily want a compact view of running processes, parent-child relationships, and CPU or memory use. | macos, linux | 8.8/10 |
 | [just project command runner](https://github.com/casey/just) | Contributors keep looking up setup, test, or maintenance commands and need a small shared command menu. | macos, linux, windows | 8.8/10 |
 | [Mike Farah's yq for querying and editing YAML](https://github.com/mikefarah/yq) | You regularly inspect or update fields in Compose files, CI workflows, or Helm values from a script. | macos, linux, windows | 8.8/10 |
+| [dua disk usage summaries and interactive browsing](https://github.com/Byron/dua-cli) | You want one tool for printed and interactive disk usage or need a closer look at fully cloned files on APFS. | macos, linux, windows | 8.6/10 |
+| [HTTPie CLI for interactive HTTP requests](https://github.com/httpie/cli) | You manually exercise an API and want readable requests and responses without opening a GUI client. | macos, linux, windows | 8.6/10 |
 | [Lazygit terminal UI for Git](https://github.com/jesseduffield/lazygit) | You frequently move between diffs, staging, and history edits and want to stay in the terminal. | macos, linux, windows | 8.6/10 |
 | [Gitleaks secret scanning for Git and files](https://github.com/gitleaks/gitleaks) | You want to catch common credentials before they land in a branch or need to audit existing Git history. | macos, linux, windows | 8.5/10 |
 | [K9s terminal UI for Kubernetes](https://github.com/derailed/k9s) | You regularly investigate Kubernetes workloads and want to move between related resources without typing each kubectl command. | macos, linux, windows | 8.5/10 |
+| [sd literal and regex text substitutions](https://github.com/chmln/sd) | You need a straightforward text substitution across a few files and want a simpler invocation than a sed expression. | macos, linux, windows | 8.5/10 |
 | [ast-grep structural search and rewrite](https://github.com/ast-grep/ast-grep) | You need to find or migrate code that has the same structure but varies in spacing, arguments, or local names. | macos, linux, windows | 8.4/10 |
 | [Atuin searchable shell history](https://github.com/atuinsh/atuin) | Built-in reverse search returns too many matches or you regularly need a command from a specific project or shell session. | macos, linux, windows | 8.4/10 |
+| [broot interactive directory tree navigation](https://github.com/Canop/broot) | You need to navigate a deep source tree and want to retain directory context while filtering for a file or folder. | macos, linux, windows | 8.4/10 |
 | [entr for rerunning commands on file changes](https://github.com/eradman/entr) | Your command lacks a useful watch mode and you want quick feedback from a specific set of files. | macos, linux | 8.4/10 |
 | [Colima local container runtime](https://github.com/abiosoft/colima) | You need a local container runtime on macOS or a VM-backed container environment on Linux. | macos, linux | 8.3/10 |
 | [mise runtime manager and task runner](https://github.com/jdx/mise) | You switch among repositories with different Node, Python, Go, or other tool versions and want one setup command for contributors. | macos, linux, windows | 8.3/10 |
+| [gdu parallel disk usage analyzer](https://github.com/dundee/gdu) | You regularly scan large SSD-backed trees and want an alternative to ncdu that can take advantage of parallel traversal. | macos, linux | 8.1/10 |
 | [Jujutsu version control with a Git backend](https://github.com/jj-vcs/jj) | You frequently revise earlier commits in a stack and spend time rebasing descendants or recovering from local history edits. | macos, linux, windows | 7.8/10 · blocker |
 
 <!-- catalog:entries:end -->

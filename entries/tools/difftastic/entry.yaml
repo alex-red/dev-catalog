@@ -1,0 +1,41 @@
+schemaVersion: 1
+id: difftastic
+type: tool
+title: Difftastic syntax-aware code diffs
+summary: Compare source files by syntax so formatting churn is easier to distinguish from edits to the code. Falls back to line-based comparisons where appropriate.
+useWhen: You review refactors where wrapping, reindentation, or moved syntax makes the ordinary diff difficult to read.
+tags: [ cli, git ]
+platforms: [ macos, linux, windows ]
+rating:
+  rubric: dev-v1
+  dimensions:
+    value: 4
+    dependability: 3
+    ease: 3
+    safety: 4
+    adoption: 4
+    portability: 4
+    upkeep: 4
+  evidence: reviewed
+  reviewed: 2026-11-05
+  notes: Run difft on two files or configure Git to use it for review. Use an ordinary Git diff when whitespace matters or you need a patch. Parser coverage and fallback behavior vary by file type and size.
+source:
+  kind: linked
+  url: https://github.com/Wilfred/difftastic
+  revision: 6201bc988aba1f5fc49cd0799461fba2aed5e0cf
+  version: 0.72.0
+  retrieved: 2026-11-05
+  license: MIT
+  author: Wilfred Hughes and contributors
+  notes: Bundled tree-sitter parsers carry their own MIT or Apache-2.0 licenses.
+install:
+  macos: brew install difftastic
+  linux: Install difftastic from your distribution or download a matching GitHub release and put difft on PATH.
+  windows: winget install difftastic
+inspiredBy:
+  - title: Hacker News discussion on syntax-aware diffs
+    url: https://news.ycombinator.com/item?id=39778412
+  - title: Difftastic examples
+    url: https://difftastic.wilfred.me.uk/
+overlap: git diff and delta keep line-level changes visible. Difftastic adds a structural view when a formatting-heavy edit is difficult to review.
+related: [ delta ]

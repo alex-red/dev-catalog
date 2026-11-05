@@ -1,0 +1,38 @@
+schemaVersion: 1
+id: httpie
+type: tool
+title: HTTPie CLI for interactive HTTP requests
+summary: Send HTTP requests with concise header and JSON syntax and read formatted responses in the terminal. Supports optional named sessions.
+useWhen: You manually exercise an API and want readable requests and responses without opening a GUI client.
+tags: [ cli, http, debugging ]
+platforms: [ macos, linux, windows ]
+rating:
+  rubric: dev-v1
+  dimensions:
+    value: 3
+    dependability: 4
+    ease: 4
+    safety: 3
+    adoption: 3
+    portability: 4
+    upkeep: 3
+  evidence: reviewed
+  reviewed: 2026-11-05
+  notes: The main commands are http and https. Named sessions can store credentials and cookies in local files. Inspect the request and environment before sending methods that modify data.
+source:
+  kind: linked
+  url: https://github.com/httpie/cli
+  revision: 2105caa49bae87c5809c274e407619a0de2639d1
+  version: 3.2.4
+  retrieved: 2026-11-05
+  license: BSD-3-Clause
+  author: Jakub Roztocil and HTTPie contributors
+install:
+  macos: brew install httpie
+  linux: Install httpie through your distribution, or use pipx install httpie in a Python environment with pipx.
+  windows: Use the Windows installer or package-manager instructions in the HTTPie installation guide.
+inspiredBy:
+  - title: HTTPie CLI installation and usage documentation
+    url: https://httpie.io/docs/cli/installation
+overlap: curl is widely available and covers a broader range of transfer options. xh offers similar HTTP-oriented syntax in a standalone executable. Hurl covers repeatable assertions and request sequences in CI.
+related: [ xh, hurl ]

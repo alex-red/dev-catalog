@@ -1,0 +1,39 @@
+schemaVersion: 1
+id: duf
+type: tool
+title: duf free space by filesystem
+summary: Show capacity, used space, and available space for mounted filesystems in a grouped terminal table or JSON.
+useWhen: You need to identify which mounted volume is running low before investigating individual directories.
+tags: [ cli, disk-space ]
+platforms: [ macos, linux, windows ]
+rating:
+  rubric: dev-v1
+  dimensions:
+    value: 3
+    dependability: 4
+    ease: 4
+    safety: 4
+    adoption: 4
+    portability: 4
+    upkeep: 3
+  evidence: reviewed
+  reviewed: 2026-11-05
+  notes: Start with duf to identify the mount. For downstream processing use duf --json. Directory sizes and estimated cleanup savings come from a different scan.
+source:
+  kind: linked
+  url: https://github.com/muesli/duf
+  revision: b2f01a1ecbfd1af63015b83296c50a95260f97b1
+  version: 0.9.1
+  retrieved: 2026-11-05
+  license: MIT
+  author: Christian Muehlhaeuser and contributors
+  notes: The license file also reproduces the license for gopsutil.
+install:
+  macos: brew install duf
+  linux: Install duf from your distribution or download the matching release package or archive.
+  windows: Download the matching Windows release archive and put duf.exe on PATH.
+inspiredBy:
+  - title: Hacker News discussion distinguishing filesystem and directory usage tools
+    url: https://news.ycombinator.com/item?id=24604800
+overlap: df -h already reports free capacity. duf groups and filters mounts and offers JSON. Use dust or ncdu to identify the directories consuming space.
+related: [ dust, ncdu, disk-reclaim ]

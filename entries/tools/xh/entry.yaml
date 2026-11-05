@@ -1,0 +1,38 @@
+schemaVersion: 1
+id: xh
+type: tool
+title: xh standalone CLI for interactive HTTP requests
+summary: Send and inspect HTTP requests with HTTPie-style syntax, automatic JSON request bodies, and formatted output.
+useWhen: You want convenient ad hoc API requests from a standalone CLI, especially where installing a Python application is inconvenient.
+tags: [ cli, http, debugging ]
+platforms: [ macos, linux, windows ]
+rating:
+  rubric: dev-v1
+  dimensions:
+    value: 3
+    dependability: 4
+    ease: 4
+    safety: 3
+    adoption: 4
+    portability: 4
+    upkeep: 4
+  evidence: reviewed
+  reviewed: 2026-11-05
+  notes: The syntax is familiar to HTTPie users, with differences in supported options and integrations. Use the curl translation option when you need to share a command with someone who uses curl.
+source:
+  kind: linked
+  url: https://github.com/ducaale/xh
+  revision: 319d39c2561d2a8697acb3eb9800abcc33bbad98
+  version: 0.26.3
+  retrieved: 2026-11-05
+  license: MIT
+  author: Mohamed Daahir and contributors
+install:
+  macos: brew install xh
+  linux: Install xh through your distribution or download the matching binary from GitHub Releases.
+  windows: winget install --exact --id ducaale.xh
+inspiredBy:
+  - title: Reddit discussion of xh as a curl alternative
+    url: https://www.reddit.com/r/linuxquestions/comments/1sc0e87/real_modern_alternatives_to_common_tools/
+overlap: curl covers common scripts and more protocols. HTTPie is an alternative when its sessions, integrations, or ecosystem suit the task. Hurl is for reusable HTTP test scenarios.
+related: [ httpie, hurl ]

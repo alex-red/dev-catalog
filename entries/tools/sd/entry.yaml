@@ -1,0 +1,40 @@
+schemaVersion: 1
+id: sd
+type: tool
+title: sd literal and regex text substitutions
+summary: Replace literal text or regex matches in files or standard input with a short command.
+useWhen: You need a straightforward text substitution across a few files and want a simpler invocation than a sed expression.
+tags: [ cli, automation ]
+platforms: [ macos, linux, windows ]
+rating:
+  rubric: dev-v1
+  dimensions:
+    value: 3
+    dependability: 4
+    ease: 4
+    safety: 2
+    adoption: 4
+    portability: 4
+    upkeep: 3
+  evidence: reviewed
+  reviewed: 2026-11-05
+  notes: File arguments are edited in place by default. Preview the output or use standard input first. Check the regex flavor and quoting when porting a sed expression.
+source:
+  kind: linked
+  url: https://github.com/chmln/sd
+  revision: 4a7b216552d64134c0fa17a59b9d557d89019f0f
+  version: 1.1.0
+  retrieved: 2026-11-05
+  license: MIT
+  author: Gregory and sd contributors
+install:
+  macos: brew install sd
+  linux: Install sd through your distribution or download the matching release archive and put sd on PATH.
+  windows: Download the matching Windows release archive and put sd.exe on PATH.
+inspiredBy:
+  - title: Reddit discussion of replacements for common commands
+    url: https://www.reddit.com/r/linuxquestions/comments/1sc0e87/real_modern_alternatives_to_common_tools/
+  - title: sd usage and preview examples
+    url: https://github.com/chmln/sd#quick-guide
+overlap: sed is widely available and handles multi-step editing programs. ast-grep is a better fit for syntax-aware code rewrites. sd targets quick text substitutions.
+related: [ ast-grep ]

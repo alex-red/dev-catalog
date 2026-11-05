@@ -1,0 +1,37 @@
+schemaVersion: 1
+id: htop
+type: tool
+title: htop interactive process viewer
+summary: Inspect, sort, filter, and browse processes in a tree. Send signals or change process priority from an interactive terminal view.
+useWhen: You primarily want a compact view of running processes, parent-child relationships, and CPU or memory use.
+tags: [ cli, monitoring, debugging ]
+platforms: [ macos, linux ]
+rating:
+  rubric: dev-v1
+  dimensions:
+    value: 3
+    dependability: 4
+    ease: 4
+    safety: 3
+    adoption: 4
+    portability: 3
+    upkeep: 4
+  evidence: reviewed
+  reviewed: 2026-11-05
+  notes: Tree view is useful for following worker processes. Features and metrics vary by platform and permissions. Confirm selected processes before sending signals or changing priorities.
+source:
+  kind: linked
+  url: https://github.com/htop-dev/htop
+  revision: 20882b8ef8271fb49ea0eb74bbfd484e9b0a11d8
+  version: 3.5.3
+  retrieved: 2026-11-05
+  license: GPL-2.0-or-later
+  author: Hisham Muhammad and htop contributors
+install:
+  macos: brew install htop
+  linux: Install htop from your distribution package manager.
+inspiredBy:
+  - title: Reddit discussion comparing terminal process monitors
+    url: https://www.reddit.com/r/LinuxTeck/comments/1s8l2dn/10_modern_linux_tools_that_replace_old_commands/
+overlap: top is sufficient for a quick look at resource use. btop adds graphs and more panels. Choose htop when process navigation is the main job or terminal space is limited.
+related: [ btop ]

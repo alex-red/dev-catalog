@@ -1,0 +1,40 @@
+schemaVersion: 1
+id: eza
+type: tool
+title: eza Git-aware directory listings
+summary: List directory contents with optional Git status, metadata, and a bounded tree view.
+useWhen: You inspect source directories interactively and want to see file status or structure at a glance.
+tags: [ cli, git, navigation ]
+platforms: [ macos, linux, windows ]
+rating:
+  rubric: dev-v1
+  dimensions:
+    value: 3
+    dependability: 4
+    ease: 4
+    safety: 4
+    adoption: 4
+    portability: 4
+    upkeep: 4
+  evidence: reviewed
+  reviewed: 2026-11-05
+  notes: Try eza -la --git for file status or eza --tree --level=2 for a shallow overview. Opt into Git status and recursion when useful. The options and display format differ from system ls.
+source:
+  kind: linked
+  url: https://github.com/eza-community/eza
+  revision: 98442ab17c2c3738701b62a7e060b1431ae2d6ea
+  version: 0.23.5
+  retrieved: 2026-11-05
+  license: EUPL-1.2
+  author: eza contributors
+install:
+  macos: brew install eza
+  linux: Install eza from your distribution or use the matching GitHub release archive.
+  windows: winget install --exact --id eza-community.eza
+inspiredBy:
+  - title: Hacker News discussion comparing eza and lsd
+    url: https://news.ycombinator.com/item?id=41031112
+  - title: Upstream installation instructions
+    url: https://github.com/eza-community/eza/blob/main/INSTALL.md
+overlap: ls handles standard listings and tree handles static directory trees. lsd offers a configurable alternative. eza is the maintained successor to exa and is the first pick here when Git status matters.
+related: [ lsd, broot ]

@@ -1,0 +1,40 @@
+schemaVersion: 1
+id: ncdu
+type: tool
+title: ncdu interactive disk usage browser
+summary: Scan disk usage once, then drill into large directories and switch between allocated and apparent size in a terminal interface.
+useWhen: A quick size summary shows a large directory and you want to inspect its contents interactively, including over SSH.
+tags: [ cli, disk-space ]
+platforms: [ macos, linux ]
+rating:
+  rubric: dev-v1
+  dimensions:
+    value: 4
+    dependability: 4
+    ease: 4
+    safety: 3
+    adoption: 4
+    portability: 3
+    upkeep: 4
+  evidence: reviewed
+  reviewed: 2026-11-05
+  notes: On ncdu 2.x, use ncdu -rr -x . to disable deletion and shell access and stay on one filesystem. Confirm the major version when installing from a distribution. For large scans, narrow the starting path or exclude irrelevant subtrees.
+source:
+  kind: linked
+  url: https://dev.yorhel.nl/ncdu
+  revision: 1b3d0a670e730b338de6b716e2a60cf86351e44b
+  version: 2.9.2
+  retrieved: 2026-11-05
+  license: MIT
+  author: Yoran Heling and contributors
+  notes: The source revision is the v2.9.2 tag in the upstream Git repository at https://g.blicky.net/ncdu.git/.
+install:
+  macos: brew install ncdu
+  linux: Install ncdu through your distribution or download the matching static Linux binary from the upstream download page.
+inspiredBy:
+  - title: ncdu manual
+    url: https://dev.yorhel.nl/ncdu/man
+  - title: Hacker News disk-usage discussion
+    url: https://news.ycombinator.com/item?id=47627217
+overlap: dust prints a quick size tree. gdu is an alternative interactive scanner for SSD-backed trees. disk-reclaim knows about developer-specific cleanup targets.
+related: [ dust, gdu, dua, disk-reclaim ]

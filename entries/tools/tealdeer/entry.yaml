@@ -1,0 +1,39 @@
+schemaVersion: 1
+id: tealdeer
+type: tool
+title: Tealdeer command examples from tldr pages
+summary: Look up concise, community-maintained command examples from the terminal. Keep the pages in a local cache for offline lookups.
+useWhen: You remember the command name and want a working example before looking up full option semantics in the manual.
+tags: [ cli, documentation ]
+platforms: [ macos, linux, windows ]
+rating:
+  rubric: dev-v1
+  dimensions:
+    value: 3
+    dependability: 4
+    ease: 4
+    safety: 4
+    adoption: 4
+    portability: 4
+    upkeep: 4
+  evidence: reviewed
+  reviewed: 2026-11-05
+  notes: Install the tealdeer package and invoke tldr. Run tldr --update to populate or refresh the local cache. Coverage and examples depend on the upstream tldr pages, so use the manual for exact semantics.
+source:
+  kind: linked
+  url: https://github.com/tealdeer-rs/tealdeer
+  revision: 993a8e0232ef42c4d9935ff5598796b6e98bf213
+  version: 1.9.1
+  retrieved: 2026-11-05
+  license: Apache-2.0 OR MIT
+  author: Tealdeer contributors
+install:
+  macos: brew install tealdeer
+  linux: Install tealdeer from your distribution or use the matching release binary as tldr.
+  windows: Install Tealdeer through Scoop or download the matching Windows release binary and put it on PATH as tldr.exe.
+inspiredBy:
+  - title: tldr pages project and example conventions
+    url: https://github.com/tldr-pages/tldr
+  - title: Reddit discussion of tldr alongside man
+    url: https://www.reddit.com/r/linuxquestions/comments/1sc0e87/real_modern_alternatives_to_common_tools/
+overlap: man and --help document exact flags and edge cases. Tealdeer is a client for tldr pages and helps with quick recall of common examples.
