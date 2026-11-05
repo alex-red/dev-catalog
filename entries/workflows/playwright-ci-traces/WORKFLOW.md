@@ -23,7 +23,7 @@ This mode records each attempt and keeps traces for failures, including an initi
 
 Configure CI to upload the full HTML report directory after the test step completes, including when that step fails. The default report path is `playwright-report/`. For sharded runs, use the [Playwright report merging procedure](https://playwright.dev/docs/test-sharding#merging-reports-from-multiple-shards).
 
-Keep access and retention appropriate for your test data. Traces can include screenshots, page content, and network details.
+Use test accounts and synthetic data where possible. Traces can include screenshots, source code, page content, and network details. Limit artifact access to people who need to debug the run, set a short retention period, and review the contents before sharing outside the project.
 
 ## 3. Inspect the failed action
 

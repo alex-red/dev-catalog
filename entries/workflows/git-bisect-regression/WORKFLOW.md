@@ -18,11 +18,14 @@ Test the regression itself, not the whole suite. Unrelated failures in older com
 ```sh
 #!/bin/sh
 # check.sh — kept outside the repository so checkouts do not change it.
-npm ci --silent || exit 125          # an unbuildable commit is a skip, not a failure
-npx vitest run src/cart.test.ts -t "applies discount" >/dev/null 2>&1
+npm ci --ignore-scripts --silent || exit 125
+[ -x ./node_modules/.bin/vitest ] || exit 125
+./node_modules/.bin/vitest run src/cart.test.ts -t "applies discount" >/dev/null 2>&1
 ```
 
-Keep the script outside the working tree, for example in `/tmp`. A tracked script would be swapped for older versions at each checkout, and an untracked one would be swept up by the stash in the next step.
+Create a private temporary directory with `check_dir=$(mktemp -d)`. Save the check as `"$check_dir/check.sh"` and make it executable. Keeping it outside the working tree protects it from checkouts and stashes.
+
+Tests execute code from each revision. For unfamiliar history, run the bisect in a disposable environment with test credentials and without access to your personal files, SSH agent, or Docker socket. The example skips npm lifecycle scripts. If the project needs them, inspect what they run before enabling them.
 
 ## 2. Confirm both ends
 
@@ -33,8 +36,8 @@ Run the check by hand on a known-bad commit (usually `HEAD`) and a known-good on
 ```sh
 git stash --include-untracked        # bisect needs a clean tree
 git bisect start BAD GOOD
-git bisect run /tmp/check.sh
-git bisect log > /tmp/bisect.log     # keep the record before resetting
+git bisect run "$check_dir/check.sh"
+git bisect log > "$check_dir/bisect.log"
 git bisect reset
 ```
 

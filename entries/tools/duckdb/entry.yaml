@@ -18,6 +18,9 @@ rating:
     upkeep: 4
   evidence: reviewed
   reviewed: 2026-11-05
+  blockers:
+    - scope: Reading untrusted Brotli-compressed data with an affected build
+      reason: CVE-2026-111497 affects the Brotli decoder in DuckDB 2.0.0. Verify that the package includes the upstream decoder fix.
   notes: Open duckdb without a database path for an in-memory session. CSV type inference can hide formatting details such as leading zeros, so specify types or use all_varchar when inspecting raw values. Only run trusted SQL because queries can access files and load extensions.
 source:
   kind: linked
@@ -31,6 +34,7 @@ install:
   macos: brew install duckdb
   linux: Download the DuckDB CLI archive for your architecture from GitHub Releases, extract it, and put duckdb on PATH.
   windows: Download the Windows CLI zip from GitHub Releases, extract it, and add the directory containing duckdb.exe to PATH.
+  notes: Check the package provider for the fix for CVE-2026-111497 before opening untrusted Brotli-compressed data.
 inspiredBy:
   - title: Reddit discussion on local SQL workflows with DuckDB
     url: https://www.reddit.com/r/dataengineering/comments/1qwd5of/is_someone_using_duckdb_in_prod/

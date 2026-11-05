@@ -1,12 +1,12 @@
 # 2026 Developer Starter Pack
 
-Start with Git and [eight everyday terminal tools](../../collections/developer-starter-pack-2026.yaml) for macOS or Linux. Use your usual package manager, then add the tools that fit your projects.
+Start with Git and [seven everyday terminal tools](../../collections/developer-starter-pack-2026.yaml) for macOS or Linux. Use your usual package manager, then add the tools that fit your projects.
 
 ## Install
 
 ### macOS
 
-Install [Homebrew](https://brew.sh/) if needed. Download this repository or clone it, then run the command below from its root. The [Brewfile](Brewfile) lists the nine formulas. `--no-upgrade` keeps Bundle from requesting upgrades for installed formulas.
+Install [Homebrew](https://brew.sh/) if needed. Download this repository or clone it, then run the command below from its root. The [Brewfile](Brewfile) lists the eight formulae. `--no-upgrade` keeps Bundle from requesting upgrades for installed formulae.
 
 ```sh
 brew bundle install --file docs/starter-pack/Brewfile --no-upgrade
@@ -15,7 +15,7 @@ brew bundle install --file docs/starter-pack/Brewfile --no-upgrade
 ### Debian 13 and Ubuntu 24.04 LTS
 
 ```sh
-sudo apt update && sudo apt install git ripgrep fd-find fzf eza bat zoxide jq shellcheck
+sudo apt update && sudo apt install git ripgrep fd-find eza bat zoxide jq shellcheck
 ```
 
 On Ubuntu, enable the official Universe component if your image omits it. On Debian and Ubuntu, use `fdfind` if the `fd` executable is absent and `batcat` if `bat` is absent.
@@ -23,10 +23,12 @@ On Ubuntu, enable the official Universe component if your image omits it. On Deb
 ### Fedora 44 and 45
 
 ```sh
-sudo dnf install git ripgrep fd-find fzf eza bat zoxide jq ShellCheck
+sudo dnf install git ripgrep fd-find eza bat zoxide jq ShellCheck
 ```
 
 These commands install package-manager versions. On other distributions, use the per-tool instructions in the [catalog](../../README.md#tools).
+
+The pack omits [fzf](../../entries/tools/fzf/entry.yaml) while the reviewed release is affected by [CVE-2026-115319](https://osv.dev/vulnerability/CVE-2026-115319). If you already installed it, check your package provider for a build with the fix.
 
 ## Check the install
 
@@ -43,7 +45,7 @@ jq -e '.schemaVersion == 1' catalog/index.json
 printf '%s\n' '#!/bin/sh' 'printf "%s\n" hello' | shellcheck -
 ```
 
-Try `eza --tree --level=2 docs` for a directory overview, and `bat docs/starter-pack/Brewfile` to read the manifest. Pipe a list into `fzf` for an interactive picker, for example `rg --files | fzf`.
+Try `eza --tree --level=2 docs` for a directory overview, and `bat docs/starter-pack/Brewfile` to read the manifest.
 
 ## Optional shell setup
 
@@ -55,7 +57,7 @@ To enable zoxide, put the line for your shell in its startup file, then open a n
 | Zsh | `~/.zshrc` | `eval "$(zoxide init zsh)"` |
 | Fish | `~/.config/fish/config.fish` | `zoxide init fish \| source` |
 
-To enable fzf history and file shortcuts, use the shell instructions for your installed version. Older Linux packages can ship separate shell integration files. See the [zoxide setup guide](https://github.com/ajeetdsouza/zoxide#installation) and [fzf shell integration guide](https://github.com/junegunn/fzf#setting-up-shell-integration).
+See the [zoxide setup guide](https://github.com/ajeetdsouza/zoxide#installation) for details.
 
 ## Add tools for your work
 

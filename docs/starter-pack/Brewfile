@@ -1,7 +1,6 @@
 brew "git"
 brew "ripgrep"
 brew "fd"
-brew "fzf"
 brew "eza"
 brew "bat"
 brew "zoxide"

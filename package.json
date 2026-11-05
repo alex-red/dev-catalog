@@ -13,11 +13,12 @@
   "engines": {
     "bun": ">=1.0.0"
   },
-  "packageManager": "bun@1.4.3",
+  "packageManager": "bun@1.4.4",
   "scripts": {
     "validate": "bun scripts/validate.ts",
     "catalog:build": "bun scripts/catalog.ts --write",
     "catalog:check": "bun scripts/catalog.ts --check",
+    "security:catalog": "bun scripts/check-catalog-advisories.ts",
     "dev": "bun scripts/dev.ts",
     "site:build": "vite build",
     "lint": "markdownlint-cli2",
@@ -29,10 +30,14 @@
   "devDependencies": {
     "@types/node": "24.19.2",
     "ajv": "8.20.0",
-    "markdownlint-cli2": "0.23.3",
+    "markdownlint-cli2": "0.24.0",
     "mdast-util-from-markdown": "2.1.0",
     "typescript": "7.0.2",
     "vite": "8.3.4",
     "yaml": "2.9.1"
+  },
+  "overrides": {
+    "katex": "0.18.2",
+    "re2js": "2.8.7"
   }
 }

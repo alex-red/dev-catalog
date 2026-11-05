@@ -11,19 +11,28 @@ jobs:
   validate:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v7
-      - uses: oven-sh/setup-bun@v2
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: oven-sh/setup-bun@0c5077e51419868618aeaa5fe8019c62421857d6 # v2
         with:
           bun-version-file: .bun-version
+      - run: bun audit --audit-level=high
+      - uses: zizmorcore/zizmor-action@45d7276c9ca790aabd705e31ca99c6185c3e76dd # v0.8.1
+        with:
+          advanced-security: false
+          online-audits: false
       - run: bun install --frozen-lockfile
       - run: bun run check
 
   shellcheck:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v7
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
       - name: Run shellcheck on every shell script under entries/
         run: |
-          git ls-files entries | while IFS= read -r file; do
-            head -n 1 "$file" | grep -qE '^#!.*[/ ](ba)?sh$' && printf '%s\n' "$file"
-          done | xargs --no-run-if-empty shellcheck
+          git ls-files -z entries | while IFS= read -r -d '' file; do
+            head -n 1 -- "$file" | grep -qE '^#!.*[/ ](ba)?sh$' && printf '%s\0' "$file"
+          done | xargs -0 --no-run-if-empty shellcheck --

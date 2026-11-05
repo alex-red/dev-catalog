@@ -11,7 +11,7 @@ Browse it at [alex-red.github.io/dev-catalog](https://alex-red.github.io/dev-cat
 
 ## 2026 Developer Starter Pack
 
-Set up Git and eight everyday terminal tools for searching, navigating, and checking code. The [Starter Pack guide](docs/starter-pack/README.md) has install commands for macOS, Debian, Ubuntu, and Fedora, plus optional add-ons by workflow.
+Set up Git and seven everyday terminal tools for searching, navigating, and checking code. The [Starter Pack guide](docs/starter-pack/README.md) has install commands for macOS, Debian, Ubuntu, and Fedora, plus optional add-ons by workflow.
 
 ## What's in it
 
@@ -44,7 +44,6 @@ Set up Git and eight everyday terminal tools for searching, navigating, and chec
 | [dust ranked directory sizes](https://github.com/bootandy/dust) | You want a quick answer to which files or subdirectories account for most of the space under a path. | macos, linux, windows | 10.0/10 |
 | [fd for finding files by name](https://github.com/sharkdp/fd) | You search for paths in source trees or need a file list for a picker, watcher, or another command. | macos, linux, windows | 10.0/10 |
 | [ShellCheck static analysis for shell scripts](https://github.com/koalaman/shellcheck) | You maintain Bash or POSIX shell scripts and want actionable diagnostics before local runs or CI. | macos, linux, windows | 10.0/10 |
-| [fzf fuzzy finder](https://github.com/junegunn/fzf) | You repeatedly scroll through shell history, navigate long lists, or write shell helpers that need a keyboard-driven picker. | macos, linux, windows | 9.6/10 |
 | [jq for querying and transforming JSON](https://github.com/jqlang/jq) | You repeatedly extract fields from API responses, CLI output, or JSON logs and want a reusable command. | macos, linux, windows | 9.6/10 |
 | [Ruff Python linter and formatter](https://github.com/astral-sh/ruff) | You maintain Python repos and want consistent linting and formatting with one command-line tool. | macos, linux, windows | 9.6/10 |
 | [btop system resource dashboard](https://github.com/aristocratos/btop) | You need to see whether local slowdowns line up with resource pressure and identify the processes involved. | macos, linux | 9.4/10 |
@@ -63,7 +62,6 @@ Set up Git and eight everyday terminal tools for searching, navigating, and chec
 | [delta syntax-highlighting diff pager](https://github.com/dandavison/delta) | You regularly review patches in a terminal and want to spot small changes in dense diffs. | macos, linux, windows | 8.9/10 |
 | [lsd configurable directory listings](https://github.com/lsd-rs/lsd) | You want an interactive ls-style listing and want to customize the default layout or presentation across machines. | macos, linux, windows | 8.9/10 |
 | [Dive for inspecting container image layers](https://github.com/wagoodman/dive) | An image grew unexpectedly or you need to trace a file back to the build layer that introduced it. | macos, linux, windows | 8.8/10 |
-| [DuckDB CLI for local data inspection](https://github.com/duckdb/duckdb) | You regularly inspect data exports, compare before-and-after snapshots, or check fixtures and already know enough SQL to express the question. | macos, linux, windows | 8.8/10 |
 | [htop interactive process viewer](https://github.com/htop-dev/htop) | You primarily want a compact view of running processes, parent-child relationships, and CPU or memory use. | macos, linux | 8.8/10 |
 | [just project command runner](https://github.com/casey/just) | Contributors keep looking up setup, test, or maintenance commands and need a small shared command menu. | macos, linux, windows | 8.8/10 |
 | [Mike Farah's yq for querying and editing YAML](https://github.com/mikefarah/yq) | You regularly inspect or update fields in Compose files, CI workflows, or Helm values from a script. | macos, linux, windows | 8.8/10 |
@@ -80,6 +78,8 @@ Set up Git and eight everyday terminal tools for searching, navigating, and chec
 | [Colima local container runtime](https://github.com/abiosoft/colima) | You need a local container runtime on macOS or a VM-backed container environment on Linux. | macos, linux | 8.3/10 |
 | [mise runtime manager and task runner](https://github.com/jdx/mise) | You switch among repositories with different Node, Python, Go, or other tool versions and want one setup command for contributors. | macos, linux, windows | 8.3/10 |
 | [gdu parallel disk usage analyzer](https://github.com/dundee/gdu) | You regularly scan large SSD-backed trees and want an alternative to ncdu that can take advantage of parallel traversal. | macos, linux | 8.1/10 |
+| [fzf fuzzy finder](https://github.com/junegunn/fzf) | You repeatedly scroll through shell history, navigate long lists, or write shell helpers that need a keyboard-driven picker. | macos, linux, windows | 9.6/10 · blocker |
+| [DuckDB CLI for local data inspection](https://github.com/duckdb/duckdb) | You regularly inspect data exports, compare before-and-after snapshots, or check fixtures and already know enough SQL to express the question. | macos, linux, windows | 8.8/10 · blocker |
 | [Jujutsu version control with a Git backend](https://github.com/jj-vcs/jj) | You frequently revise earlier commits in a stack and spend time rebasing descendants or recovering from local history edits. | macos, linux, windows | 7.8/10 · blocker |
 
 <!-- catalog:entries:end -->
@@ -88,15 +88,7 @@ Scores are out of 10, from a curator's review against the built-in or usual alte
 
 ## Get a script
 
-Read the script first; each one has a `SCRIPT.md` with usage and limitations. Then download it onto your `PATH`:
-
-```sh
-curl -fsSL https://raw.githubusercontent.com/alex-red/dev-catalog/main/entries/scripts/git-prune-merged/git-prune-merged \
-  -o ~/.local/bin/git-prune-merged
-chmod +x ~/.local/bin/git-prune-merged
-```
-
-Or clone the repository and install from it:
+Clone the catalog and read the script and its `SCRIPT.md` at the revision you plan to install. Then copy the reviewed script onto your `PATH`.
 
 ```sh
 git clone https://github.com/alex-red/dev-catalog.git

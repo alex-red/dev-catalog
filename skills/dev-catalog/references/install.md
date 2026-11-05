@@ -16,10 +16,10 @@ From a local checkout:
 install -m 0755 entries/scripts/ID/NAME ~/.local/bin/NAME
 ```
 
-From the published catalog:
+From the published catalog, substitute the full catalog commit you reviewed for `REVISION`:
 
 ```sh
-curl -fsSL https://raw.githubusercontent.com/alex-red/dev-catalog/main/entries/scripts/ID/NAME -o ~/.local/bin/NAME
+curl -fsSL https://raw.githubusercontent.com/alex-red/dev-catalog/REVISION/entries/scripts/ID/NAME -o ~/.local/bin/NAME
 chmod +x ~/.local/bin/NAME
 ```
 
@@ -35,5 +35,6 @@ Tools are always linked to their upstream project. Use the entry's `install` fie
 
 - Use the step for the user's platform (`macos`, `linux`, `windows`), or `any`.
 - Prefer a package manager the user already has. Do not install a package manager to install a tool without asking.
-- Pin `source.version` where the package manager allows it, and read `install.notes` for caveats.
+- Prefer a build with verified security fixes. Record the actual installed version and its package source alongside the catalog pin.
+- For a direct binary download, verify the upstream signature or attestation when available and match the digest to a trusted release record before running it.
 - If the upstream instructions at `source.url` differ materially from the catalog entry, stop and tell the user.

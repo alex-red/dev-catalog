@@ -111,6 +111,8 @@ tilde() { case "$1" in "$HOME"/*) printf '~%s' "${1#"$HOME"}" ;; *) printf '%s' 
 # SIZESPEC is a path to du, or "=KB" for a precomputed size. A NOTE starting with ≤ marks an upper bound.
 add() {
   case "$4" in =*) ;; *) [ -e "$4" ] || return 0 ;; esac
+  # Candidate fields are serialized before the selected action is evaluated.
+  case "$1$2$3$4$5${6:-}" in *"$US"*|*$'\n'*|*$'\r'*) return 0 ;; esac
   printf '%s\n' "$1$US$2$US$3$US$4$US$5$US${6:-}" >> "$ITEMS"
 }
 
@@ -119,8 +121,18 @@ guard() {
   local rel
   case "$1" in "$HOME"/*) ;; *) echo "refusing (outside \$HOME): $1" >&2; return 1 ;; esac
   rel=${1#"$HOME"/}
-  case "/$rel/" in */../*|*/./*) echo "refusing (relative segment): $1" >&2; return 1 ;; esac
+  case "/$rel/" in */../*|*/./*|*//*) echo "refusing (relative or empty segment): $1" >&2; return 1 ;; esac
   case "$rel" in */?*) ;; *) echo "refusing (too shallow): $1" >&2; return 1 ;; esac
+}
+
+# Enter the expected physical directory before mutating it. HOME itself may
+# have a symlinked prefix, but no component below HOME may redirect the target.
+enter_home_dir() {
+  local physical_home expected
+  physical_home=$(cd -P -- "$HOME" && pwd -P) || return 1
+  expected=$physical_home${1#"$HOME"}
+  cd -P -- "$1" || return 1
+  [ "$PWD" = "$expected" ] || { echo "refusing (symlinked directory): $1" >&2; return 1; }
 }
 
 # Make read-only directories under $1 writable (files untouched; find doesn't follow symlinks)
@@ -131,11 +143,14 @@ safe_rm() {
   for p in "$@"; do
     [ -e "$p" ] || [ -L "$p" ] || continue
     guard "$p" || return 1
-    rm -rf -- "$p" 2>/dev/null && continue
-    # Some caches (dotslash, Go modules, Bazel) make extracted dirs read-only on purpose.
-    # Unlocking this item's dirs is enough to delete its files; retry once.
-    unlock_dirs "$p"
-    rm -rf -- "$p" || return 1
+    (
+      enter_home_dir "${p%/*}" || exit 1
+      p=./${p##*/}
+      rm -rf -- "$p" 2>/dev/null && exit 0
+      # Some caches make extracted dirs read-only. Unlock dirs and retry once.
+      unlock_dirs "$p"
+      rm -rf -- "$p"
+    ) || return 1
   done
 }
 
@@ -156,14 +171,15 @@ prune_in() {
 }
 
 # Per file: for content-addressed caches whose files stand alone
-prune_files() {
+prune_files() (
   [ -d "$1" ] || return 0
   # DIR itself is kept, so a known cache root directly in $HOME is fine here
   case "$1" in "$HOME/.pnpm-store") ;; *) guard "$1" || return 1 ;; esac
-  _prune_files "$1" 2>/dev/null && return 0
-  unlock_dirs "$1"   # kept files stay read-only (pnpm relies on that)
-  _prune_files "$1"
-}
+  enter_home_dir "$1" || return 1
+  _prune_files . 2>/dev/null && return 0
+  unlock_dirs .   # kept files stay read-only (pnpm relies on that)
+  _prune_files .
+)
 _prune_files() {
   if [ "$KEEP_HOURS" -gt 0 ]; then
     find "$1" -type f -cmin +$((KEEP_HOURS * 60)) -delete
@@ -172,13 +188,18 @@ _prune_files() {
   fi && find "$1" -mindepth 1 -type d -empty -delete
 }
 
-# All-or-nothing caches: run CMD only if nothing in DIR is recent (exit 3 = skipped)
-if_idle() {
-  if [ "$KEEP_HOURS" -gt 0 ] && recent "$1"; then
+# The Go cache must be removed as a unit (exit 3 = skipped).
+clear_go_modules() (
+  guard "$1" && enter_home_dir "$1" || return 1
+  if [ "$KEEP_HOURS" -gt 0 ] && recent .; then
     echo "skipped: $(tilde "$1") has entries from the last ${KEEP_HOURS}h"; return 3
   fi
-  eval "$2"
-}
+  if has go; then
+    GOMODCACHE="$PWD" go clean -modcache
+  else
+    safe_rm_in "$1"
+  fi
+)
 
 # Empty a directory but keep it (for non-cache dirs like Trash, where age doesn't matter)
 safe_rm_in() {
@@ -267,6 +288,20 @@ clear_pytest() {
   tmp_rm "$USER_TMP"/pytest-of-*
 }
 
+docker_endpoint() {
+  if [ -z "${DOCKER_CONTEXT:-}" ] && [ -n "${DOCKER_HOST:-}" ]; then
+    printf '%s\n' "$DOCKER_HOST"
+  else
+    docker context inspect --format '{{.Endpoints.docker.Host}}' 2>/dev/null
+  fi
+}
+
+docker_local() (
+  case "$1" in unix:///*) [ -S "${1#unix://}" ] || exit 1 ;; *) exit 1 ;; esac
+  unset DOCKER_HOST DOCKER_CONTEXT
+  docker --host "$@"
+)
+
 git_root() {
   local d=$1
   while [ -n "$d" ] && [ "$d" != "$HOME" ]; do
@@ -301,15 +336,16 @@ scan_global() {
   add safe go "Go build cache" "$d" "prune_files $(q "$d")"
 
   # Extracted modules can't be partially deleted, so it's all or nothing
-  d=${GOMODCACHE:-${GOPATH:-$HOME/go}/pkg/mod}
-  if has go; then a='go clean -modcache'; else a="safe_rm_in $(q "$d")"; fi
-  add safe go "Go module cache" "$d" "if_idle $(q "$d") $(q "$a")" "re-downloads on next build"
+  d=${GOMODCACHE:-}
+  [ -z "$d" ] && has go && d=$(go env GOMODCACHE 2>/dev/null)
+  d=${d:-${GOPATH:-$HOME/go}/pkg/mod}
+  add safe go "Go module cache" "$d" "clear_go_modules $(q "$d")" "re-downloads on next build"
 
   d=$HOME/.bun/install/cache
   add safe js "bun install cache" "$d" "prune_in $(q "$d")" "installs are clones or hard links of this cache"
 
   d=$HOME/.npm/_cacache
-  a="prune_files $(q "$d")"; has npm && a+=" && npm cache verify"
+  a="prune_files $(q "$d")"; has npm && a+=" && npm --cache $(q "$HOME/.npm") cache verify"
   add safe js "npm cache" "$d" "$a"
   add safe js "npx cache" "$HOME/.npm/_npx" "prune_in $(q "$HOME/.npm/_npx")"
 
@@ -374,27 +410,31 @@ scan_global() {
   done
 
   # --- Docker / OrbStack: sizes come from the daemon, so they match what prune removes
-  if has docker && docker info >/dev/null 2>&1; then
+  local endpoint docker_cmd
+  endpoint=""
+  if has docker; then endpoint=$(docker_endpoint); fi
+  if [ -n "$endpoint" ] && docker_local "$endpoint" info >/dev/null 2>&1; then
     local dfo cont imgs bc vols dang tagged flt="" ub="" vnames vcount
-    dfo=$(docker system df --format '{{.Type}}|{{.Reclaimable}}' 2>/dev/null)
+    docker_cmd="docker_local $(q "$endpoint")"
+    dfo=$(docker_local "$endpoint" system df --format '{{.Type}}|{{.Reclaimable}}' 2>/dev/null)
     dsize() { awk '{ v = $1; u = v; sub(/^[0-9.]+/, "", u); sub(/[A-Za-z]+$/, "", v)
                      m = (u == "B") ? 1/1024 : (u == "kB") ? 1000/1024 : (u == "MB") ? 1e6/1024 : (u == "GB") ? 1e9/1024 : (u == "TB") ? 1e12/1024 : 0
                      s += v * m } END { printf "%d", s }'; }
     dfrec() { printf '%s\n' "$dfo" | awk -F'|' -v t="$1" '$1 == t { split($2, a, " "); print a[1] }' | dsize; }
     cont=$(dfrec Containers); imgs=$(dfrec Images); bc=$(dfrec "Build Cache"); vols=$(dfrec "Local Volumes")
-    dang=$(docker image ls -f dangling=true --format '{{.Size}}' 2>/dev/null | dsize)
+    dang=$(docker_local "$endpoint" image ls -f dangling=true --format '{{.Size}}' 2>/dev/null | dsize)
     tagged=$(( imgs > dang ? imgs - dang : 0 ))
     if [ "$KEEP_HOURS" -gt 0 ]; then flt=" --filter until=${KEEP_HOURS}h"; ub="≤ "; fi
 
-    add safe docker "Docker: stopped containers" "=$cont" "docker container prune -f$flt" "${ub:+≤ }"
-    add safe docker "Docker: dangling (untagged) images" "=$dang" "docker image prune -f$flt" "${ub:+≤ shared layers may be counted twice}"
-    add safe docker "Docker: build cache" "=$bc" "docker builder prune -f$flt" "${ub:+≤ }"
-    add review docker "Docker: unused tagged images" "=$tagged" "docker image prune -af$flt" \
+    add safe docker "Docker: stopped containers" "=$cont" "$docker_cmd container prune -f$flt" "${ub:+≤ }"
+    add safe docker "Docker: dangling (untagged) images" "=$dang" "$docker_cmd image prune -f$flt" "${ub:+≤ shared layers may be counted twice}"
+    add safe docker "Docker: build cache" "=$bc" "$docker_cmd builder prune -f$flt" "${ub:+≤ }"
+    add review docker "Docker: unused tagged images" "=$tagged" "$docker_cmd image prune -af$flt" \
       "≤ re-pulled or rebuilt on next use"
-    vcount=$(docker volume ls -qf dangling=true 2>/dev/null | wc -l | tr -d ' ')
-    vnames=$(docker volume ls -qf dangling=true 2>/dev/null | cut -c1-24 | head -n 4 | paste -sd, - | sed 's/,/, /g')
+    vcount=$(docker_local "$endpoint" volume ls -qf dangling=true 2>/dev/null | wc -l | tr -d ' ')
+    vnames=$(docker_local "$endpoint" volume ls -qf dangling=true 2>/dev/null | cut -c1-24 | head -n 4 | paste -sd, - | sed 's/,/, /g')
     [ "$vcount" -gt 4 ] && vnames+=", …"
-    add review docker "Docker: $vcount unused volumes" "=$vols" "docker volume prune -af" \
+    add review docker "Docker: $vcount unused volumes" "=$vols" "$docker_cmd volume prune -af" \
       "DELETES DATA: ${vnames:-none}"
   fi
 
@@ -607,7 +647,7 @@ awk -F"$US" -v B="$B" -v D="$D" -v N="$N" -v GRN="$GRN" -v YEL="$YEL" -v RED="$R
   {
     if ($2 != last) { printf "\n%s%s%s\n", B col[$2], title[$2], N; last = $2 }
     note = $7; ub = sub(/^≤ ?/, "", note)
-    if (keep > 0 && $6 ~ /^(prune_in|if_idle |brew cleanup|for r in)/) ub = 1  # whole entries kept if partly recent
+    if (keep > 0 && $6 ~ /^(prune_in|clear_go_modules |brew cleanup|for r in)/) ub = 1  # whole entries kept if partly recent
     printf "%4d %s %s%6s%s  %s%s\n", NR, (ub ? "≤" : " "), B, h($1), N, $4, (note != "" ? "  " D "· " note N : "")
     tot[$2] += $1
   }

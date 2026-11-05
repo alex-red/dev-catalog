@@ -27,7 +27,8 @@ To add your own paths, put lines of the form `risk<TAB>path<TAB>note` in `~/.con
 ## Safety
 
 - Nothing is deleted until you select items and confirm. Without a terminal it exits after listing, unless you pass both `--select` and `--yes`.
-- Every path it removes must be inside `$HOME` and at least two levels deep. The exceptions are temp-dir entries, which must be top-level entries you own outright.
+- Direct deletion under `$HOME` refuses symlinked parent directories. Temporary-file cleanup has separate ownership and path checks. Homebrew and other external cleaners manage their own caches and stores.
+- Docker cleanup uses the Unix socket selected during the scan and skips SSH and TCP endpoints. Review which daemon the socket represents before pruning.
 - Caches keep anything created or changed in the last `--keep-hours` (default 24), judged by ctime. Temp-dir entries also skip anything with sockets or recent changes, and anything owned by another user.
 - Read the Review section before selecting it. Docker volumes and the Trash are deleted for good.
 

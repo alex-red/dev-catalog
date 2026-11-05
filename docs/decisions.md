@@ -33,3 +33,7 @@ The site under `site/` is a port of Agentic Catalog's Vite site, so both catalog
 ## 8. The Starter Pack uses native package managers
 
 The Starter Pack is a catalog collection with a reviewable Brewfile and explicit Linux package commands. Git is a baseline package in those commands. Package managers own version selection and installation, while shell setup and project-specific add-ons are separate steps.
+
+## 9. Security checks use standard runners and public advisory feeds
+
+Validation audits the Bun lockfile and workflow configuration. A weekly Linux job checks advisories for the lockfile and the catalog's pinned tool commits. Findings go to job logs, and known catalog advisories are recorded as scoped blockers. Installed builds are checked with the user's package manager because vendors can ship different versions and backported fixes.

@@ -22,15 +22,16 @@ rating:
 source:
   kind: linked
   url: https://github.com/eradman/entr
-  revision: 046d8d7cc6ce67775926cc585e313cab8f26e42a
-  version: "5.8"
+  revision: af3a7093d5e8eea2886d988f266fbc229781ef75
+  version: "5.9"
   retrieved: 2026-11-05
   license: ISC
   author: Eric Radman and contributors
-  notes: The 5.8 license file separately lists licenses for bundled compatibility code. Package managers may install a newer release.
+  notes: The 5.9 tag contains the fix for CVE-2026-18370.
 install:
   macos: brew install entr
   linux: Install entr through your distribution, such as apt install entr on Debian or Ubuntu.
+  notes: Use 5.9 or a distribution build that includes the fix for CVE-2026-18370.
 inspiredBy:
   - title: November Reddit example combining fd and entr
     url: https://www.reddit.com/r/CLI/comments/1xnt4px/whats_one_tiny_commandline_habit_that_saves_you_a/

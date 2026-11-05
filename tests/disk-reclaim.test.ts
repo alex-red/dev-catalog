@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict';
 import { spawnSync } from 'node:child_process';
-import { existsSync, mkdirSync, mkdtempSync, readdirSync, rmSync, utimesSync, writeFileSync } from 'node:fs';
+import { existsSync, mkdirSync, mkdtempSync, readdirSync, rmSync, symlinkSync, utimesSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { test } from 'node:test';
@@ -45,7 +45,7 @@ function sandbox(context: TestContext) {
     assert.ok(line, `no item for ${label} in:\n${output}`);
     return line.trim().split(' ')[0];
   };
-  return { home, cache, project, outside, run, number };
+  return { root, home, cache, project, outside, env, run, number };
 }
 
 test('--list sorts candidates by risk and changes nothing', (context) => {
@@ -89,6 +89,47 @@ test('paths outside $HOME are refused even when listed in the config', (context)
   assert.match(result.stdout, /refusing \(outside \$HOME\)/);
   assert.match(result.stdout, /0 ok, 0 skipped, 1 failed/);
   assert.ok(existsSync(join(outside, 'victim')));
+});
+
+test('a symlinked parent cannot redirect deletion outside HOME', (context) => {
+  const { home, outside, run, number } = sandbox(context);
+  symlinkSync(outside, join(home, 'link'));
+  writeFileSync(join(home, '.config', 'disk-reclaim', 'paths'), 'safe\t~/link/victim\tsymlink escape\n');
+  const result = run('--select', number(run('--list').stdout, 'symlink escape'), '--yes');
+  assert.notEqual(result.status, 0);
+  assert.match(result.stdout, /refusing \(symlinked directory\)/);
+  assert.ok(existsSync(join(outside, 'victim')));
+});
+
+test('file pruning refuses a symlinked cache directory', (context) => {
+  const { home, outside, run, number } = sandbox(context);
+  mkdirSync(join(home, '.npm'));
+  symlinkSync(outside, join(home, '.npm', '_cacache'));
+  const result = run('--select', number(run('--list').stdout, 'npm cache'), '--yes');
+  assert.notEqual(result.status, 0);
+  assert.match(result.stdout, /refusing \(symlinked directory\)/);
+  assert.ok(existsSync(join(outside, 'victim')));
+});
+
+test('remote Docker contexts are excluded before querying the daemon', (context) => {
+  const { root, env, run } = sandbox(context);
+  const bin = join(root, 'bin');
+  const marker = join(root, 'docker-called');
+  mkdirSync(bin);
+  writeFileSync(join(bin, 'docker'), [
+    '#!/bin/sh',
+    'if [ "$1" = context ] && [ "$2" = inspect ]; then',
+    "  echo ssh://remote.example",
+    'else',
+    '  touch "$DOCKER_TEST_MARKER"',
+    'fi',
+    '',
+  ].join('\n'), { mode: 0o755 });
+  Object.assign(env, { PATH: `${bin}:${env.PATH}`, DOCKER_TEST_MARKER: marker });
+  const result = run('--list');
+  assert.equal(result.status, 0, result.stderr);
+  assert.doesNotMatch(result.stdout, /Docker:/);
+  assert.ok(!existsSync(marker));
 });
 
 test('with --keep-hours, cache entries changed recently are kept', (context) => {

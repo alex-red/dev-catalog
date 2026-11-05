@@ -20,6 +20,8 @@ For an existing local branch, use `git worktree add ../app-review review-branch`
 
 Run the project's usual dependency setup there. Recreate any needed ignored configuration from the project's documented setup. If both checkouts run the app, give each its own ports and isolate writable state such as local databases when the two runs need independent data.
 
+The second directory shares your account's access. Before installing dependencies or testing code from an unfamiliar branch or fork, use a disposable environment with test credentials and keep your SSH agent, personal files, and Docker socket outside it.
+
 Before committing or pushing, check the active branch with `git status --short --branch`. Finish the branch using the project's usual review and merge process.
 
 ## 3. Remove the checkout when finished
