@@ -24,9 +24,10 @@ if (!Array.isArray(results) || results.length !== tools.length || results.some((
 let untracked = 0;
 for (const [index, entry] of tools.entries()) {
   const tracked = new Set((entry.rating.blockers ?? []).flatMap(({ reason }) => reason.match(/[\w]+(?:-[\w]+)+/g) ?? []));
+  for (const { id } of entry.rating.advisories ?? []) tracked.add(id);
   for (const { id } of results[index].vulns ?? []) {
     const known = tracked.has(id);
-    console.log(`${entry.id} ${entry.source.version}: ${id} (${known ? 'documented blocker' : 'needs triage'})`);
+    console.log(`${entry.id} ${entry.source.version}: ${id} (${known ? 'documented' : 'needs triage'})`);
     if (!known) untracked++;
   }
 }

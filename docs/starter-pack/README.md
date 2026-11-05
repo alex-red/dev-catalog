@@ -1,12 +1,12 @@
 # 2026 Developer Starter Pack
 
-Start with Git and [seven everyday terminal tools](../../collections/developer-starter-pack-2026.yaml) for macOS or Linux. Use your usual package manager, then add the tools that fit your projects.
+Start with Git and [eight everyday terminal tools](../../collections/developer-starter-pack-2026.yaml) for macOS or Linux. Use your usual package manager, then add the tools that fit your projects.
 
 ## Install
 
 ### macOS
 
-Install [Homebrew](https://brew.sh/) if needed. Download this repository or clone it, then run the command below from its root. The [Brewfile](Brewfile) lists the eight formulae. `--no-upgrade` keeps Bundle from requesting upgrades for installed formulae.
+Install [Homebrew](https://brew.sh/) if needed. Download this repository or clone it, then run the command below from its root. The [Brewfile](Brewfile) lists the nine formulae. `--no-upgrade` keeps Bundle from requesting upgrades for installed formulae.
 
 ```sh
 brew bundle install --file docs/starter-pack/Brewfile --no-upgrade
@@ -15,7 +15,7 @@ brew bundle install --file docs/starter-pack/Brewfile --no-upgrade
 ### Debian 13 and Ubuntu 24.04 LTS
 
 ```sh
-sudo apt update && sudo apt install git ripgrep fd-find eza bat zoxide jq shellcheck
+sudo apt update && sudo apt install git ripgrep fd-find fzf eza bat zoxide jq shellcheck
 ```
 
 On Ubuntu, enable the official Universe component if your image omits it. On Debian and Ubuntu, use `fdfind` if the `fd` executable is absent and `batcat` if `bat` is absent.
@@ -23,16 +23,16 @@ On Ubuntu, enable the official Universe component if your image omits it. On Deb
 ### Fedora 44 and 45
 
 ```sh
-sudo dnf install git ripgrep fd-find eza bat zoxide jq ShellCheck
+sudo dnf install git ripgrep fd-find fzf eza bat zoxide jq ShellCheck
 ```
 
 These commands install package-manager versions. On other distributions, use the per-tool instructions in the [catalog](../../README.md#tools).
 
-The pack omits [fzf](../../entries/tools/fzf/entry.yaml) while the reviewed release is affected by [CVE-2026-115319](https://osv.dev/vulnerability/CVE-2026-115319). If you already installed it, check your package provider for a build with the fix.
+The pack uses fzf for local picking. Leave its optional HTTP server off by keeping `--listen` and `--listen-unsafe` out of your commands and shell defaults on affected builds. Check your package provider for the fix before enabling either option. [CVE-2026-115319](https://osv.dev/vulnerability/CVE-2026-115319)
 
 ## Check the install
 
-From the repository root, try a search, a file lookup, a JSON query, and a shell lint. The expected results are the starter pack link in the README, the path to the Brewfile, `true`, and a successful ShellCheck run with no diagnostics.
+From the repository root, try a search, a file lookup, a JSON query, a fuzzy filter, and a shell lint. The expected results are the starter pack link in the README, the path to the Brewfile, `true`, `beta`, and a successful ShellCheck run with no diagnostics.
 
 ```sh
 rg '2026 Developer Starter Pack' README.md
@@ -42,6 +42,7 @@ else
   fdfind -F Brewfile docs
 fi
 jq -e '.schemaVersion == 1' catalog/index.json
+printf '%s\n' alpha beta | fzf --filter beta
 printf '%s\n' '#!/bin/sh' 'printf "%s\n" hello' | shellcheck -
 ```
 

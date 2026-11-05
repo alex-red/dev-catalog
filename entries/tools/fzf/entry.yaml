@@ -18,9 +18,11 @@ rating:
     upkeep: 4
   evidence: reviewed
   reviewed: 2026-11-05
-  blockers:
-    - scope: Installing the reviewed release or builds without the upstream fix
-      reason: CVE-2026-115319 affects fzf 0.74.5. Use a build whose provider confirms the fix before recommending installation.
+  review: docs/reviews/2026-11-05-recommendation-blockers.md
+  advisories:
+    - id: CVE-2026-115319
+      scope: Optional HTTP server on affected builds
+      reason: A crafted request can stall the HTTP server. File and history picking work with --listen and --listen-unsafe off. Use a patched build if you need the server.
   notes: Piping a list into fzf works without shell setup. History and file-picker shortcuts need shell integration, and the supported shortcuts vary by shell. Preview and action bindings run commands you configure.
 source:
   kind: linked
@@ -34,7 +36,7 @@ install:
   macos: brew install fzf
   linux: Install fzf through your distribution or download the matching binary from GitHub Releases.
   windows: winget install fzf
-  notes: Verify the package contains the fix for CVE-2026-115319 before installing. Follow the upstream instructions to enable shortcuts for Bash, Zsh, or Fish.
+  notes: Before enabling the HTTP server, verify your build contains the fix for CVE-2026-115319. Check shell defaults and wrappers for --listen or --listen-unsafe. Follow upstream instructions to enable shortcuts for Bash, Zsh, or Fish.
 inspiredBy:
   - title: Reddit discussion on command-line habits
     url: https://www.reddit.com/r/CLI/comments/1xnt4px/whats_one_tiny_commandline_habit_that_saves_you_a/

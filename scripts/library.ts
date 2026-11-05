@@ -365,8 +365,10 @@ export function renderLlmsText(catalog: Catalog): string {
     const kind = entry.experimental ? `type ${entry.type}, ` : '';
     const blockers = entry.rating.blockers?.length
       ? `, blockers: ${entry.rating.blockers.map((blocker) => `${blocker.scope}: ${blocker.reason}`).join('; ')}` : '';
+    const advisories = entry.rating.advisories?.length
+      ? `, advisories: ${entry.rating.advisories.map(({ id, scope, reason }) => `[${id}](https://osv.dev/vulnerability/${id}) (${scope}). ${reason}`).join(' ')}` : '';
     const requires = entry.requires?.length ? `, requires ${entry.requires.join(', ')}` : '';
-    return `- [${entry.title}](${target}): ${entry.summary} Use when: ${entry.useWhen} — id \`${entry.id}\`, ${kind}${scoreLabel(entry)}${blockers}, evidence ${entry.rating.evidence}, platforms ${entry.platforms.join('/')}${requires}, tags ${entry.tags.join(', ')}, ${origin}, [metadata](${url(`${entry.path}/entry.yaml`)})`;
+    return `- [${entry.title}](${target}): ${entry.summary} Use when: ${entry.useWhen} — id \`${entry.id}\`, ${kind}${scoreLabel(entry)}${blockers}${advisories}, evidence ${entry.rating.evidence}, platforms ${entry.platforms.join('/')}${requires}, tags ${entry.tags.join(', ')}, ${origin}, [metadata](${url(`${entry.path}/entry.yaml`)})`;
   };
   for (const type of entryTypes) {
     const group = catalog.entries.filter((entry) => entry.type === type && !entry.experimental).sort(byScore);

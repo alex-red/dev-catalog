@@ -22,7 +22,9 @@ The score is the weighted sum divided by 40, giving a value out of 10 rounded to
 
 If you cannot judge an axis, leave it out and say why in `unknowns`. An entry with any missing grade has no score and is listed after complete ones.
 
-`blockers` record something that should stop a recommendation in a stated scope, such as "Windows: requires GNU sed". A high score never clears a blocker. Entries with blockers are listed last.
+`blockers` are reserved for critical issues that make ordinary use of an entry unsafe or impractical. Judge this against the recommended workflow and default setup. A high score never clears a blocker. Entries with blockers are listed last.
+
+Record relevant CVEs in `advisories`. Each advisory gives its `id`, the `scope` where it applies, and a `reason` explaining the impact and what to do. An advisory can be critical upstream and affect only a specific feature or input in the catalog's workflow. Advisories appear on the entry and do not affect its score or ranking. Record compatibility limits that affect specific workflows in `notes`.
 
 ## Evidence
 

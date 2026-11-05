@@ -18,10 +18,8 @@ rating:
     upkeep: 3
   evidence: reviewed
   reviewed: 2026-11-05
-  notes: Automatic descendant rebases and the local operation log help with stacked changes. The working copy is snapshotted as a commit, so check ignore rules and review changes before pushing. Check your repository's Git hooks and editor integrations before switching.
-  blockers:
-    - scope: Repositories that require Git submodules in the working copy
-      reason: Jujutsu preserves submodule entries in history but does not check them out itself.
+  review: docs/reviews/2026-11-05-recommendation-blockers.md
+  notes: Automatic descendant rebases and the local operation log help with stacked changes. The working copy is snapshotted as a commit, so check ignore rules and review changes before pushing. Check Git hooks and editor integrations before switching. Jujutsu preserves Git submodule references but does not populate their files. Use Git when builds or tests need those files.
 source:
   kind: linked
   url: https://github.com/jj-vcs/jj

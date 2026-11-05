@@ -23,6 +23,7 @@ export interface Rating {
   review?: string;
   unknowns?: string[];
   blockers?: { scope: string; reason: string }[];
+  advisories?: { id: string; scope: string; reason: string }[];
 }
 
 export function entryScore(rating: Rating): number | null {

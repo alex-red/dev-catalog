@@ -18,7 +18,7 @@ Open an [entry proposal](https://github.com/alex-red/dev-catalog/issues/new?temp
    | tool | Always linked: `entry.yaml` only, with `install` steps per platform |
 
 3. List `platforms` you have reason to believe it works on (`any` only for genuinely portable content) and every program it needs in `requires`.
-4. Rate it with the [rating guide](docs/ratings.md): seven 0–4 grades, `evidence`, `reviewed` date, and `notes` that explain the tradeoffs. Omit grades you cannot judge and name them in `unknowns`. Record anything that should stop a recommendation in `blockers`. A longer assessment can go in `docs/reviews/` and be linked from `rating.review`.
+4. Use the [rating guide](docs/ratings.md) to record seven 0–4 grades, `evidence`, the `reviewed` date, and `notes` on tradeoffs. Omit grades you cannot judge and name them in `unknowns`. Record relevant CVEs in `advisories` and reserve `blockers` for critical issues that affect ordinary use. A longer assessment can go in `docs/reviews/` and be linked from `rating.review`.
 5. Run `bun run catalog:build` and `bun run check`.
 
 ## Scripts

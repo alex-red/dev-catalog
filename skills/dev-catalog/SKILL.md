@@ -29,6 +29,7 @@ Match the request against `useWhen`, `tags`, `summary`, and `type`. Then:
 
 - Select for fit first. Drop entries whose `platforms` exclude the user's system, and entries whose `overlap` says something already installed covers the job.
 - Use `score` only to break ties between entries that fit; a high score never clears a `blockers` item. Say when grades are incomplete.
+- Mention relevant `rating.advisories` with their advisory IDs, the conditions that expose the user, and any mitigation. Apply recommendation blockers to the stated scope.
 - Leave out `experimental` entries unless the user asks for them or nothing else fits, and label them when shown.
 - Propose at most five entries. For each, give the title, type, score and evidence level, one line on why it fits, its source and license, what it requires, and exactly what would be installed where.
 

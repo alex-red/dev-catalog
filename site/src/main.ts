@@ -446,7 +446,7 @@ function renderList() {
 
       if (item.entry) {
         const score = el("span", scoreLabel(item.entry), "tree-item-score");
-        score.title = `${item.entry.rating.rubric}: curator judgment; inspect evidence and platform fit`;
+        score.title = blockerSummary(item.entry.rating) ?? `${item.entry.rating.rubric}: curator judgment; inspect evidence and platform fit`;
         a.append(score);
       }
       treeItems.append(a);
@@ -595,7 +595,12 @@ function renderCollectionViewer(collection: Collection, activeFile?: string) {
 
     const top = el("div", undefined, "card-top");
     top.append(kindBadge(entryItem.kind));
-    if (entryItem.entry) top.append(el("span", scoreLabel(entryItem.entry), "score-pill"));
+    if (entryItem.entry) {
+      const score = el("span", scoreLabel(entryItem.entry), "score-pill");
+      const summary = blockerSummary(entryItem.entry.rating);
+      if (summary) score.title = summary;
+      top.append(score);
+    }
 
     card.append(top, el("h4", entryItem.title), el("div", entryItem.summary, "card-summary"));
     grid.append(card);
@@ -604,6 +609,34 @@ function renderCollectionViewer(collection: Collection, activeFile?: string) {
   viewer.append(memberSection);
 
   renderSourceViewer(collection.path, [collection.path], activeFile ?? collection.path);
+}
+
+function blockerSummary(rating: Rating) {
+  return rating.blockers?.map(({ scope, reason }) => `${scope} — ${reason}`).join("\n") || undefined;
+}
+
+function riskNotice(kind: "blocker" | "advisory", items: { id?: string; scope: string; reason: string }[]) {
+  const isBlocker = kind === "blocker";
+  const notice = el("section", undefined, `callout-when callout-risk callout-${kind}`);
+  const heading = el("h3", isBlocker ? "Recommendation blocker" : "Security advisories", "callout-title");
+  heading.id = `entry-${kind}-title`;
+  notice.setAttribute("aria-labelledby", heading.id);
+  const details = el("dl", undefined, "risk-details");
+
+  for (const { id, scope, reason } of items) {
+    const term = el("dt", scope);
+    if (id) term.append(" · ", link(id, `https://osv.dev/vulnerability/${id}`));
+    const description = el("dd");
+    description.append(...reason.split(/(\bCVE-\d{4}-\d{4,}\b)/g).map((part, index) =>
+      index % 2 ? link(part, `https://osv.dev/vulnerability/${part}`) : part
+    ));
+    details.append(term, description);
+  }
+
+  notice.append(heading);
+  if (isBlocker) notice.append(el("p", "The catalog withholds its recommendation in these situations, regardless of the score.", "callout-body"));
+  notice.append(details);
+  return notice;
 }
 
 // Swaps the visible source file in place; set by renderSourceViewer.
@@ -806,6 +839,9 @@ async function renderViewer() {
   header.append(sections);
   viewer.append(header);
 
+  if (entry.rating.blockers?.length) viewer.append(riskNotice("blocker", entry.rating.blockers));
+  if (entry.rating.advisories?.length) viewer.append(riskNotice("advisory", entry.rating.advisories));
+
   if (entry.useWhen) {
     const whenBox = el("div", undefined, "callout-when");
     whenBox.append(el("div", "When to Use", "callout-title"), el("p", entry.useWhen, "callout-body"));
@@ -830,11 +866,6 @@ async function renderViewer() {
   }
   if (entry.rating.review) rubricCard.append(link("Read the assessment and its limits", `${REPO_URL}/blob/main/${entry.rating.review}`));
   if (entry.rating.unknowns?.length) rubricCard.append(el("p", `Unknowns: ${entry.rating.unknowns.join("; ")}`, "review-notes"));
-  for (const blocker of entry.rating.blockers ?? []) {
-    const notice = el("div", undefined, "rating-blocker");
-    notice.append(el("strong", `Recommendation blocker · ${blocker.scope}: `), document.createTextNode(blocker.reason));
-    rubricCard.append(notice);
-  }
   grid.append(rubricCard);
 
   // Provenance & Requirements Card

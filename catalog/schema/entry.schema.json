@@ -123,6 +123,28 @@
             "$ref": "#/definitions/text"
           }
         },
+        "advisories": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "id": {
+                "type": "string",
+                "pattern": "^(CVE-[0-9]{4}-[0-9]{4,}|GHSA-[23456789cfghjmpqrvwx]{4}-[23456789cfghjmpqrvwx]{4}-[23456789cfghjmpqrvwx]{4})$"
+              },
+              "scope": {
+                "$ref": "#/definitions/text"
+              },
+              "reason": {
+                "$ref": "#/definitions/text"
+              }
+            },
+            "required": ["id", "scope", "reason"]
+          }
+        },
         "blockers": {
           "type": "array",
           "minItems": 1,

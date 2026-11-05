@@ -5,6 +5,7 @@ description: Everyday tools for a new macOS or Linux development machine. Search
 entries:
   - ripgrep
   - fd
+  - fzf
   - eza
   - bat
   - zoxide
