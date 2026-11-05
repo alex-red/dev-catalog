@@ -28,12 +28,12 @@
     "check": "bun run typecheck && bun run lint && bun run validate && bun run catalog:check && bun test"
   },
   "devDependencies": {
-    "@types/node": "24.19.2",
+    "@types/node": "26.6.6",
     "ajv": "8.20.0",
     "markdownlint-cli2": "0.24.0",
     "mdast-util-from-markdown": "2.1.0",
     "typescript": "7.0.2",
-    "vite": "8.3.4",
+    "vite": "8.3.5",
     "yaml": "2.9.1"
   },
   "overrides": {
