@@ -40,7 +40,7 @@ Wait for the user to choose. A general "go ahead" with no list shown is not appr
 Follow [the install guide](references/install.md). In short:
 
 - `script` entries: show the script, then copy the entry's script files to a directory on `PATH` that the user picks, such as `~/.local/bin`, and keep them executable.
-- `workflow` entries: show or save `WORKFLOW.md` where the user wants it; there is nothing to install.
+- `workflow` entries: show or save the workflow. Use the entry's install guidance when the workflow uses an agent skill.
 - `tool` entries: run the `install` step for the user's platform only after showing the exact command. Prefer the package manager the user already uses. Pin `source.version` when the method allows it.
 - Never overwrite an existing file or command of the same name without asking.
 

@@ -1,0 +1,28 @@
+schemaVersion: 1
+id: repo-retro
+type: workflow
+title: Repo Retro for coding-agent sessions
+summary: Review past sessions for one repository or use its lessons notes. Rank workflow fixes by recurrence, impact, and effort, with a way to verify each proposed change.
+useWhen: User corrections, failed checks, or manual steps keep recurring across coding-agent sessions.
+tags: [ agent-workflows, retrospective ]
+platforms: [ any ]
+requires: [ coding agent with Markdown input ]
+rating:
+  rubric: dev-v1
+  dimensions:
+    value: 3
+    dependability: 3
+    ease: 3
+    safety: 4
+    adoption: 4
+    portability: 3
+    upkeep: 4
+  evidence: reviewed
+  reviewed: 2026-11-19
+  notes: A single Markdown skill produces proposals without changing the repo. Automatic history discovery requires Codex chat tools. With another agent, provide repository notes or scoped excerpts. Proposal quality depends on the history available and the agent's ability to verify patterns in the current tree.
+source:
+  kind: original
+  license: MIT
+  author: Dev Catalog contributors
+overlap: A manual review of lessons notes works when the issue is already clear. This workflow helps when you need to establish whether similar friction recurred and where a fix belongs.
+related: [ matt-pocock-retro ]

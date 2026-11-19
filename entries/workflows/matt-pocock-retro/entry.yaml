@@ -1,0 +1,35 @@
+schemaVersion: 1
+id: matt-pocock-retro
+type: workflow
+title: Matt Pocock's Retro skill for coding sessions
+summary: Review a coding session and propose changes to navigation, automated checks, reviewer guidance, tool use, or information access. Review the current session by default or point the skill at a specific past session.
+useWhen: A completed coding session exposed friction and you want concrete improvements to the agent's working environment.
+tags: [ agent-workflows, retrospective ]
+platforms: [ any ]
+requires: [ git, coding agent with Agent Skills support ]
+rating:
+  rubric: dev-v1
+  dimensions:
+    value: 3
+    dependability: 3
+    ease: 3
+    safety: 4
+    adoption: 3
+    portability: 3
+    upkeep: 3
+  evidence: reviewed
+  reviewed: 2026-11-19
+  notes: The checklist directs the agent to inspect existing checks before proposing another one, and the output is a ranked set of recommendations. The skill calls the companion writing-for-agents skill. Reviewing past sessions depends on how the agent can access the underlying transcript.
+source:
+  kind: linked
+  url: https://github.com/mattpocock/skills
+  path: skills/engineering/retro/SKILL.md
+  revision: abeeaf95660ba9e8b7c753eb38f441ca707a8823
+  retrieved: 2026-11-19
+  license: MIT
+  author: Matt Pocock
+install:
+  any: Clone https://github.com/mattpocock/skills and check out abeeaf95660ba9e8b7c753eb38f441ca707a8823. Copy skills/engineering/retro and skills/productivity/writing-for-agents into your agent's skill directory.
+  notes: Invoke retro explicitly and identify the session to review if it is outside the current chat.
+overlap: A manual debrief works for a known incident. Repo Retro focuses on repeated issues across one repository and can take lessons notes as input.
+related: [ repo-retro ]

@@ -27,7 +27,7 @@ Keep a note of the catalog entry ID and revision with the script, for example in
 
 ## Workflows
 
-Workflows are procedures, not programs. Show `WORKFLOW.md`, or save it where the user keeps notes or project documentation. Follow its steps with the user.
+Show `WORKFLOW.md` or the linked procedure, or save it where the user keeps project documentation. If the workflow ships an agent skill or links to one, use its entry-specific guidance, review the skill and its companion files, and get approval for the destination before copying them.
 
 ## Tools
 

@@ -398,7 +398,10 @@ export function renderEntryTable(catalog: Catalog): string {
   const byScore = (a: Entry, b: Entry) => compareRatings(a, b) || a.id.localeCompare(b.id);
   const link = (entry: Entry) => {
     const primary = primaryFiles[entry.type];
-    return entry.source.kind === 'linked' || !primary ? entry.source.url ?? entry.sourceUrl! : `${entry.path}/${primary}`;
+    if (entry.source.kind === 'linked' || !primary) {
+      return entry.source.path ? entry.sourceUrl! : entry.source.url ?? entry.sourceUrl!;
+    }
+    return `${entry.path}/${primary}`;
   };
   const sections: string[] = [];
   for (const type of entryTypes) {

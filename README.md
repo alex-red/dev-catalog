@@ -35,6 +35,8 @@ Set up Git and eight everyday terminal tools for searching, navigating, and chec
 | [Work on parallel Git branches with worktrees](entries/workflows/git-worktree-parallel/WORKFLOW.md) | You need another branch checked out alongside work in progress, especially when switching branches would interrupt a dev server or trigger a rebuild. | any | 9.6/10 |
 | [Find a regression with git bisect run](entries/workflows/git-bisect-regression/WORKFLOW.md) | Something worked in an older version and fails now, and reading recent diffs has not shown the cause. | any | 9.1/10 |
 | [Diagnose failed CI browser tests with Playwright traces](entries/workflows/playwright-ci-traces/WORKFLOW.md) | A Playwright test fails in CI and screenshots or logs alone do not explain what happened. | macos, linux, windows | 8.8/10 |
+| [Repo Retro for coding-agent sessions](entries/workflows/repo-retro/WORKFLOW.md) | User corrections, failed checks, or manual steps keep recurring across coding-agent sessions. | any | 8.3/10 |
+| [Matt Pocock's Retro skill for coding sessions](https://github.com/mattpocock/skills/blob/abeeaf95660ba9e8b7c753eb38f441ca707a8823/skills/engineering/retro/SKILL.md) | A completed coding session exposed friction and you want concrete improvements to the agent's working environment. | any | 7.9/10 |
 
 ### Tools
 

@@ -41,3 +41,7 @@ Validation audits the Bun lockfile and workflow configuration. A weekly Linux jo
 ## 10. Advisory severity and recommendation status are separate
 
 Record relevant CVEs as advisories with their exposure and mitigations. Reserve recommendation blockers for critical issues that affect ordinary use of a tool or its default setup. A critical severity score for an underlying library is one input to that judgment. The weekly scan recognizes documented advisories and continues to flag new matches for triage. This replaces the blocker rule in decision 9.
+
+## 11. Procedural agent skills are workflow entries
+
+Catalog skills that describe a developer procedure as workflows. Original entries can include a reusable `SKILL.md` alongside `WORKFLOW.md`. Linked entries point to the upstream skill at a reviewed revision. This keeps the discovery plugin small and lets users choose which skills to install.

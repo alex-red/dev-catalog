@@ -5,6 +5,10 @@
 schemaVersion: 1
 terms:
   # Topics
+  - id: agent-workflows
+    label: Coding-agent workflows
+    facet: topic
+    definition: Working with coding agents and improving their development environment.
   - id: cli
     label: Command line
     facet: topic
@@ -65,6 +69,10 @@ terms:
     label: Testing
     facet: task
     definition: Running automated checks or investigating their results.
+  - id: retrospective
+    label: Retrospectives
+    facet: task
+    definition: Reviewing completed work to identify changes that improve future sessions.
   # Technologies
   - id: git
     label: Git
