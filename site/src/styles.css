@@ -327,6 +327,8 @@ input[type="search"]:focus {
   transition: all 0.15s ease;
 }
 
+.header-filters a.btn-subtle { text-decoration: none; white-space: nowrap; }
+
 .btn-subtle:hover {
   background: var(--surface-hover);
   color: var(--text);
@@ -391,6 +393,7 @@ input[type="search"]:focus {
 }
 
 .dialog-col p, .dialog-col ul { margin: 0; color: var(--text-muted); }
+.dialog-col a { color: var(--accent-text); }
 .dialog-col ul { padding-left: 1.25rem; margin-top: 0.35rem; }
 .dialog-col li { margin-bottom: 0.25rem; }
 
